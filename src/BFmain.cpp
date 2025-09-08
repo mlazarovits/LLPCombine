@@ -1,14 +1,54 @@
-
 #include "JSONFactory.h"
 #include "BuildFit.h"
 #include <vector>
 #include <string>
 #include <filesystem> // Required for std::filesystem
+#include <iostream>
+#include <string>
+using std::string;
+using std::cout;
+using std::endl;
 namespace fs = std::filesystem;
 
 
-int main(){
+int main(int argc, char *argv[]){
+        bool hprint = false;
+	std::string datacard_dir = "datacards_eos";
+	std::string input_json = "./json/test_eos.json";
+        for(int i = 0; i < argc; i++){
+                if(strncmp(argv[i],"--help", 6) == 0){
+                        hprint = true;
+                }
+                if(strncmp(argv[i],"-h", 2) == 0){
+                        hprint = true;
+                }
+                if(strncmp(argv[i],"--input", 7) == 0){
+                        i++;
+                        input_json = string(argv[i]);
+                }
+                if(strncmp(argv[i],"-i", 2) == 0){
+                        i++;
+                        input_json = string(argv[i]);
+                }
+                if(strncmp(argv[i],"--output", 8) == 0){
+                        i++;
+                        datacard_dir = string(argv[i]);
+                }
+                if(strncmp(argv[i],"-o", 2) == 0){
+                        i++;
+                        datacard_dir = string(argv[i]);
+                }
 
+        }
+        if(hprint){
+                cout << "Making BFI jsons for BuildFit" << endl;
+                cout << "Usage: " << argv[0] << " [options]" << endl;
+                cout << "  options:" << endl;
+                cout << "   --help(-h)                    print options" << endl;
+                cout << "   --input(-i) [inname]          set input json" << endl;
+                cout << "   --output(-o) [oname]          set output dir name" << endl;
+                return -1;
+        }
 //	std::string datacard_dir = "datacards";
 //	std::string input_json = "test.json";
 	//std::string datacard_dir = "datacards_22j";
@@ -17,8 +57,6 @@ int main(){
         //std::string input_json = "test_G1MMT11j.json";
 	//std::string datacard_dir = "datacards_2GLLL";
         //std::string input_json = "test_G2LLL.json";
-	std::string datacard_dir = "datacards_eos";
-	std::string input_json = "./json/test_eos.json";
 	
 
 	JSONFactory* j = new JSONFactory(input_json);
@@ -41,4 +79,5 @@ int main(){
 		BF->BuildAsimovFit(j,signals[i], datacard_dir);
 		//break;
 	}
+	cout << "Wrote datacards to " << datacard_dir << "/" << endl;
 }

@@ -2,7 +2,7 @@
 
 
 BuildFitInput::BuildFitInput(){
-	std::cout<<"Hello world \n";
+	std::cout<<"Now just between us girls.... \n";
 	ROOT::EnableImplicitMT();
 }
 void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, double Lumi){

@@ -1,18 +1,43 @@
-
-
-
 #include "SampleTool.h"
 #include "BuildFitInput.h"
 #include "JSONFactory.h"
 
-int main() {
+int main(int argc, char *argv[]){
+	bool hprint = false;
+	std::string outputJSON = "test_v36.json";	
+        for(int i = 0; i < argc; i++){
+                if(strncmp(argv[i],"--help", 6) == 0){
+                        hprint = true;
+                }
+                if(strncmp(argv[i],"-h", 2) == 0){
+                        hprint = true;
+                }
+                if(strncmp(argv[i],"--output", 8) == 0){
+                	i++;
+                        outputJSON = string(argv[i])+".json";
+		}
+                if(strncmp(argv[i],"-o", 2) == 0){
+                	i++;
+                        outputJSON = string(argv[i])+".json";
+                }
+
+	}
+	if(hprint){
+                cout << "Making BFI jsons for BuildFit" << endl;
+                cout << "Usage: " << argv[0] << " [options]" << endl;
+                cout << "  options:" << endl;
+                cout << "   --help(-h)                    print options" << endl;
+                cout << "   --output(-o) [oname]          set output json name" << endl;
+
+		return -1;
+	}
 	double Lumi= 400.;
 	SampleTool* ST = new SampleTool();
 	
 	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
 	stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
-	//stringlist siglist = {"gogoG"};
-	stringlist siglist = {"gogoG","gogoZ","sqsqG"};
+	stringlist siglist = {"gogoG"};
+	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 	
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
@@ -36,13 +61,43 @@ int main() {
 	std::string LLL = "&& ( rjr_Mr[1] > 2000 ) && ( rjr_R[1] > 0.2 ) && (rjr_Rv[1] > 0.0)";
 	std::string jets12 ="&&( ( (rjrNJetsJa[1] == 1) && (rjrNJetsJb[1] >= 1 ) ) || ( (rjrNJetsJa[1] >=1 ) && (rjrNJetsJb[1] == 1) ) )" ;
 	std::string jets22="&& (rjrNJetsJa[1] >= 2) && (rjrNJetsJb[1] >= 2)";
+
+	//atlas cuts (stripped down)
+	//https://arxiv.org/pdf/1712.02332
+	//rjr variables are saved s.t. var[i] for i = 0 is phomet where the photon is treated as invisible and i = 1 is phojet where the photon is treated as visible
+	//RJR-G1
+	std::string rjr_g1a = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.45) && ((rjr_pHts41[1] / rjr_pHs41[1]) >= 0.7) && (rjr_pHts41[1] > 1200) && (rjr_pHs11[1] > 700)";
+	std::string rjr_g1b = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.45) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 1400) && (rjr_pHs11[1] > 700)";
 	
-	BFI->FilterRegions( "G1MMT11j", pho1+MMT+jets12);
-	BFI->FilterRegions( "G1MMT22j", pho1+MMT+jets22);
-	BFI->FilterRegions( "G2LLL", pho2+LLL);
-	BFI->CreateBin("G1MMT11j");
-	BFI->CreateBin("G1MMT22j");
-	BFI->CreateBin("G2LLL");
+	std::string rjr_g2a = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.3) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 1600) && (rjr_pHs11[1] > 800)";
+	std::string rjr_g2b = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.3) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 2000) && (rjr_pHs11[1] > 800)";
+	
+	std::string rjr_g3a = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.2) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.65) && (rjr_pHts41[1] > 2400) && (rjr_pHs11[1] > 900)";
+	std::string rjr_g3b = "(rjr_pHs11[1] / rjr_pHs41[1] >= 0.2) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.65) && (rjr_pHts41[1] > 2800) && (rjr_pHs11[1] > 900)";
+	
+	std::string rjr_g4 = "(rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 3000) && (rjr_pHs11[1] > 1000)";
+
+	//BFI->FilterRegions( "G1MMT11j", pho1+MMT+jets12);
+	//BFI->FilterRegions( "G1MMT22j", pho1+MMT+jets22);
+	//BFI->FilterRegions( "G1LLL", pho1+LLL);
+	BFI->FilterRegions("RJR-G1a",rjr_g1a);
+	BFI->FilterRegions("RJR-G1b",rjr_g1b);
+	BFI->FilterRegions("RJR-G2a",rjr_g2a);
+	BFI->FilterRegions("RJR-G2b",rjr_g2b);
+	BFI->FilterRegions("RJR-G3a",rjr_g3a);
+	BFI->FilterRegions("RJR-G3b",rjr_g3b);
+	BFI->FilterRegions("RJR-G4",rjr_g4);
+	//
+	//BFI->CreateBin("G1MMT11j");
+	//BFI->CreateBin("G1MMT22j");
+	//BFI->CreateBin("G1LLL");
+	BFI->CreateBin("RJR-G1a");
+	BFI->CreateBin("RJR-G1b");
+	BFI->CreateBin("RJR-G2a");
+	BFI->CreateBin("RJR-G2b");
+	BFI->CreateBin("RJR-G3a");
+	BFI->CreateBin("RJR-G3b");
+	BFI->CreateBin("RJR-G4");
 
 	//book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
@@ -64,7 +119,7 @@ int main() {
 	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
 	BFI->PrintBins(1);
 
-	std::string outputJSON = "test_v36.json";	
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
+	cout << "Writing output json to json/" << outputJSON << endl;
 	json->WriteJSON("./json/"+outputJSON);
 }
