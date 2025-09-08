@@ -58,7 +58,7 @@ def ReadSignificance_3key( inputfilename ):
 	print("label",sig_label)
 	return significance_dict, sig_label
 
-def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text=""):
+def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="sigs"):
 	x,y,z=[],[],[]
 	for key in significance_dict:
 		x.append(key[0])
@@ -101,12 +101,12 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text=""):
 	cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),ax=ax, orientation='vertical')#, shrink=0.7)
 	cbar.set_label("Significance")
 	hep.cms.label(rlabel="")
-	print("Saving plot as",sig_label+"_n2dM.pdf")
+	print("Saving plot as",oname+"_"+sig_label+"_n2dM.pdf")
 	plt.savefig(sig_label+"_n2dM.pdf")
 	#plt.show()
 
 	
-def MakeN1N2plot( significance_dict, sig_label, mGo=2000, extra_text=""):
+def MakeN1N2plot( significance_dict, sig_label, mGo=2000, extra_text="", oname = "sigs"):
 	x,y,z = [],[],[]
 	for key in significance_dict:
 		x.append(key[1])#N2 on xaxis
@@ -147,9 +147,9 @@ def MakeN1N2plot( significance_dict, sig_label, mGo=2000, extra_text=""):
 	cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),ax=ax, orientation='vertical')#, shrink=0.7)
 	cbar.set_label("Significance")
 	hep.cms.label(rlabel="")
-	print("Saving plot as",sig_label+"_n1n2.pdf")
+	print("Saving plot as",oname+"_"+sig_label+"_n1n2.pdf")
 
-	plt.savefig(sig_label+"_n1n2.pdf")
+	plt.savefig(oname+"_"+sig_label+"_n1n2.pdf")
 	#plt.show()
 
 
@@ -169,6 +169,7 @@ args = parser.parse_args()
 
 extra_text = args.extra
 textfile = args.input
+ofile = textfile[:textfile.find(".txt")]
 
 #significance_dict = ReadSignificance(textfile)
 #for key in significance_dict:
@@ -186,18 +187,18 @@ for key in significance_dict:
 if(len(set(n1mass)) > 1 and len(set(gmass)) == 1):
     print("making N1N2 plot")
     #plot N1N2
-    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text)
+    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text, ofile)
 if(len(set(n1mass)) == 1 and len(set(gmass)) > 1):
     print("making N2dM plot")
     #plot n2 vs dM 
-    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text)
+    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
 if(len(set(n1mass)) == 1 and len(set(gmass)) == 1):
     print("making N1N2 plot")
     #plot N1N2
-    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text)
+    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text, ofile)
     print("making N2dM plot")
     #plot n2 vs dM 
-    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text)
+    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
 
 
 
