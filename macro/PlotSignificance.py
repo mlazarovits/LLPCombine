@@ -76,6 +76,7 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="
 	
 	fig, ax = plt.subplots(figsize=(10,8))
 	scatter = ax.scatter(x,y,c=z,norm=norm,cmap=cmap,edgecolors='black')
+	minmass = 1e6
 	for i, txt in enumerate(z):
 		v=round(z[i],2)
 		color = cmap(norm(v))
@@ -83,6 +84,8 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="
 			plt.text(x[i],y[i], str(round(z[i],2)),fontsize=14, ha='center', va='bottom',color=color,fontweight='bold')
 		if( y[i] == 1900):
 			plt.text(x[i],y[i], str(round(z[i],2)),fontsize=14, ha='center', va='top',color=color,fontweight='bold')
+		if( x[i] < minmass):
+			minmass = x[i]
 	#axes[j].scatter(x,y,c=zslice,norm=norm,cmap=cmap,edgecolors='black')
 	if(sig_label == "sqsq"):
 		plt.xlabel('$m_{\\tilde{q}}$ (GeV)')
@@ -93,8 +96,9 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="
 
 	#plt.yscale('log')
 	
-	plt.text(1950,700, "$m_{N1}=$" + str(mN1) +" GeV", fontsize=20)
-	plt.text(1950,800, extra_text, fontsize=20)
+	plt.text(minmass+50,700, "$m_{N1}=$" + str(mN1) +" GeV", fontsize=20)
+	if(extra_text != ""):
+	    plt.text(minmass+50,800, extra_text, fontsize=20)
 
 	#cbar = plt.colorbar(scatter_plot, label='Color Value',cm.ScalarMappable(norm=norm, cmap=cmap))
 
@@ -102,7 +106,7 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="
 	cbar.set_label("Significance")
 	hep.cms.label(rlabel="")
 	print("Saving plot as",oname+"_"+sig_label+"_n2dM.pdf")
-	plt.savefig(sig_label+"_n2dM.pdf")
+	plt.savefig(oname+"_"+sig_label+"_n2dM.pdf")
 	#plt.show()
 
 	
@@ -169,7 +173,7 @@ args = parser.parse_args()
 
 extra_text = args.extra
 textfile = args.input
-ofile = textfile[:textfile.find(".txt")]
+ofile = textfile[textfile.find("Significances_"):textfile.find(".txt")]
 
 #significance_dict = ReadSignificance(textfile)
 #for key in significance_dict:
