@@ -5,34 +5,38 @@
 SampleTool::SampleTool(){
 
 	string pathPrefix = "/uscms/home/jaking/nobackup/llpana_skims/";
-	MasterDict["Wjets"] = {pathPrefix+"WJetsToLNu_HT-100To200_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-1200To2500_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-200To400_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-2500ToInf_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-400To600_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-600To800_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"WJetsToLNu_HT-800To1200_R18_IPM100_v24_LLPGskim_v24_rjrvars.root"};
-						   
-	MasterDict["Zjets"] = {pathPrefix+"ZJetsToNuNu_HT-100To200_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-1200To2500_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-200To400_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-2500ToInf_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-400To600_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-600To800_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root",
-						   pathPrefix+"ZJetsToNuNu_HT-800To1200_R18_SVIPM100_v27_LLPGZskim_v27_rjrvars.root"};
-						   
+	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-2500ToInf_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-400To600_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-600To800_rjrskim_v36.root",
+				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-800To1200_rjrskim_v36.root"};		
+			
+
+	MasterDict["Zjets"] = {pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-100To200_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-1200To2500_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-200To400_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-2500ToInf_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-400To600_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-600To800_rjrskim_v36.root",
+				pathPrefix+"ZJets_R18_SVIPM100_v30_ZJetsToNuNu_HT-800To1200_rjrskim_v36.root" };
+
+
 	MasterDict["Top"] = {pathPrefix+"TGJets_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
 						 pathPrefix+"TTGJets_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
 						 pathPrefix+"TTJets_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
 						 pathPrefix+"ttWJets_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
 						 pathPrefix+"ttZJets_R18_IPM100_v24_LLPGskim_v24_rjrvars.root"};
 						 
-	MasterDict["Gjets"] = {pathPrefix+"GJets_HT-100To200_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"GJets_HT-200To400_R18_IPM100_v25_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"GJets_HT-400To600_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"GJets_HT-40To100_R18_IPM100_v24_LLPGskim_v24_rjrvars.root",
-						   pathPrefix+"GJets_HT-600ToInf_R18_IPM100_v24_LLPGskim_v24_rjrvars.root"};
-						 
+	MasterDict["Gjets"] = {pathPrefix+"GJets_R18_SVIPM100_v30_GJets_HT-100To200_rjrskim_v36.root",
+				pathPrefix+"GJets_R18_SVIPM100_v30_GJets_HT-200To400_rjrskim_v36.root",
+				pathPrefix+"GJets_R18_SVIPM100_v30_GJets_HT-400To600_rjrskim_v36.root",
+				pathPrefix+"GJets_R18_SVIPM100_v30_GJets_HT-40To100_rjrskim_v36.root",
+				pathPrefix+"GJets_R18_SVIPM100_v30_GJets_HT-600ToInf_rjrskim_v36.root"};
+	
+
+
 	MasterDict["QCD"] = {pathPrefix+"QCD_HT1000to1500_R18_IPM100_v25_LLPGskim_v26_rjrvars.root",
 						 pathPrefix+"QCD_HT100to200_R18_IPM100_v25_LLPGskim_v26_rjrvars.root",
 						 pathPrefix+"QCD_HT1500to2000_R18_IPM100_v25_LLPGskim_v26_rjrvars.root",
@@ -46,55 +50,55 @@ SampleTool::SampleTool(){
 	MasterDict["DB"] = {pathPrefix+"WZ_R18_IPM100_v24_LLPGskim_v24_rjrvars.root"};
 	
 	
-	MasterDict["gogoG"] = {pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-1500_mN2-500_mN1-100-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-1-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-250-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-500-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-1000-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-1-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-250-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-500-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1000-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1500-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-250-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-500-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1000-ct0p1_rjrskim_v28.root",
-					       pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1500-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1900-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-250-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-500-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-500_mN1-1-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2000_mN2-500_mN1-250-ct0p1_rjrskim_v28.root",	
-						   pathPrefix+"SMS_SVIPM100_v28_gogoG_AODSIM_mGl-2500_mN2-1500_mN1-1000-ct0p1_rjrskim_v28.root"};
+	MasterDict["gogoG"] = {pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-1500_mN2-500_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-250_ct0p1_rjrskim_v36.root",	
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1000_mN1-500_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-1000_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-1_ct0p1_rjrskim_v36.root",   
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-250_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1500_mN1-500_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1000_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1500_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-1_ct0p1_rjrskim_v36.root",   
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-250_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1900_mN1-500_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1000_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1500_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1900_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-1_ct0p1_rjrskim_v36.root",   
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-250_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-1950_mN1-500_ct0p1_rjrskim_v36.root", 
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-500_mN1-1_ct0p1_rjrskim_v36.root",    
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2000_mN2-500_mN1-250_ct0p1_rjrskim_v36.root",  
+				pathPrefix+"SMS_SVIPM100_v30_gogoG_AODSIM_mGl-2500_mN2-1500_mN1-1000_ct0p1_rjrskim_v36.root"};
 
 						   
-	MasterDict["gogoZ"] = {pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-1500_mN2-500_mN1-100-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200-ct0p001_rjrsqwkim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200-ct0p3_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350-ct0p001_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350-ct0p3_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-1950_mN1-1900-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200-ct0p001_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200-ct0p3_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350-ct0p001_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350-ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350-ct0p3_rjrskim_v28.root"};
-						   
-	MasterDict["sqsqG"] = {pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-1700_mN2-1500_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-1700_mN2-300_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-1850_mN2-1650_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-1850_mN2-300_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-2000_mN2-1800_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-2000_mN2-300_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-2150_mN2-1950_mN1-100_ct0p1_rjrskim_v28.root",
-						   pathPrefix+"SMS_SVIPM100_v28_sqsqG_AODSIM_mGl-2150_mN2-300_mN1-100_ct0p1_rjrskim_v28.root"};
-
-
+	MasterDict["gogoZ"] = {	pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-1500_mN2-500_mN1-100_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200_ct0p001_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200_ct0p3_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350_ct0p001_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-350_ct0p3_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-1950_mN1-1900_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200_ct0p001_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-200_ct0p3_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p001_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p1_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p3_ct0p1_rjrskim_v36.root"};
+	
+				   
+	MasterDict["sqsqG"] = { pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-1700_mN2-1500_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-1700_mN2-300_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-1850_mN2-1650_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-1850_mN2-300_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2000_mN2-1800_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2000_mN2-300_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2150_mN2-1950_mN1-100_ct0p1_rjrskim_v36.root",
+				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2150_mN2-300_mN1-100_ct0p1_rjrskim_v36.root"};
+ 
 
 
 

@@ -9,8 +9,10 @@ int main() {
 	double Lumi= 400.;
 	SampleTool* ST = new SampleTool();
 	
-	stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets"};
-	stringlist siglist = {"gogoG"};
+	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
+	stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
+	//stringlist siglist = {"gogoG"};
+	stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 	
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
@@ -22,16 +24,18 @@ int main() {
 	BuildFitInput* BFI = new BuildFitInput();
 	BFI->LoadBkg_byMap(ST->BkgDict, Lumi);
 	BFI->LoadSig_byMap(ST->SigDict, Lumi);
-	BFI->BuildRVBranch();
+//	BFI->BuildRVBranch(); obselete
 	
 
 	std::string pho1= "(nSelPhotons==1)";
 	std::string pho2= "(nSelPhotons==2)";
-	std::string MMT = "&& (rjrASMass[1] > 2750) && (rjrAX2NQSum[1] > 0.275) && (Rv > 0.3)";
-	std::string LLL = "&& (rjrASMass[1] > 2000) && (rjrAX2NQSum[1] > 0.2) && (Rv > 0.0)"; 
+	//std::string MMT = "&& (rjrASMass[1] > 2750) && (rjrAX2NQSum[1] > 0.275) && (Rv > 0.3)"; //old branch names
+	//std::string LLL = "&& (rjrASMass[1] > 2000) && (rjrAX2NQSum[1] > 0.2) && (Rv > 0.0)"; 
+	
+	std::string MMT = "&& ( rjr_Mr[1] > 2750 ) && ( rjr_R[1] > 0.275 ) && ( rjr_Rv[1] > 0.3)";
+	std::string LLL = "&& ( rjr_Mr[1] > 2000 ) && ( rjr_R[1] > 0.2 ) && (rjr_Rv[1] > 0.0)";
 	std::string jets12 ="&&( ( (rjrNJetsJa[1] == 1) && (rjrNJetsJb[1] >= 1 ) ) || ( (rjrNJetsJa[1] >=1 ) && (rjrNJetsJb[1] == 1) ) )" ;
 	std::string jets22="&& (rjrNJetsJa[1] >= 2) && (rjrNJetsJb[1] >= 2)";
-	
 	
 	BFI->FilterRegions( "G1MMT11j", pho1+MMT+jets12);
 	BFI->FilterRegions( "G1MMT22j", pho1+MMT+jets22);
@@ -59,7 +63,8 @@ int main() {
 	BFI->ConstructBkgBinObjects( countResults, sumResults, errorResults );
 	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
 	BFI->PrintBins(1);
-	
+
+	std::string outputJSON = "test_v36.json";	
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
-	json->WriteJSON("./json/test_eos.json");
+	json->WriteJSON("./json/"+outputJSON);
 }

@@ -75,8 +75,10 @@ inline std::string BFTool::GetSignalTokens(std::string& input ){
 	mgo = SplitString(sig_toks[5], "-")[1];
 	mn2 = SplitString(sig_toks[6], "-")[1];
 	mn1 = SplitString(sig_toks[7], "-")[1];
-	ctau = SplitString(sig_toks[7], "-")[2];
-	
+//	ctau = SplitString(sig_toks[7], "-")[2];
+//squarks have different naming atm
+	ctau = sig_toks[8];
+
 	ctau = SplitString(ctau, "p")[1];
 	//fancy padding operations to deal with ctau <1 //////////////////////
 	char padding_char = '0'; // Assuming '0' as padding character
