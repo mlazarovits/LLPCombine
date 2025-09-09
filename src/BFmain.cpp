@@ -57,7 +57,12 @@ int main(int argc, char *argv[]){
         //std::string input_json = "test_G1MMT11j.json";
 	//std::string datacard_dir = "datacards_2GLLL";
         //std::string input_json = "test_G2LLL.json";
-	
+
+
+	string name = input_json.substr(input_json.find("json/"),input_json.find(".json"));
+	name = name.substr(name.find("/")+1);
+	datacard_dir = "datacards_"+name;
+	cout << "datacard dir " << datacard_dir << endl;
 
 	JSONFactory* j = new JSONFactory(input_json);
 //	BuildFit* BF = new BuildFit();
