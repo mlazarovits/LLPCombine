@@ -58,6 +58,58 @@ def ReadSignificance_3key( inputfilename ):
 	print("label",sig_label)
 	return significance_dict, sig_label
 
+#mS is mass of parent sparticle (ie gluino, squark)
+def MakeN2N1dMplot( significance_dict, sig_label, mS=2000, extra_text="", oname="sigs"):
+	x,y,z=[],[],[]
+	for key in significance_dict:
+		x.append(key[1])
+		y.append(key[1]-key[2])
+		z.append(significance_dict[key])
+		
+	x=np.array(x)
+	print("x",x,"y",y)
+	y=np.array(y)
+	
+	ColMin=0#default to zbi
+	ColMax=5
+	cmap = plt.cm.viridis
+	cmap =truncate_colormap(cmap, 0, 0.8)
+	norm = plt.Normalize(vmin=ColMin, vmax=ColMax)
+	
+	fig, ax = plt.subplots(figsize=(10,8))
+	scatter = ax.scatter(x,y,c=z,norm=norm,cmap=cmap,edgecolors='black')
+	minmass = 1e6
+	for i, txt in enumerate(z):
+		v=round(z[i],2)
+		color = cmap(norm(v))
+		if( y[i] != 1900):
+			plt.text(x[i],y[i], str(round(z[i],2)),fontsize=14, ha='center', va='bottom',color=color,fontweight='bold')
+		if( y[i] == 1900):
+			plt.text(x[i],y[i], str(round(z[i],2)),fontsize=14, ha='center', va='top',color=color,fontweight='bold')
+		if( x[i] < minmass):
+			minmass = x[i]
+	#axes[j].scatter(x,y,c=zslice,norm=norm,cmap=cmap,edgecolors='black')
+	if(sig_label == "sqsq"):
+	    plt.text(minmass+50,700, "$m_{\\tilde{q}}=$" + str(mS) +" GeV", fontsize=20)
+	if("gogo" in sig_label):
+	    plt.text(minmass+50,700, "$m_{\\tilde{g}}=$" + str(mS) +" GeV", fontsize=20)
+	plt.xlabel('$m_{N2}$ (GeV)')
+	plt.ylabel('$\Delta(m_{N2},m_{N1})$ (GeV)')
+
+	#plt.yscale('log')
+	
+	if(extra_text != ""):
+	    plt.text(minmass+50,800, extra_text, fontsize=20)
+
+	#cbar = plt.colorbar(scatter_plot, label='Color Value',cm.ScalarMappable(norm=norm, cmap=cmap))
+
+	cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),ax=ax, orientation='vertical')#, shrink=0.7)
+	cbar.set_label("Significance")
+	hep.cms.label(rlabel="")
+	print("Saving plot as",oname+"_"+sig_label+"_n2n1dM.pdf")
+	plt.savefig(oname+"_"+sig_label+"_n2n1dM.pdf")
+	#plt.show()
+
 def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="sigs"):
 	x,y,z=[],[],[]
 	for key in significance_dict:
@@ -182,24 +234,32 @@ ofile = textfile[textfile.find("Significances_"):textfile.find(".txt")]
 
 significance_dict, sig_label = ReadSignificance_3key(textfile)
 n1mass = []
-gmass = []
+n2mass = []
+smass = []
 for key in significance_dict:
 	print(key, significance_dict[key])
 	n1mass.append(key[2])
-	gmass.append(key[0])
+	n2mass.append(key[1])
+	smass.append(key[0])
+
 #if multiple n1 masses
-if(len(set(n1mass)) > 1 and len(set(gmass)) == 1):
-    print("making N1N2 plot")
-    #plot N1N2
-    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text, ofile)
-if(len(set(n1mass)) == 1 and len(set(gmass)) > 1):
+if(len(set(n1mass)) > 1 and len(set(smass)) == 1):
+    if(len(np.unique(n2mass)) == len(n2mass)): #all n2s are unique
+        print("making N1N2 plot")
+        #plot N1N2
+        MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
+    else: #unique mass splittings
+        print("making N2N1dM plot")
+        #plot N1N2
+        MakeN2N1dMplot( significance_dict, sig_label, smass[0], extra_text, ofile)
+if(len(set(n1mass)) == 1 and len(set(smass)) > 1):
     print("making N2dM plot")
     #plot n2 vs dM 
     MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
-if(len(set(n1mass)) == 1 and len(set(gmass)) == 1):
+if(len(set(n1mass)) == 1 and len(set(smass)) == 1):
     print("making N1N2 plot")
     #plot N1N2
-    MakeN1N2plot( significance_dict, sig_label, gmass[0], extra_text, ofile)
+    MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
     print("making N2dM plot")
     #plot n2 vs dM 
     MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
