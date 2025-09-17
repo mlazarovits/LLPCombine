@@ -105,6 +105,11 @@ SampleTool::SampleTool(){
 
 
 
+	//data skims
+	MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root",
+					};
+	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root",
+	//				};
 
 
 
