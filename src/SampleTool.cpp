@@ -98,7 +98,6 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2000_mN2-300_mN1-100_ct0p1_rjrskim_v36.root",
 				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2150_mN2-1950_mN1-100_ct0p1_rjrskim_v36.root",
 				pathPrefix+"SMS_SVIPM100_v30_sqsqG_AODSIM_mGl-2150_mN2-300_mN1-100_ct0p1_rjrskim_v36.root"};
- 
 
 
 
