@@ -106,6 +106,10 @@ SampleTool::SampleTool(){
 
 
 
+	//data skims
+	MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root",
+					};
+
 
 
 
@@ -195,6 +199,16 @@ void SampleTool::LoadSigs( stringlist& siglist ){
 			//keylist.push_back( GetSignalTokens( s_strings[j] ) );
 			SignalKeys.push_back( BFTool::GetSignalTokens( s_strings[j] ) );
 		}
+	}
+}
+void SampleTool::LoadData( stringlist& datalist ){
+	for( long unsigned int i=0; i<datalist.size(); i++){
+		//check if data exists
+		if( MasterDict.count(datalist[i]) == 0 ){
+			std::cout<<"Data sample: "<<datalist[i]<<" not found ... skipping ...\n";
+			continue;
+		} 
+		DataDict[datalist[i]] = MasterDict[datalist[i]];		
 	}
 }
 void SampleTool::PrintDict( map<string,stringlist>& d ){

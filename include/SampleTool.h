@@ -15,12 +15,14 @@ class SampleTool{
 	public:
 	map <string, stringlist> BkgDict{};
 	map <string, stringlist> SigDict{};
+	map <string, stringlist> DataDict{};
 	map <string, stringlist> MasterDict{};
 
 	stringlist SignalKeys{};
 	
 	
 	void LoadBkgs( stringlist& bkglist );
+	void LoadData( stringlist& datalist );
 	void LoadSigs( stringlist& siglist );
 	
 	SampleTool();
