@@ -18,6 +18,7 @@ class Process{
 	double wnevents{};
 	double staterror{};
 
+	Process(std::string name) :procname(name), nevents(0), wnevents(0), staterror(0){}
 	Process(std::string name, long long unsigned int n, double wn, double err) :procname(name), nevents(n), wnevents(wn), staterror(err){}
 	//assume it is initialized from 0
 	void Add(Process* p){
@@ -37,6 +38,7 @@ class Bin{
 	std::map<std::string, Process*> combinedProcs{};
 	std::map<std::string, Process*> signals{};
 	std::pair<std::string, Process*> totalBkg{};
+	std::pair<std::string, Process*> data{};
 
 };
 

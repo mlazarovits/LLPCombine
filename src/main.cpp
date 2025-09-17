@@ -35,23 +35,26 @@ int main(int argc, char *argv[]){
 	SampleTool* ST = new SampleTool();
 	
 	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
-	stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
+	stringlist bkglist = {"Wjets", "Zjets", "Gjets", "QCD"};
 	stringlist siglist = {"sqsqG"};//{"gogoG"};
+	string year = "18";
+	stringlist datalist = {"DisplacedJet"+year};
 	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
-	
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
-	
+	ST->LoadData( datalist );
+
 	ST->PrintDict(ST->BkgDict);
+	ST->PrintDict(ST->DataDict);
 	ST->PrintDict(ST->SigDict);
 	ST->PrintKeys(ST->SignalKeys);
 	
 	BuildFitInput* BFI = new BuildFitInput();
+	BFI->LoadData_byMap(ST->DataDict, Lumi);
+//	BFI->BuildRVBranch(); obselete
 	BFI->LoadBkg_byMap(ST->BkgDict, Lumi);
 	BFI->LoadSig_byMap(ST->SigDict, Lumi);
-//	BFI->BuildRVBranch(); obselete
 	
-
 	std::string phogt0= "(nSelPhotons>0)";
 	std::string pho1= "(nSelPhotons==1)";
 	std::string pho2= "(nSelPhotons==2)";
@@ -77,47 +80,21 @@ int main(int argc, char *argv[]){
 	//BFI->FilterRegions( "Ggt0_Hs41-3000_Rs-0p5", phogt0+H41s3000_Rs0p5);
 	//BFI->CreateBin("Ggt0_Hs41-3000_Rs-0p5");
 
-	std::string Mr1500_R0p6 = "&& ( rjr_Mr[1] > 1500 ) && ( rjr_R[1] > 0.6 )";
-	BFI->FilterRegions( "Ggt0_Mr-1500_R-0p6", phogt0+Mr1500_R0p6);
-	BFI->CreateBin("Ggt0_Mr-1500_R-0p6");
+	std::string Mr0_R0 = "&& ( rjr_Mr[1] < 1000 ) && ( rjr_R[1] < 0.1 )";
+	BFI->FilterRegions( "Ggt0_Mr-0_R-0", phogt0+Mr0_R0);
+	BFI->CreateBin("Ggt0_Mr-0_R-0");
 
-	//atlas cuts (stripped down)
-	//https://arxiv.org/pdf/1712.02332
-	//rjr variables are saved s.t. var[i] for i = 0 is phomet where the photon is treated as invisible and i = 1 is phojet where the photon is treated as visible
-	/*
-	std::string rjr_g1a = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.45) && ((rjr_pHts41[1] / rjr_pHs41[1]) >= 0.7) && (rjr_pHts41[1] > 1200) && (rjr_pHs11[1] > 700)";
-	std::string rjr_g1b = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.45) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 1400) && (rjr_pHs11[1] > 700)";
-	
-	std::string rjr_g2a = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.3) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 1600) && (rjr_pHs11[1] > 800)";
-	std::string rjr_g2b = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.3) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 2000) && (rjr_pHs11[1] > 800)";
-	
-	std::string rjr_g3a = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.2) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.65) && (rjr_pHts41[1] > 2400) && (rjr_pHs11[1] > 900)";
-	std::string rjr_g3b = "&& (rjr_pHs11[1] / rjr_pHs41[1] >= 0.2) && (rjr_pHts41[1] / rjr_pHs41[1] >= 0.65) && (rjr_pHts41[1] > 2800) && (rjr_pHs11[1] > 900)";
-	
-	std::string rjr_g4 = "&& (rjr_pHts41[1] / rjr_pHs41[1] >= 0.7) && (rjr_pHts41[1] > 3000) && (rjr_pHs11[1] > 1000)";
-	BFI->FilterRegions("RJR-G1a",pho1+rjr_g1a);
-	BFI->FilterRegions("RJR-G1b",pho1+rjr_g1b);
-	BFI->FilterRegions("RJR-G2a",pho1+rjr_g2a);
-	BFI->FilterRegions("RJR-G2b",pho1+rjr_g2b);
-	BFI->FilterRegions("RJR-G3a",pho1+rjr_g3a);
-	BFI->FilterRegions("RJR-G3b",pho1+rjr_g3b);
-	BFI->FilterRegions("RJR-G4",pho1+rjr_g4);
-	BFI->CreateBin("RJR-G1a");
-	BFI->CreateBin("RJR-G1b");
-	BFI->CreateBin("RJR-G2a");
-	BFI->CreateBin("RJR-G2b");
-	BFI->CreateBin("RJR-G3a");
-	BFI->CreateBin("RJR-G3b");
-	BFI->CreateBin("RJR-G4");
-	*/
 
 
 	//book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
 	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes); 
-	
+	//only do raw event counts for data
+	countmap countResults_obs = BFI->CountRegions(BFI->data_filtered_dataframes);
+
 	summap sumResults = BFI->SumRegions("evtwt",BFI->bkg_filtered_dataframes );
 	summap sumResults_S = BFI->SumRegions("evtwt",BFI->sig_filtered_dataframes);
+	summap sumResults_obs = BFI->SumRegions("evtwt",BFI->data_filtered_dataframes);
 	
 	//initiate action
 	BFI->ReportRegions(0);
@@ -125,11 +102,16 @@ int main(int argc, char *argv[]){
 	//compute errors and report bins
 	errormap errorResults = BFI->ComputeStatError( countResults, BFI->bkg_evtwt );
 	errormap errorResults_S = BFI->ComputeStatError( countResults_S, BFI->sig_evtwt);
+	//TODO - won't use weighted events in fit for data
+	errormap errorResults_obs = BFI->ComputeStatError( countResults_obs, BFI->data_evtwt);
+	
 	//BFI->FullReport( countResults, sumResults, errorResults );
 	
 	//aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects( countResults, sumResults, errorResults );
 	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
+	//only write data to json if data samples are specified
+	if(datalist.size() > 0) BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
 	BFI->PrintBins(1);
 
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
