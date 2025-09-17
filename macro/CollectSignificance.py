@@ -32,7 +32,7 @@ def get_directories(path, sigs = []):
 sig_list = ["gogoG_2500_1500_1000_10","gogoG_2000_1950_1000_10","gogoG_2000_1900_1000_10","gogoG_2000_1500_1000_10"]
 parser = argparse.ArgumentParser()
 parser.add_argument("--directory", "-d", required=True, help="datacard dir with signficance root files")
-parser.add_argument("--output", "-o", default="Significances", help="name of output txt file with significances")
+#parser.add_argument("--output", "-o", default="Significances", help="name of output txt file with significances")
 parser.add_argument("--sigs", "-s", default=sig_list, help="signal points to  significances",nargs="+")
 
 args = parser.parse_args()
@@ -40,7 +40,14 @@ args = parser.parse_args()
 datacard_subdir_list = get_directories(args.directory, args.sigs)
 
 #print(datacard_subdir_list)
-ofile = "output/"+args.output+".txt"
+match = "datacards_"
+endidx = -1
+if(args.directory.find("/") != -1):
+    endidx = args.directory.find("/")
+else:
+    endidx = len(args.directory)
+oname = args.directory[args.directory.find(match)+len(match):endidx]
+ofile = "output/Significances_"+oname+".txt"
 
 with open(ofile, "w") as file:
     sig=-1;
