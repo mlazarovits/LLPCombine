@@ -89,7 +89,7 @@ def MakeN2N1dMplot( significance_dict, sig_label, mS=2000, extra_text="", oname=
 		if( x[i] < minmass):
 			minmass = x[i]
 	#axes[j].scatter(x,y,c=zslice,norm=norm,cmap=cmap,edgecolors='black')
-	if(sig_label == "sqsq"):
+	if("sqsq" in sig_label):
 	    plt.text(minmass+50,700, "$m_{\\tilde{q}}=$" + str(mS) +" GeV", fontsize=20)
 	if("gogo" in sig_label):
 	    plt.text(minmass+50,700, "$m_{\\tilde{g}}=$" + str(mS) +" GeV", fontsize=20)
@@ -139,7 +139,7 @@ def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="
 		if( x[i] < minmass):
 			minmass = x[i]
 	#axes[j].scatter(x,y,c=zslice,norm=norm,cmap=cmap,edgecolors='black')
-	if(sig_label == "sqsq"):
+	if("sqsq" in sig_label):
 		plt.xlabel('$m_{\\tilde{q}}$ (GeV)')
 		plt.ylabel('$\Delta(m_{\\tilde{q}},m_{N2})$ (GeV)')
 	if("gogo" in sig_label):
@@ -191,7 +191,7 @@ def MakeN1N2plot( significance_dict, sig_label, mGo=2000, extra_text="", oname =
 	plt.xlabel('$m_{N1}$ (GeV)')
 	plt.ylabel('$m_{N2}$ (GeV)')
 	#plt.yscale('log')
-	if(sig_label == "sqsq"):
+	if("sqsq" in sig_label):
 	    plt.text(1200,700, "$m_{\\tilde{q}}=$" + str(mGo) +" GeV", fontsize=20)
 	if("gogo" in sig_label):
 	    plt.text(1200,700, "$m_{\\tilde{g}}=$" + str(mGo) +" GeV", fontsize=20)
@@ -233,6 +233,7 @@ ofile = textfile[textfile.find("Significances_"):textfile.find(".txt")]
 #MakeN1N2plot( significance_dict, 2000, extra_text)
 
 significance_dict, sig_label = ReadSignificance_3key(textfile)
+print("sig",sig_label)
 n1mass = []
 n2mass = []
 smass = []
