@@ -3,9 +3,9 @@
 #include "BuildFit.h"
 #include <vector>
 #include <string>
+#include <iostream>
 #include <filesystem> // Required for std::filesystem
-namespace fs = std::filesystem;
-
+#include <cstdlib>    // Required for std::system
 
 int main(){
 
@@ -27,8 +27,8 @@ int main(){
 	//std::string input_json = "./json/test_9binCR_SV_wMC.json";
 	std::string input_json = "./json/test_9binCR_SV_noMC.json";
 
+	// Load JSON and get signal processes
 	JSONFactory* j = new JSONFactory(input_json);
-
 //	JSONFactory*  j = new JSONFactory(jsonNominal);
 //	JSONFactory* jUp = new JSONFactory(jsonShapeUp);
 //	JSONFactory* jDn = new JSONFactory(jsonShapeDn);

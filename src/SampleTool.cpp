@@ -118,6 +118,9 @@ SampleTool::SampleTool(){
 
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){
+	// Clear any existing background dictionary
+	BkgDict.clear();
+	
 	for( long unsigned int i=0; i<bkglist.size(); i++){
 		//check if background exists
 		if( MasterDict.count(bkglist[i]) == 0 ){
@@ -138,6 +141,9 @@ void SampleTool::LoadData( stringlist& datalist ){
         }
 }
 void SampleTool::LoadSigs( stringlist& siglist ){
+	// Clear any existing signal dictionary and keys
+	SigDict.clear();
+	SignalKeys.clear();
 
 	for( long unsigned int i=0; i<siglist.size(); i++){
 		if( MasterDict.count(siglist[i]) == 0 ){
