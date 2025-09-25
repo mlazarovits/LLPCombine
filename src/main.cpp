@@ -9,8 +9,8 @@ int main() {
 	double Lumi= 400.;
 	SampleTool* ST = new SampleTool();
 	
-	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
-	stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
+	stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD", "Box"};
+	//stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
 	//stringlist siglist = {"gogoG"};
 	stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 	
@@ -64,7 +64,7 @@ int main() {
 	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
 	BFI->PrintBins(1);
 
-	std::string outputJSON = "test_v36.json";	
+	std::string outputJSON = "test_v37.json";	
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
 	json->WriteJSON("./json/"+outputJSON);
 }

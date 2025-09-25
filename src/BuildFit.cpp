@@ -79,7 +79,9 @@ std::vector<std::string> BuildFit::GetBinSet( JSONFactory* j){
         return bins;
 
 }
+void BuildFit::BuildABCDFit(JSONFactory* j, string::string signalPoint, std::string datacard_dir){
 
+}
 void BuildFit::BuildAsimovFit(JSONFactory* j, std::string signalPoint, std::string datacard_dir){
 	ch::Categories cats = BuildCats(j);
 	std::cout<<"building obs rates \n";
