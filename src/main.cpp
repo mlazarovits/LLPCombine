@@ -13,20 +13,24 @@ int main() {
 	//stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
 	//stringlist siglist = {"gogoG"};
 	stringlist siglist = {"gogoG","gogoZ","sqsqG"};
+	string year = "18";
+	stringlist datalist = {"DisplacedJet"+year};
 	
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
-	
+	ST->LoadData( datalist );
+
 	ST->PrintDict(ST->BkgDict);
+	ST->PrintDict(ST->DataDict);
 	ST->PrintDict(ST->SigDict);
 	ST->PrintKeys(ST->SignalKeys);
 	
 	BuildFitInput* BFI = new BuildFitInput();
+	BFI->LoadData_byMap(ST->DataDict, Lumi);
+//	BFI->BuildRVBranch(); obselete
 	BFI->LoadBkg_byMap(ST->BkgDict, Lumi);
 	BFI->LoadSig_byMap(ST->SigDict, Lumi);
-//	BFI->BuildRVBranch(); obselete
 	
-
 	std::string pho1= "(nSelPhotons==1)";
 	std::string pho2= "(nSelPhotons==2)";
 	//std::string MMT = "&& (rjrASMass[1] > 2750) && (rjrAX2NQSum[1] > 0.275) && (Rv > 0.3)"; //old branch names
@@ -47,9 +51,12 @@ int main() {
 	//book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
 	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes); 
-	
+	//only do raw event counts for data
+	countmap countResults_obs = BFI->CountRegions(BFI->data_filtered_dataframes);
+
 	summap sumResults = BFI->SumRegions("evtwt",BFI->bkg_filtered_dataframes );
 	summap sumResults_S = BFI->SumRegions("evtwt",BFI->sig_filtered_dataframes);
+	summap sumResults_obs = BFI->SumRegions("evtwt",BFI->data_filtered_dataframes);
 	
 	//initiate action
 	BFI->ReportRegions(0);
@@ -57,11 +64,16 @@ int main() {
 	//compute errors and report bins
 	errormap errorResults = BFI->ComputeStatError( countResults, BFI->bkg_evtwt );
 	errormap errorResults_S = BFI->ComputeStatError( countResults_S, BFI->sig_evtwt);
+	//TODO - won't use weighted events in fit for data
+	errormap errorResults_obs = BFI->ComputeStatError( countResults_obs, BFI->data_evtwt);
+	
 	//BFI->FullReport( countResults, sumResults, errorResults );
 	
 	//aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects( countResults, sumResults, errorResults );
 	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
+	//only write data to json if data samples are specified
+	if(datalist.size() > 0) BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
 	BFI->PrintBins(1);
 
 	std::string outputJSON = "test_v37.json";	

@@ -32,6 +32,36 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 		
 	}
 }
+//need to give Lumi per year (ie if want 400 inv fb total for only 2018, give 400; if want 400 total for 2017+2018, give 200 per year)
+void BuildFitInput::LoadData_KeyValue( std::string key, stringlist datalist, double Lumi){
+	//RDF df("kuSkimTree", bkglist);
+	for( unsigned int i=0; i< datalist.size(); i++){
+		std::string subkey = key+"_"+std::to_string(i);
+cout << "subkey " << subkey << endl;
+		ROOT::RDataFrame df("kuSkimTree", datalist[i]);
+		_base_rdf_DataDict[subkey] = std::make_unique<RNode>(df);
+		
+		//also make the event weight branch here while we have the correct bkg file
+		float sumEvtWgt{};
+		float xsec{};
+		TFile* f = TFile::Open(datalist[i].c_str());
+		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
+		configTree->SetBranchAddress("sumEvtWgt", &sumEvtWgt);
+		configTree->SetBranchAddress("sCrossSection", &xsec);
+		configTree->GetEntry(0);
+		//TODO - will need to update for data when sumEvtWgts are correct
+		//for now just look at raw number of events for data
+		double wt{};
+		wt = xsec*1000./sumEvtWgt;
+		//save the weight for error propagation later
+		data_evtwt[subkey] = wt;
+		auto tempdf = df.Define("evtwt", std::to_string(wt));
+		//cast to RNode with uniqueptr
+		rdf_DataDict[subkey] = std::make_unique<RNode>(tempdf);
+		f->Close();
+		
+	}
+}
 
 void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, double Lumi){
 	//RDF df("kuSkimTree", bkglist);
@@ -74,6 +104,14 @@ void BuildFitInput::BuildRVBranch(){
 		rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
 	}
 }
+void BuildFitInput::LoadData_byMap( map< std::string, stringlist>& DataDict, double Lumi ){
+	
+	for (const auto& pair : DataDict) {
+		std::cout<<"Loading RDataFrame for: "<<pair.first<<"\n";
+		LoadData_KeyValue( pair.first, pair.second, Lumi );
+	}
+
+}
 void BuildFitInput::LoadBkg_byMap( map< std::string, stringlist>& BkgDict, double Lumi ){
 	
 	for (const auto& pair : BkgDict) {
@@ -100,6 +138,12 @@ void BuildFitInput::FilterRegions( std::string filterName, std::string filterCut
 	for (const auto& it : rdf_SigDict){
 		sig_filtered_dataframes[ std::make_pair(it.first,filterName) ] = std::make_unique<RN> ( (it.second)->Filter(filterCuts, filterName) );
 	}
+	std::cout<<"Building data nodes with "<< filterName <<"\n";
+	for (const auto& it : rdf_DataDict){
+		data_filtered_dataframes[ std::make_pair(it.first,filterName) ] = std::make_unique<RN> ( (it.second)->Filter(filterCuts, filterName) );
+	}
+
+
 		
 }
 void BuildFitInput::ReportRegions(int verbosity){
@@ -237,6 +281,24 @@ void BuildFitInput::ConstructBkgBinObjects( countmap countResults, summap sumRes
 	}	
 	
 }
+void BuildFitInput::AddDataToBinObjects( countmap countResults, summap sumResults, errormap errorResults, std::map<std::string, Bin*>& analysisbins){
+	for(const auto& it: analysisbins ){
+		std::string binname = it.first;
+		analysisbins[binname]->data.first = "data";
+		analysisbins[binname]->data.second = new Process("data");
+		for( const auto& it2: countResults){
+
+			proc_cut_pair cutpairkey = it2.first;
+			if( binname != cutpairkey.second ) continue;
+			std::string binname2 = it2.first.second;
+			std::string procname = "data";//it2.first.first;
+			std::cout << "procname " << procname << " binname " << binname2 << endl;	
+			Process* thisproc = new Process( procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
+			//analysisbins[binname]->data.insert({procname, thisproc} );
+			analysisbins[binname]->data.second->Add(thisproc);
+		}
+	}
+}
 void BuildFitInput::AddSigToBinObjects( countmap countResults, summap sumResults, errormap errorResults, std::map<std::string, Bin*>& analysisbins){
 	for(const auto& it: analysisbins ){
 		std::string binname = it.first;
@@ -264,7 +326,9 @@ void BuildFitInput::PrintBins(int verbosity){
 		if(verbosity > 0){
 			for(const auto& it2: it.second->combinedProcs){
 				std::cout<<"   "<< it2.second->procname<<" "<<it2.second->nevents <<" "<<it2.second->wnevents<<" "<<it2.second->staterror<<"\n";
-			}	
+			}
+			//data - if specified	
+			if(it.second->data.second != nullptr) std::cout<<"   "<< it.second->data.second->procname<<" "<<it.second->data.second->nevents <<" "<<it.second->data.second->wnevents<<" "<<it.second->data.second->staterror<<"\n";
 		}
 		if(verbosity >= 1){
 			for(const auto& it2: it.second->signals){
