@@ -15,6 +15,7 @@ class SampleTool{
 	public:
 	map <string, stringlist> BkgDict{};
 	map <string, stringlist> SigDict{};
+	map <string, stringlist> DataDict{};
 	map <string, stringlist> MasterDict{};
 
 	stringlist SignalKeys{};
@@ -22,6 +23,7 @@ class SampleTool{
 	
 	void LoadBkgs( stringlist& bkglist );
 	void LoadSigs( stringlist& siglist );
+	void LoadData( stringlist& datalist );
 	
 	SampleTool();
 	
