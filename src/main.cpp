@@ -76,13 +76,13 @@ int main(int argc, char *argv[]){
 	//BFI->CreateBin("G1MMT");
 	//BFI->CreateBin("Ggt0LLL");
 
-	//std::string H41s3000_Rs0p5 = "&& ( rjr_pHs41[1] > 3000 ) && ( rjr_Rs[1] > 0.5 ) && ( rjr_Rxa[1] != 1) && (rjr_Rxb[1] != 1)";
-	//BFI->FilterRegions( "Ggt0_Hs41-3000_Rs-0p5", phogt0+H41s3000_Rs0p5);
-	//BFI->CreateBin("Ggt0_Hs41-3000_Rs-0p5");
+	std::string H41s1600_Rs0p5 = "&& ( rjr_pHs41[1] > 1600 ) && ( rjr_Rs[1] > 0.5 ) && ( rjr_Rxa[1] != 1) && (rjr_Rxb[1] != 1)";
+	BFI->FilterRegions( "Ggt0_Hs41-1600_Rs-0p5", phogt0+H41s1600_Rs0p5);
+	BFI->CreateBin("Ggt0_Hs41-1600_Rs-0p5");
 
-	std::string Mr0_R0 = "&& ( rjr_Mr[1] < 1000 ) && ( rjr_R[1] < 0.1 )";
-	BFI->FilterRegions( "Ggt0_Mr-0_R-0", phogt0+Mr0_R0);
-	BFI->CreateBin("Ggt0_Mr-0_R-0");
+	//std::string Mr1700_R0p6 = "&& ( rjr_Mr[1] > 1700 ) && ( rjr_R[1] > 0.6 )";
+	//BFI->FilterRegions( "Ggt0_Mr-1700_R-0p6", phogt0+Mr1700_R0p6);
+	//BFI->CreateBin("Ggt0_Mr-1700_R-0p6");
 
 
 
