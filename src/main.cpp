@@ -34,11 +34,11 @@ int main(int argc, char *argv[]){
 	double Lumi= 400.;
 	SampleTool* ST = new SampleTool();
 	
-	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
-	stringlist bkglist = {"Wjets", "Zjets", "Gjets", "QCD"};
-	stringlist siglist = {"sqsqG"};//{"gogoG"};
+	stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD", "Box"};
+	//stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
+	stringlist siglist = {"sqsqG","gogoG"};
 	string year = "18";
-	stringlist datalist = {"DisplacedJet"+year};
+	stringlist datalist = {};//{"DisplacedJet"+year};
 	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
