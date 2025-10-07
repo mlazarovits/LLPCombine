@@ -34,12 +34,12 @@ int main(int argc, char *argv[]){
 	double Lumi= 400.;
 	SampleTool* ST = new SampleTool();
 	
-	stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD", "Box"};
-	//stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
-	stringlist siglist = {"gogoG"};
-	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
+	//stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD"};
+	stringlist bkglist = {"Wjets", "Zjets", "Gjets", "QCD"};
+	stringlist siglist = {"sqsqG"};//{"gogoG"};
 	string year = "18";
-	stringlist datalist = {};//{"DisplacedJet"+year};
+	stringlist datalist = {"DisplacedJet"+year};
+	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 	ST->LoadBkgs( bkglist );
 	ST->LoadSigs( siglist );
 	ST->LoadData( datalist );
@@ -58,8 +58,9 @@ int main(int argc, char *argv[]){
 	std::string phogt0= "(nSelPhotons>0)";
 	std::string pho1= "(nSelPhotons==1)";
 	std::string pho2= "(nSelPhotons==2)";
+	//std::string MMT = "&& (rjrASMass[1] > 2750) && (rjrAX2NQSum[1] > 0.275) && (Rv > 0.3)"; //old branch names
+	//std::string LLL = "&& (rjrASMass[1] > 2000) && (rjrAX2NQSum[1] > 0.2) && (Rv > 0.0)"; 
 	
-	/*	
 	std::string MMT = "&& ( rjr_Mr[1] > 2750 ) && ( rjr_R[1] > 0.275 ) && ( rjr_Rv[1] > 0.3)";
 	std::string LLL = "&& ( rjr_Mr[1] > 2000 ) && ( rjr_R[1] > 0.2 ) && (rjr_Rv[1] > 0.0)";
 	std::string jets12 ="&&( ( (rjrNJetsJa[1] == 1) && (rjrNJetsJb[1] >= 1 ) ) || ( (rjrNJetsJa[1] >=1 ) && (rjrNJetsJb[1] == 1) ) )" ;
@@ -74,45 +75,15 @@ int main(int argc, char *argv[]){
 	////BFI->CreateBin("G1MMT22j");
 	//BFI->CreateBin("G1MMT");
 	//BFI->CreateBin("Ggt0LLL");
-	*/
 
-	/*
-	//std::string H41s1600_Rs0p5 = "&& ( rjr_pHs41[1] > 1600 ) && ( rjr_Rs[1] > 0.5 ) && ( rjr_Rxa[1] != 1) && (rjr_Rxb[1] != 1)";
-	//BFI->FilterRegions( "Ggt0_Hs41-1600_Rs-0p5", phogt0+H41s1600_Rs0p5);
-	//BFI->CreateBin("Ggt0_Hs41-1600_Rs-0p5");
+	//std::string H41s3000_Rs0p5 = "&& ( rjr_pHs41[1] > 3000 ) && ( rjr_Rs[1] > 0.5 ) && ( rjr_Rxa[1] != 1) && (rjr_Rxb[1] != 1)";
+	//BFI->FilterRegions( "Ggt0_Hs41-3000_Rs-0p5", phogt0+H41s3000_Rs0p5);
+	//BFI->CreateBin("Ggt0_Hs41-3000_Rs-0p5");
 
-	//std::string Mr1700_R0p6 = "&& ( rjr_Mr[1] > 1700 ) && ( rjr_R[1] > 0.6 )";
-	//BFI->FilterRegions( "Ggt0_Mr-1700_R-0p6", phogt0+Mr1700_R0p6);
-	//BFI->CreateBin("Ggt0_Mr-1700_R-0p6");
-	*/
+	std::string Mr0_R0 = "&& ( rjr_Mr[1] < 1000 ) && ( rjr_R[1] < 0.1 )";
+	BFI->FilterRegions( "Ggt0_Mr-0_R-0", phogt0+Mr0_R0);
+	BFI->CreateBin("Ggt0_Mr-0_R-0");
 
-        
-	std::string CR_A = "&& ( rjr_Ms[1] < 2000 ) && ( rjr_Ms[1] > 1500 ) && ( rjr_Rs[1] < 0.1 )";
-	std::string CR_B = "&& ( rjr_Ms[1] < 2000 ) && ( rjr_Ms[1] > 1500 ) && ( rjr_Rs[1] > 0.1 ) && ( rjr_Rs[1] < 0.2 )";
-	std::string CR_C = "&& ( rjr_Ms[1] < 1500 ) && ( rjr_Ms[1] > 1000  ) && ( rjr_Rs[1] < 0.1 )";
-	std::string CR_D = "&& ( rjr_Ms[1] < 1500 ) && ( rjr_Ms[1] > 1000 ) && ( rjr_Rs[1] > 0.1 ) && (rjr_Rs[1] < 0.2 )";
-	std::string softPhoton= "&& (selPhoPt[0] < 50)";
-
-		
-	BFI->FilterRegions( "G1MMT11j", pho1+MMT+jets12);
-	BFI->FilterRegions( "G1MMT22j", pho1+MMT+jets22);
-	BFI->FilterRegions( "G2LLL", pho2+LLL);
-	BFI->CreateBin("G1MMT11j");
-	BFI->CreateBin("G1MMT22j");
-	BFI->CreateBin("G2LLL");
-	
-
-	//CR ABCD test regions
-	/*	
-	BFI->FilterRegions( "G1CRA", pho1+CR_A+softPhoton);
-        BFI->FilterRegions( "G1CRB", pho1+CR_B+softPhoton);
-        BFI->FilterRegions( "G1CRC", pho1+CR_C+softPhoton);
-	BFI->FilterRegions( "G1CRD", pho1+CR_D+softPhoton);
-        BFI->CreateBin("G1CRA");
-        BFI->CreateBin("G1CRB");
-        BFI->CreateBin("G1CRC");
-	BFI->CreateBin("G1CRD");
-	*/
 
 
 	//book operations
@@ -143,7 +114,6 @@ int main(int argc, char *argv[]){
 	if(datalist.size() > 0) BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
 	BFI->PrintBins(1);
 
-	std::string outputJSON = "test_v38.json";	
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
 	cout << "Writing output json to json/" << outputJSON << endl;
 	json->WriteJSON("./json/"+outputJSON);
