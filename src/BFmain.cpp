@@ -52,17 +52,24 @@ int main(int argc, char *argv[]){
 //	std::string datacard_dir = "datacards";
 //	std::string input_json = "test.json";
 	//std::string datacard_dir = "datacards_22j";
-	//std::string input_json = "test_G1MMT22j.json";
+	//std::string input_json = "./json/test_G1MMT22j_eos.json";
 	//std::string datacard_dir = "datacards_11j";
-        //std::string input_json = "test_G1MMT11j.json";
+        //std::string input_json = "./json/test_G1MMT11j.json";
 	//std::string datacard_dir = "datacards_2GLLL";
-        //std::string input_json = "test_G2LLL.json";
 
 
 	string name = input_json.substr(input_json.find("json/"),input_json.find(".json"));
 	name = name.substr(name.find("/")+1);
 	datacard_dir = "datacards_"+name;
 	cout << "datacard dir " << datacard_dir << endl;
+        //std::string input_json = "./json/test_G2LLL.json";
+	//std::string datacard_dir = "datacards_eos";
+	//std::string input_json = "./json/test_eos.json";
+	//std::string datacard_dir = "datacards_sq";
+        //std::string input_json = "./json/test_sq.json";
+	std::string datacard_dir = "datacards_abcd";
+	std::string input_json = "./json/test_v37_data.json";
+
 
 	JSONFactory* j = new JSONFactory(input_json);
 //	BuildFit* BF = new BuildFit();
@@ -70,6 +77,7 @@ int main(int argc, char *argv[]){
 	std::vector<std::string> signals = j->GetSigProcs();
 	//BF->BuildAsimovFit(j,"gogoG_2000_1000_500_10");
 
+	std::vector<std::string> ABCDbins = {"G1CRA","G1CRB","G1CRC","G1CRD"};
 	//regenerate datacard directories
 	fs::path dir_path = datacard_dir;
 	fs::remove_all(dir_path);
@@ -82,7 +90,10 @@ int main(int argc, char *argv[]){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );
 		BF->BuildAsimovFit(j,signals[i], datacard_dir);
-		//break;
+		//BF->BuildABCDFit( j, signals[i], datacard_dir, ABCDbins );
+
+
+		break;
 	}
 	cout << "Wrote datacards to " << datacard_dir << "/" << endl;
 }

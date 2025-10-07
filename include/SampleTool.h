@@ -24,6 +24,7 @@ class SampleTool{
 	void LoadBkgs( stringlist& bkglist );
 	void LoadData( stringlist& datalist );
 	void LoadSigs( stringlist& siglist );
+	void LoadData( stringlist& datalist );
 	
 	SampleTool();
 	
