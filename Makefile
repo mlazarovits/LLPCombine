@@ -43,7 +43,6 @@ CMSSWTARGET = $(BIN_DIR)/BF.x
 all: $(TARGET)
 cmssw: $(CMSSWTARGET)
 
-
 # Rule to build the executable from object files
 $(TARGET): $(OBJS_DIR) $(OBJS)
 	$(CXX) $(OBJS) -o $@ $(LDFLAGS)
