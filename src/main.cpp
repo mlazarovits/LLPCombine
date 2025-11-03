@@ -1,10 +1,16 @@
 
 
-
 #include "SampleTool.h"
 #include "BuildFitInput.h"
 #include "JSONFactory.h"
+#include "ConfigParser.h"
+#include "ArgumentParser.h"
+#include <iostream>
+#include <sys/stat.h>
+#include <errno.h>
 
+/* needs integrated for data process
+<<<<<<< HEAD
 int main() {
 	double Lumi=4.;
 	//double Lumi= 400.;
@@ -22,140 +28,199 @@ int main() {
 	ST->PrintDict(ST->DataDict);
 	ST->PrintDict(ST->SigDict);
 	ST->PrintKeys(ST->SignalKeys);
+=======
+*/
+// Function to process a single configuration file
+int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& options) {
+	// Load configuration
+	ConfigParser configParser;
+	if (!configParser.LoadConfig(config_file)) {
+		std::cerr << "Error: Failed to load configuration from: " << config_file << std::endl;
+		return 1;
+	}
 	
+	const AnalysisConfig& config = configParser.GetConfig();
+	
+	// Override config with command-line options if provided
+	double luminosity = (options.luminosity > 0) ? options.luminosity : config.luminosity;
+	int verbosity = (options.verbosity >= 0) ? options.verbosity : config.verbosity;
+	std::string output_dir = options.output_dir.empty() ? config.output_dir : options.output_dir;
+	
+	// Print configuration if verbose
+	if (verbosity > 0 && !options.batch_mode) {
+		std::cout << "=== LLPCombine Analysis ===" << std::endl;
+		configParser.PrintConfig();
+		std::cout << "\nCommand-line overrides:" << std::endl;
+		if (options.luminosity > 0) std::cout << "  Luminosity: " << luminosity << " fb^-1" << std::endl;
+		if (options.verbosity >= 0) std::cout << "  Verbosity: " << verbosity << std::endl;
+		if (!options.output_dir.empty()) std::cout << "  Output dir: " << output_dir << std::endl;
+		std::cout << std::endl;
+	} else if (options.batch_mode && verbosity > 0) {
+		std::cout << "Processing: " << config.name << " -> " << config.output_json << std::endl;
+	}
+	
+	// Dry run - just validate and exit
+	if (options.dry_run || config.dry_run) {
+		if (verbosity > 0) {
+			std::cout << "Dry run completed - configuration " << config_file << " is valid." << std::endl;
+		}
+		return 0;
+	}
+	
+	// Ensure output directory exists
+	struct stat st = {0};
+	if (stat(output_dir.c_str(), &st) == -1) {
+		if (mkdir(output_dir.c_str(), 0755) != 0) {
+			std::cerr << "Error creating output directory " << output_dir << ": " << strerror(errno) << std::endl;
+			return 1;
+		}
+	}
+	
+	// Initialize SampleTool with configuration
+	SampleTool* ST = new SampleTool();
+	
+	// Convert vectors to the expected stringlist format
+	stringlist bkglist(config.backgrounds.begin(), config.backgrounds.end());
+	stringlist siglist(config.signals.begin(), config.signals.end());
+	
+	ST->LoadBkgs(bkglist);
+	ST->LoadSigs(siglist);
+	
+	if (verbosity > 1 && !options.batch_mode) {
+		ST->PrintDict(ST->BkgDict);
+		ST->PrintDict(ST->SigDict);
+		ST->PrintKeys(ST->SignalKeys);
+	}
+	
+	// Initialize BuildFitInput
 	BuildFitInput* BFI = new BuildFitInput();
-	BFI->LoadData_byMap(ST->DataDict);
-	BFI->LoadBkg_byMap(ST->BkgDict, Lumi);
-	BFI->LoadSig_byMap(ST->SigDict, Lumi);
 
-	//sv shape fit testing
-	std::string nHad1 = "(SV_nHadronic == 1) && ";
-        std::string nLep1 = "(SV_nLeptonic == 1) && ";
-	std::string CRHadDxySig = "( HadronicSV_dxySig[0] > 100) && (HadronicSV_dxySig[0] < 1000) && ";
-	std::string CRLepDxySig = "( LeptonicSV_dxySig[0] > 100) && (LeptonicSV_dxySig[0] < 1000) && ";
-
-	std::string CRMET = "(selMet > 100) && (selMet < 150 ) && ";
-	//photon orthongoal
-	std::string pho0= "(nSelPhotons==0) && ";
-
-	std::string bin00 = "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] >= 0.15) && (rjr_Rs[1] < 0.3)";
-	std::string bin10 = "(rjr_Ms[1] >= 2000) && (rjr_Ms[1] <3000) && (rjr_Rs[1] >= 0.15) && (rjr_Rs[1] < 0.3)";
-	std::string bin20 = "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] >= 0.15) && (rjr_Rs[1] < 0.3)";
+	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
+	BFI->LoadSig_byMap(ST->SigDict, luminosity);
 	
-	std::string bin01 = "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)";
-        std::string bin11 = "(rjr_Ms[1] >= 2000) && (rjr_Ms[1] <3000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)";
-        std::string bin21 = "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)";
-
-	std::string bin02 = "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] > 0.4)";
-        std::string bin12 = "(rjr_Ms[1] >= 2000) && (rjr_Ms[1] <3000) && (rjr_Rs[1] > 0.4)";
-        std::string bin22 = "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] > 0.4)";
-
-
-              //CR ABCD test regions
-        BFI->FilterRegions( "CRHad00", nHad1+CRHadDxySig+CRMET+pho0+bin00);
-        BFI->FilterRegions( "CRHad10", nHad1+CRHadDxySig+CRMET+pho0+bin10);
-        BFI->FilterRegions( "CRHad20", nHad1+CRHadDxySig+CRMET+pho0+bin20);
-        BFI->FilterRegions( "CRHad01", nHad1+CRHadDxySig+CRMET+pho0+bin01);
-        BFI->FilterRegions( "CRHad11", nHad1+CRHadDxySig+CRMET+pho0+bin11);
-        BFI->FilterRegions( "CRHad21", nHad1+CRHadDxySig+CRMET+pho0+bin21);
-	BFI->FilterRegions( "CRHad02", nHad1+CRHadDxySig+CRMET+pho0+bin02);
-        BFI->FilterRegions( "CRHad12", nHad1+CRHadDxySig+CRMET+pho0+bin12);
-        BFI->FilterRegions( "CRHad22", nHad1+CRHadDxySig+CRMET+pho0+bin22);
-
-	BFI->FilterRegions( "CRLep00", nLep1+CRLepDxySig+CRMET+pho0+bin00);
-        BFI->FilterRegions( "CRLep10", nLep1+CRLepDxySig+CRMET+pho0+bin10);
-        BFI->FilterRegions( "CRLep20", nLep1+CRLepDxySig+CRMET+pho0+bin20);
-        BFI->FilterRegions( "CRLep01", nLep1+CRLepDxySig+CRMET+pho0+bin01);
-        BFI->FilterRegions( "CRLep11", nLep1+CRLepDxySig+CRMET+pho0+bin11);
-        BFI->FilterRegions( "CRLep21", nLep1+CRLepDxySig+CRMET+pho0+bin21);
-        BFI->FilterRegions( "CRLep02", nLep1+CRLepDxySig+CRMET+pho0+bin02);
-        BFI->FilterRegions( "CRLep12", nLep1+CRLepDxySig+CRMET+pho0+bin12);
-        BFI->FilterRegions( "CRLep22", nLep1+CRLepDxySig+CRMET+pho0+bin22);
-       
-       	BFI->CreateBin("CRHad00");
-        BFI->CreateBin("CRHad10");
-        BFI->CreateBin("CRHad20");
-        BFI->CreateBin("CRHad01");
-        BFI->CreateBin("CRHad11");
-        BFI->CreateBin("CRHad21");
-	BFI->CreateBin("CRHad02");
-        BFI->CreateBin("CRHad12");
-        BFI->CreateBin("CRHad22");
-
-	BFI->CreateBin("CRLep00");
-        BFI->CreateBin("CRLep10");
-        BFI->CreateBin("CRLep20");
-        BFI->CreateBin("CRLep01");
-        BFI->CreateBin("CRLep11");
-        BFI->CreateBin("CRLep21");
-        BFI->CreateBin("CRLep02");
-        BFI->CreateBin("CRLep12");
-        BFI->CreateBin("CRLep22");
-
-/*	
-	std::string pho0= "(nSelPhotons==0)";	
-	std::string pho1= "(nSelPhotons==1)";
-	std::string pho2= "(nSelPhotons==2)";
+	// Create analysis bins from configuration
+	for (const auto& bin : config.bins) {
+		std::string combined_cuts = configParser.GetCombinedCuts(bin.name);
 		
-	std::string MMT = "&& ( rjr_Mr[1] > 2750 ) && ( rjr_R[1] > 0.275 ) && ( rjr_Rv[1] > 0.3)";
-	std::string LLL = "&& ( rjr_Mr[1] > 2000 ) && ( rjr_R[1] > 0.2 ) && (rjr_Rv[1] > 0.0)";
-	std::string jets12 ="&&( ( (rjrNJetsJa[1] == 1) && (rjrNJetsJb[1] >= 1 ) ) || ( (rjrNJetsJa[1] >=1 ) && (rjrNJetsJb[1] == 1) ) )" ;
-	std::string jets22="&& (rjrNJetsJa[1] >= 2) && (rjrNJetsJb[1] >= 2)";
-        
-	std::string CR_A = "&& ( rjr_Ms[1] < 2000 ) && ( rjr_Ms[1] > 1500 ) && ( rjr_Rs[1] < 0.1 )";
-	std::string CR_B = "&& ( rjr_Ms[1] < 2000 ) && ( rjr_Ms[1] > 1500 ) && ( rjr_Rs[1] > 0.1 ) && ( rjr_Rs[1] < 0.2 )";
-	std::string CR_C = "&& ( rjr_Ms[1] < 1500 ) && ( rjr_Ms[1] > 1000  ) && ( rjr_Rs[1] < 0.1 )";
-	std::string CR_D = "&& ( rjr_Ms[1] < 1500 ) && ( rjr_Ms[1] > 1000 ) && ( rjr_Rs[1] > 0.1 ) && (rjr_Rs[1] < 0.2 )";
-	std::string softPhoton= "&& (selPhoPt[0] < 50)";
-
+		if (verbosity > 1 && !options.batch_mode) {
+			std::cout << "Creating bin: " << bin.name << std::endl;
+			std::cout << "  Description: " << bin.description << std::endl;
+			std::cout << "  Cuts: " << combined_cuts << std::endl;
+		}
 		
-	BFI->FilterRegions( "G1MMT11j", pho1+MMT+jets12);
-	BFI->FilterRegions( "G1MMT22j", pho1+MMT+jets22);
-	BFI->FilterRegions( "G2LLL", pho2+LLL);
-	BFI->CreateBin("G1MMT11j");
-	BFI->CreateBin("G1MMT22j");
-	BFI->CreateBin("G2LLL");
-*/	
-
-	//CR ABCD test regions
-	/*	
-	BFI->FilterRegions( "G1CRA", pho1+CR_A+softPhoton);
-        BFI->FilterRegions( "G1CRB", pho1+CR_B+softPhoton);
-        BFI->FilterRegions( "G1CRC", pho1+CR_C+softPhoton);
-	BFI->FilterRegions( "G1CRD", pho1+CR_D+softPhoton);
-        BFI->CreateBin("G1CRA");
-        BFI->CreateBin("G1CRB");
-        BFI->CreateBin("G1CRC");
-	BFI->CreateBin("G1CRD");
-	*/
-
-
-	//book operations
+		BFI->FilterRegions(bin.name, combined_cuts);
+		BFI->CreateBin(bin.name);
+	}
+	
+	// Book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
-	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes); 
-	countmap countResults_obs = BFI->CountRegions(BFI->data_filtered_dataframes);
-
-	summap sumResults = BFI->SumRegions("evtwt",BFI->bkg_filtered_dataframes );
-	summap sumResults_S = BFI->SumRegions("evtwt",BFI->sig_filtered_dataframes);
-	summap sumResults_obs = BFI->SumRegions("evtwt",BFI->data_filtered_dataframes);
+	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes);
 	
-	//initiate action
-	BFI->ReportRegions(0);
-
-	//compute errors and report bins
-	errormap errorResults = BFI->ComputeStatError( countResults, BFI->bkg_evtwt );
-	errormap errorResults_S = BFI->ComputeStatError( countResults_S, BFI->sig_evtwt);
-	errormap errorResults_obs = BFI->ComputeStatError( countResults_obs, BFI->data_evtwt);
+	summap sumResults = BFI->SumRegions("evtwt", BFI->bkg_filtered_dataframes);
+	summap sumResults_S = BFI->SumRegions("evtwt", BFI->sig_filtered_dataframes);
 	
-	//BFI->FullReport( countResults, sumResults, errorResults );
+	// Initiate action
+	BFI->ReportRegions(verbosity > 2 ? 1 : 0);
 	
-	//aggregate maps into more easily useable classes
-	BFI->ConstructBkgBinObjects( countResults, sumResults, errorResults );
-	BFI->AddSigToBinObjects( countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
-	BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
-	BFI->PrintBins(1);
-
-	std::string outputJSON = "test_9binCR_SV_noMC.json";	
+	// Compute errors and report bins
+	errormap errorResults = BFI->ComputeStatError(countResults, BFI->bkg_evtwt);
+	errormap errorResults_S = BFI->ComputeStatError(countResults_S, BFI->sig_evtwt);
+	
+	// Aggregate maps into more easily useable classes
+	BFI->ConstructBkgBinObjects(countResults, sumResults, errorResults);
+	BFI->AddSigToBinObjects(countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
+	
+	if (verbosity > 0 && !options.batch_mode) {
+		BFI->PrintBins(verbosity > 1 ? 1 : 0);
+	}
+	
+	// Write output JSON
+	std::string output_path = output_dir + "/" + config.output_json;
 	JSONFactory* json = new JSONFactory(BFI->analysisbins);
-	json->WriteJSON("./json/"+outputJSON);
+	json->WriteJSON(output_path);
+	
+	if (verbosity > 0) {
+		if (options.batch_mode) {
+			std::cout << "  -> " << output_path << std::endl;
+		} else {
+			std::cout << "Results written to: " << output_path << std::endl;
+		}
+	}
+	
+	// Cleanup
+	delete json;
+	delete BFI;
+	delete ST;
+	
+	return 0;
+}
+
+int main(int argc, char* argv[]) {
+	// Parse command-line arguments
+	ArgumentParser argParser;
+	ProgramOptions options;
+	
+	try {
+		options = argParser.Parse(argc, argv);
+	} catch (const std::exception& e) {
+		std::cerr << "Error parsing arguments: " << e.what() << std::endl;
+		argParser.PrintHelp(argv[0]);
+		return 1;
+	}
+	
+	// Handle help and version requests
+	if (options.help) {
+		argParser.PrintHelp(argv[0]);
+		return 0;
+	}
+	
+	if (options.version) {
+		argParser.PrintVersion();
+		return 0;
+	}
+	
+	// Require configuration file(s)
+	if (options.config_files.empty()) {
+		std::cerr << "Error: At least one configuration file required. Use -c/--config or provide as positional argument." << std::endl;
+		argParser.PrintHelp(argv[0]);
+		return 1;
+	}
+	
+	// Show batch mode status
+	if (options.batch_mode && options.verbosity >= 0) {
+		std::cout << "=== LLPCombine Batch Mode ===" << std::endl;
+		std::cout << "Processing " << options.config_files.size() << " configuration files:" << std::endl;
+		for (size_t i = 0; i < options.config_files.size(); ++i) {
+			std::cout << "  " << (i+1) << ". " << options.config_files[i] << std::endl;
+		}
+		std::cout << std::endl;
+	}
+	
+	// Process all configuration files
+	int total_processed = 0;
+	int total_failed = 0;
+	
+	for (const auto& config_file : options.config_files) {
+		int result = ProcessSingleConfig(config_file, options);
+		if (result == 0) {
+			total_processed++;
+		} else {
+			total_failed++;
+			if (!options.batch_mode) {
+				// In single-file mode, exit immediately on failure
+				return result;
+			}
+		}
+	}
+	
+	// Print batch summary
+	if (options.batch_mode) {
+		std::cout << "\n=== Batch Processing Summary ===" << std::endl;
+		std::cout << "Successfully processed: " << total_processed << "/" << options.config_files.size() << " files" << std::endl;
+		if (total_failed > 0) {
+			std::cout << "Failed: " << total_failed << " files" << std::endl;
+		}
+	}
+	
+	return (total_failed > 0) ? 1 : 0;
 }
