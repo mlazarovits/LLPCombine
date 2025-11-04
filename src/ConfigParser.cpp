@@ -70,6 +70,8 @@ public:
                         current_anchor_key.erase(0, current_anchor_key.find_first_not_of(" \t"));
                         current_section = section_key.substr(0, anchor_pos);
                         current_section.erase(current_section.find_last_not_of(" \t") + 1);
+                        // Clear any existing content for this anchor
+                        anchors[current_anchor_key].clear();
                         std::cout << "DEBUG: Found top-level anchor definition '" << current_anchor_key << "' for section '" << current_section << "'" << std::endl;
                     } else {
                         current_section = section_key;
@@ -90,6 +92,8 @@ public:
                         current_anchor_key.erase(0, current_anchor_key.find_first_not_of(" \t"));
                         current_subsection = current_subsection.substr(0, anchor_pos);
                         current_subsection.erase(current_subsection.find_last_not_of(" \t") + 1);
+                        // Clear any existing content for this anchor
+                        anchors[current_anchor_key].clear();
                     } else {
                         current_anchor_key = "";
                     }
@@ -139,6 +143,8 @@ private:
                 current_anchor = line.substr(anchor_pos + 1);
                 current_anchor.erase(0, current_anchor.find_first_not_of(" \t"));
                 current_anchor.erase(current_anchor.find_last_not_of(" \t") + 1);
+                // Clear any existing content for this anchor
+                anchors[current_anchor].clear();
             } else if (line.back() == ':') {
                 current_anchor = "";
             }
@@ -240,6 +246,7 @@ private:
                     
                     // Store anchor if defined
                     if (!anchor_name.empty()) {
+                        anchors[anchor_name].clear();
                         anchors[anchor_name] = items;
                     }
                 } else {
