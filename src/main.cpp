@@ -82,12 +82,15 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	// Convert vectors to the expected stringlist format
 	stringlist bkglist(config.backgrounds.begin(), config.backgrounds.end());
 	stringlist siglist(config.signals.begin(), config.signals.end());
+	stringlist datalist(config.data.begin(), config.data.end());	
 	
 	ST->LoadBkgs(bkglist);
 	ST->LoadSigs(siglist);
-	
+	ST->LoadData( datalist);
+
 	if (verbosity > 1 && !options.batch_mode) {
 		ST->PrintDict(ST->BkgDict);
+		ST->PrintDict(ST->DataDict);
 		ST->PrintDict(ST->SigDict);
 		ST->PrintKeys(ST->SignalKeys);
 	}
@@ -95,6 +98,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	// Initialize BuildFitInput
 	BuildFitInput* BFI = new BuildFitInput();
 
+	BFI->LoadData_byMap(ST->DataDict);
 	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
 	BFI->LoadSig_byMap(ST->SigDict, luminosity);
 	
@@ -115,21 +119,25 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	// Book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
 	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes);
-	
+	countmap countResults_obs = BFI->CountRegions(BFI->data_filtered_dataframes);
+
 	summap sumResults = BFI->SumRegions("evtwt", BFI->bkg_filtered_dataframes);
 	summap sumResults_S = BFI->SumRegions("evtwt", BFI->sig_filtered_dataframes);
-	
+	summap sumResults_obs = BFI->SumRegions("evtwt", BFI->data_filtered_dataframes);
+
 	// Initiate action
 	BFI->ReportRegions(verbosity > 2 ? 1 : 0);
 	
 	// Compute errors and report bins
 	errormap errorResults = BFI->ComputeStatError(countResults, BFI->bkg_evtwt);
 	errormap errorResults_S = BFI->ComputeStatError(countResults_S, BFI->sig_evtwt);
-	
+	errormap errorResults_obs = BFI->ComputeStatError(countResults_obs, BFI->data_evtwt);
+
 	// Aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects(countResults, sumResults, errorResults);
 	BFI->AddSigToBinObjects(countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
-	
+	BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
+
 	if (verbosity > 0 && !options.batch_mode) {
 		BFI->PrintBins(verbosity > 1 ? 1 : 0);
 	}

@@ -18,14 +18,15 @@ int main(){
        // std::string datacard_dir = "datacards_pseudoshape4mclnN";
 //	std::string datacard_dir = "datacards_pseudoshape5mclnNupdn";
 	//std::string datacard_dir = "datacards_9binMC";
-	std::string datacard_dir = "datacards_9binData";
+	std::string datacard_dir = "datacards_9binData_bficonfig";
 
 //	std::string jsonShapeUp ="./json/shapeUpTest.json";
 //	std::string jsonShapeDn ="./json/shapeDnTest.json";
 //	std::string jsonNominal ="./json/shapeNominalTest.json";
 
 	//std::string input_json = "./json/test_9binCR_SV_wMC.json";
-	std::string input_json = "./json/test_9binCR_SV_noMC.json";
+	//std::string input_json = "./json/test_9binCR_SV_noMC.json";
+	std::string input_json= "./json/test9binConfig.json";
 
 	// Load JSON and get signal processes
 	JSONFactory* j = new JSONFactory(input_json);
@@ -48,8 +49,8 @@ int main(){
 	};
 
 	//regenerate datacard directories
-	fs::path dir_path = datacard_dir;
-	fs::remove_all(dir_path);
+	std::filesystem::path dir_path = datacard_dir;
+	std::filesystem::remove_all(dir_path);
 	for( long unsigned int i=0; i<signals.size(); i++){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );

@@ -63,8 +63,17 @@ pushd ../
 #dcdir=datacards_9binData
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin --there
+
+#dcdir=datacards_9binData
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin --there
+
+dcdir=datacards_9binData_bficonfig
+combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9binConfig --there
 popd
 
+exit
 #andres macro here
 #!/bin/bash
 
@@ -119,4 +128,4 @@ done
 
 echo "Combine analysis completed!"
 echo "Results should be in the individual signal directories under ${dcdir}/"
->>>>>>> ba44017 (Add comprehensive configuration system and batch processing)
+

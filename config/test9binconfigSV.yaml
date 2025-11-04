@@ -1,0 +1,211 @@
+# Simple two-bin analysis for all lepton and hadron SVs 
+
+analysis:
+  name: "test9binConfig"
+  luminosity: 4.0
+  output_json: "test9binConfig.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoZ"]
+  data: ["MET18"]
+
+baseline_cuts: &baseline_cuts
+  - "selMet > 100"
+  - "selMet < 150" 
+  - "nSelPhotons == 0" 
+
+CRdxyHad: &CRdxyHad:
+  - "( HadronicSV_dxySig[0] > 100)"
+  - "(HadronicSV_dxySig[0] < 1000)"
+
+CRdxyLep: &CRdxyLep:
+  - "( LeptonicSV_dxySig[0] > 100)"
+  - "(LeptonicSV_dxySig[0] < 1000)"
+
+nHad1: &nHad1
+  - "(SV_nHadronic == 1)"
+
+nLep1: &nLep1
+  - "(SV_nLeptonic == 1)"
+
+b00: &b00
+  - "(rjr_Ms[1] >= 1000)"
+  - "(rjr_Ms[1] <2000)"
+  - "(rjr_Rs[1] >= 0.15)"
+  - "(rjr_Rs[1] < 0.3)"
+
+b10: &b10
+  - "(rjr_Ms[1] >= 2000)"
+  - "(rjr_Ms[1] <3000)"
+  - "(rjr_Rs[1] >= 0.15)"
+  - "(rjr_Rs[1] < 0.3)"
+	
+b20: &b20
+  - "(rjr_Ms[1] >= 3000)"
+  - "(rjr_Rs[1] >= 0.15)"
+  - "(rjr_Rs[1] < 0.3)"
+	
+b01: &b01
+  - "(rjr_Ms[1] >= 1000)"
+  - "(rjr_Ms[1] <2000)"
+  - "(rjr_Rs[1] >= 0.3)"
+  - "(rjr_Rs[1] < 0.4)"
+        
+b11: &b11    
+  - "(rjr_Ms[1] >= 2000)"
+  - "(rjr_Ms[1] <3000)"
+  - "(rjr_Rs[1] >= 0.3)"
+  - "(rjr_Rs[1] < 0.4)"
+    
+b21: &b21    
+  - "(rjr_Ms[1] >= 3000)"
+  - "(rjr_Rs[1] >= 0.3)" 
+  - "(rjr_Rs[1] < 0.4)"
+
+b02: &b02
+  - "(rjr_Ms[1] >= 1000)" 
+  - "(rjr_Ms[1] <2000)" 
+  - "(rjr_Rs[1] > 0.4)"
+        
+b12: &b12
+  - "(rjr_Ms[1] >= 2000)" 
+  - "(rjr_Ms[1] <3000)" 
+  - "(rjr_Rs[1] > 0.4)"
+        
+b22: &b22    
+  - "(rjr_Ms[1] >= 3000)"
+  - "(rjr_Rs[1] > 0.4)"
+
+bins:
+  CRHad00:
+    description: "crhad00"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b00
+  CRHad10:
+    description: "crhad10"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b10
+  CRHad20:
+    description: "crhad20"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b20
+  CRHad01:
+    description: "crhad01"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b01
+  CRHad11:
+    description: "crhad11"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b11
+  CRHad21:
+    description: "crhad21"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b21
+  CRHad02:
+    description: "crhad02"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b02
+  CRHad12:
+    description: "crhad12"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b12
+  CRHad22:
+    description: "crhad22"
+    cuts:
+      - *baseline_cuts
+      - *nHad1
+      - *CRdxyHad
+      - *b22
+  CRLep00:
+    description: "crlep00"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b00
+  CRLep10:
+    description: "crlep10"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b10
+  CRLep20:
+    description: "crlep20"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b20
+  CRLep01:
+    description: "crlep01"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b01
+  CRLep11:
+    description: "crLep11"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b11
+  CRLep21:
+    description: "crlep21"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b21
+  CRLep02:
+    description: "crlep02"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b02
+  CRLep12:
+    description: "crlep12"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b12
+  CRLep22:
+    description: "crlep22"
+    cuts:
+      - *baseline_cuts
+      - *nLep1
+      - *CRdxyLep
+      - *b22
+
+
+
+
+

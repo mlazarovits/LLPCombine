@@ -309,6 +309,9 @@ bool ConfigParser::LoadYAML(const std::string& config_file) {
     if (parser.lists.count("samples.signals")) {
         config_.signals = parser.lists["samples.signals"];
     }
+    if (parser.lists.count("samples.data")) {
+	config_.data = parser.lists["samples.data"];
+    }
     
     // Parse bins
     for (const auto& pair : parser.lists) {
@@ -395,6 +398,11 @@ void ConfigParser::PrintConfig() const {
     }
     std::cout << std::endl;
     
+    std::cout << "Data: ";
+    for (const auto& dat : config_.data) {
+	std::cout << dat << " ";
+    }
+
     std::cout << "\nAnalysis Bins:" << std::endl;
     for (const auto& bin : config_.bins) {
         std::cout << "  " << bin.name << ": " << bin.description << std::endl;
