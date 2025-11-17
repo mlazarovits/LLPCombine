@@ -322,7 +322,7 @@ void BuildFit::Build9binFitData(JSONFactory* j, std::string signalPoint, std::st
 	}
 	//make ch2 normalization
 	std::vector<std::string> ch2bins = channelMap["chLep1"]; 
-	cb.cp().bin(ch2bins).AddSyst(cb, "lep_norm", "rateParam", SystMap<>::init(0.3));
+	cb.cp().bin(ch2bins).AddSyst(cb, "lepNorm", "rateParam", SystMap<>::init(0.3));
 	cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
 	
 

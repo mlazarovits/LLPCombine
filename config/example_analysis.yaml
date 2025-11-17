@@ -1,0 +1,73 @@
+# LLPCombine Analysis Configuration
+# Example configuration for long-lived particle search
+
+analysis:
+  name: "LLP_Search_v36"
+  luminosity: 400.0  # fb^-1
+  output_json: "test_v36.json"
+  output_dir: "./json/"
+
+samples:
+  backgrounds:
+    - "Wjets"
+    - "Zjets" 
+    - "Gjets"
+    - "Top"
+    - "QCD"
+  signals:
+    - "gogoG"
+    - "gogoZ"
+    - "sqsqG"
+
+# Analysis bins definition
+bins:
+  G1MMT11j:
+    description: "Single photon, high mass, low jet multiplicity"
+    cuts:
+      - "nSelPhotons == 1"
+      - "rjr_Mr[1] > 2750"
+      - "rjr_R[1] > 0.275"
+      - "rjr_Rv[1] > 0.3"
+      - "((rjrNJetsJa[1] == 1 && rjrNJetsJb[1] >= 1) || (rjrNJetsJa[1] >= 1 && rjrNJetsJb[1] == 1))"
+    
+  G1MMT22j:
+    description: "Single photon, high mass, high jet multiplicity"
+    cuts:
+      - "nSelPhotons == 1"
+      - "rjr_Mr[1] > 2750"
+      - "rjr_R[1] > 0.275"
+      - "rjr_Rv[1] > 0.3"
+      - "rjrNJetsJa[1] >= 2"
+      - "rjrNJetsJb[1] >= 2"
+      
+  G2LLL:
+    description: "Two photons, lower thresholds"
+    cuts:
+      - "nSelPhotons == 2"
+      - "rjr_Mr[1] > 2000"
+      - "rjr_R[1] > 0.2"
+      - "rjr_Rv[1] > 0.0"
+
+# Optional: Systematic uncertainties (for future BF step)
+systematics:
+  experimental:
+    - name: "luminosity"
+      type: "lnN"
+      value: 1.025
+      processes: ["all"]
+    - name: "trigger_efficiency"
+      type: "lnN"
+      value: 1.03
+      processes: ["signals"]
+  
+  theoretical:
+    - name: "pdf_uncertainty"
+      type: "lnN"
+      value: 1.05
+      processes: ["backgrounds"]
+
+# Runtime options
+options:
+  verbosity: 1
+  parallel: false
+  dry_run: false
