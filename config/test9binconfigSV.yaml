@@ -15,11 +15,11 @@ baseline_cuts: &baseline_cuts
   - "selMet < 150" 
   - "nSelPhotons == 0" 
 
-CRdxyHad: &CRdxyHad:
+CRdxyHad: &CRdxyHad
   - "( HadronicSV_dxySig[0] > 100)"
   - "(HadronicSV_dxySig[0] < 1000)"
 
-CRdxyLep: &CRdxyLep:
+CRdxyLep: &CRdxyLep
   - "( LeptonicSV_dxySig[0] > 100)"
   - "(LeptonicSV_dxySig[0] < 1000)"
 

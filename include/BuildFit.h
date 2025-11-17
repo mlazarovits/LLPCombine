@@ -46,6 +46,7 @@ class BuildFit{
 	void BuildPseudoShapeTemplateFit(JSONFactory* j, JSONFactory* jup, JSONFactory* jdn, std::string signalPoint, std::string datacard_dir, channelmap channelMap);
 	void Build9binFitMC(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap);
 	void Build9binFitData(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap);
+	void BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap);
 
 	std::vector<std::string> sigkeys = { "gogoZ", "gogoG", "gogoGZ", "sqsqZ", "sqsqG", "sqsqGZ" };
 	std::vector<std::string> datakeys = { "MET18", "DisplacedJet18"};

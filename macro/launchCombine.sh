@@ -68,9 +68,15 @@ pushd ../
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin --there
 
-dcdir=datacards_9binData_bficonfig
+#dcdir=datacards_9binData_bficonfig
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9binConfig --there
+
+dcdir=datacards_9bin3ch
 combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
-combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9binConfig --there
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3ch --there
+
+
 popd
 
 exit

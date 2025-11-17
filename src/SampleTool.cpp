@@ -4,7 +4,7 @@
 
 SampleTool::SampleTool(){
 
-	string pathPrefix = "/uscms/home/jaking/nobackup/llpana_skims/";
+	string pathPrefix = "/uscms/home/jaking/nobackup/llpana_skims/rjrskims_old/";
 	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim_v38.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim_v38.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim_v38.root",
@@ -110,11 +110,12 @@ SampleTool::SampleTool(){
 	//pathPrefix = pathPrefix+"rjrskims_v37/";
 	MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
 	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root"};
-	
-	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v38.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v38.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v38.root"};
 
+	pathPrefix = "/uscms/home/jaking/nobackup/llpana_skims/";	
+	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v42.root",
+				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v42.root",
+				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v42.root",
+				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim_v42.root"};
 
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){
