@@ -101,7 +101,9 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	BFI->LoadData_byMap(ST->DataDict);
 	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
 	BFI->LoadSig_byMap(ST->SigDict, luminosity);
-	
+	BFI->BuildScaledEvtWt(luminosity);
+
+		
 	// Create analysis bins from configuration
 	for (const auto& bin : config.bins) {
 		std::string combined_cuts = configParser.GetCombinedCuts(bin.name);
@@ -124,6 +126,12 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	summap sumResults = BFI->SumRegions("evtwt", BFI->bkg_filtered_dataframes);
 	summap sumResults_S = BFI->SumRegions("evtwt", BFI->sig_filtered_dataframes);
 	summap sumResults_obs = BFI->SumRegions("evtwt", BFI->data_filtered_dataframes);
+	//summap sumResults = BFI->SumRegions("LumiEvtWt", BFI->bkg_filtered_dataframes);
+        //summap sumResults_S = BFI->SumRegions("evtFillWgt", BFI->sig_filtered_dataframes);
+        //summap sumResults_obs = BFI->SumRegions("LumiEvtWt", BFI->data_filtered_dataframes);
+
+	//book error sums	
+		
 
 	// Initiate action
 	BFI->ReportRegions(verbosity > 2 ? 1 : 0);

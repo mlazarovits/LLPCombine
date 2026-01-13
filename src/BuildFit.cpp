@@ -244,6 +244,98 @@ void BuildFit::BuildAsimovFit(JSONFactory* j, std::string signalPoint, std::stri
 	cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
 
 }
+void BuildFit::BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap){
+	ch::Categories cats = BuildCats(j);
+        std::cout<<"building obs rates \n";
+        std::map<std::string, float> obs_rates = LoadDataProcesses(j, {"MET18"});
+        std::cout<<"Getting process list\n";
+        std::vector<std::string> bkgprocs = GetDataProcs(j);
+        std::cout<<"Parse Signal point\n";
+        std::vector<std::string> signalDetails = ExtractSignalDetails( signalPoint );
+        std::cout<<"Build cb objects\n";
+
+        cb.AddObservations({"*"}, {signalDetails[0]}, {"13.6TeV"}, {signalDetails[1]}, cats);
+        cb.AddProcesses(   {"*"}, {signalDetails[0]}, {"13.6TeV"}, {signalDetails[1]}, bkgprocs, cats, false);
+        cb.AddProcesses(   {signalDetails[2]}, {signalDetails[0]}, {"13.6Tev"}, {signalDetails[1]}, {signalPoint}, cats, true);
+
+        cb.ForEachObs([&](ch::Observation *x){
+            if( obs_rates[x->bin()]==0){
+                x->set_rate(1e-8);
+           }
+           else{
+            x->set_rate(obs_rates[x->bin()]);
+           }
+        });
+	//take channel 1 as the anchor channel, enforce expectation onto other channels
+	cb.ForEachProc([&j](ch::Process *x) {
+            std::cout<<x->bin()<<" "<<x->process()<<"\n";
+            json json_array = j->j[x->bin()][x->process()];
+            float temprate = json_array[1].get<float>();
+            std::string c1 = "Ch1CRHad"; //hardcode anchor channel for now
+	    std::string c2 = "Ch2CRHad";
+            std::string c3 = "Ch3CRLep";
+            size_t foundPos = x->bin().find(c2);
+	    size_t foundPos2 = x->bin().find(c3); //very bad, need better solution to be more general
+            if( foundPos != std::string::npos){
+                std::string mirrorbin = x->bin();
+                mirrorbin.replace(foundPos, c2.length(), c1);
+                json_array = j->j[mirrorbin][x->process()];
+                temprate = json_array[1].get<float>();
+                if(temprate==0){
+                        x->set_rate(1e-8);
+                }
+                else{
+                        x->set_rate(temprate);
+                }
+            }
+            else{
+                if(temprate==0){
+                        x->set_rate(1e-8);
+                }
+                else{
+                        x->set_rate(temprate);
+                }
+            }
+	    if( foundPos2 != std::string::npos){
+                std::string mirrorbin = x->bin();
+                mirrorbin.replace(foundPos2, c3.length(), c1);
+                json_array = j->j[mirrorbin][x->process()];
+                temprate = json_array[1].get<float>();
+                if(temprate==0){
+                        x->set_rate(1e-8);
+                }
+                else{
+                        x->set_rate(temprate);
+                }
+            }
+            else{
+                if(temprate==0){
+                        x->set_rate(1e-8);
+                }
+                else{
+                        x->set_rate(temprate);
+                }
+            }
+	});
+	std::vector<std::string> bincoords = { "00","10","20", "01","11","21","02","12","22"};
+        std::string ch1 = "Ch1CRHad";
+        std::string ch2 = "Ch2CRHad";
+	std::string ch3 = "Ch3CRHad";
+        for(int i=0; i<bincoords.size(); i++){
+                cb.cp().bin({ch1+bincoords[i], ch2+bincoords[i]}).AddSyst(cb, "c1c2binShape"+bincoords[i], "lnN", SystMap<>::init(1.05));
+		cb.cp().bin({ch1+bincoords[i], ch3+bincoords[i]}).AddSyst(cb, "c1c3binShape"+bincoords[i], "lnN", SystMap<>::init(1.05));
+
+        }
+        //make ch2 normalization
+        std::vector<std::string> ch2bins = channelMap["ch2"];
+	std::vector<std::string> ch3bins = channelMap["ch3"];
+        cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.085));
+	cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.44));
+        cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
+
+	
+	
+}
 void BuildFit::Build9binFitData(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap){
 
 	ch::Categories cats = BuildCats(j);
