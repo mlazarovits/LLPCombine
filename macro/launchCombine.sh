@@ -72,10 +72,13 @@ pushd ../
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9binConfig --there
 
-dcdir=datacards_9bin3ch
-combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
-combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3ch --there
+#dcdir=datacards_9bin3ch
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3ch --there
 
+dcdir=datacards_3ch_cleaned_v43
+combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chv43cleaned --there
 
 popd
 
@@ -84,7 +87,7 @@ exit
 #!/bin/bash
 
 # Check if datacard directory was provided as argument
-if [ $# -eq 0 ]; then
+#if [ $# -eq 0 ]; then
     echo "Usage: $0 <datacard_directory>"
     echo "Example: $0 datacards_eos"
     exit 1

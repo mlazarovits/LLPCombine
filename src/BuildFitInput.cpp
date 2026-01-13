@@ -16,16 +16,26 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 		//also make the event weight branch here while we have the correct bkg file
 		float sumEvtWgt{};
 		float xsec{};
+		float sums =0.;
 		TFile* f = TFile::Open(bkglist[i].c_str());
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
 		configTree->SetBranchAddress("sumEvtWgt", &sumEvtWgt);
 		configTree->SetBranchAddress("sCrossSection", &xsec);
 		configTree->GetEntry(0);
+		/*Long64_t n_entries = configTree->GetEntries();
+    		for (Long64_t i = 0; i < n_entries; ++i) {
+        		configTree->GetEntry(i);
+			sums += sumEvtWgt;
+		}*/
+		//sumEvtWgt = sums;
+		std::cout<<"calculated total sumEvtWgt "<< sumEvtWgt<<"\n";
 		double wt{};
 		wt = xsec*1000.*Lumi/sumEvtWgt;
 		//save the weight for error propagation later
 		bkg_evtwt[subkey] = wt;
-		auto tempdf = df.Define("evtwt", std::to_string(wt));
+		//auto tempdf = df.Define("evtwt", std::to_string(wt));
+		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
+
 		//cast to RNode with uniqueptr
 		rdf_BkgDict[subkey] = std::make_unique<RNode>(tempdf);
 		f->Close();
@@ -61,16 +71,29 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 		//also make the event weight branch here while we have the correct bkg file
 		int ntot{};
 		float xsec{};
+		float sums =0.;
+
 		TFile* f = TFile::Open(siglist[i].c_str());
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
 		configTree->SetBranchAddress("nTotEvts", &ntot);//cross section is genweight!!
 		configTree->SetBranchAddress("sCrossSection", &xsec);
 		configTree->GetEntry(0);
+		/*Long64_t n_entries = configTree->GetEntries();
+                for (Long64_t i = 0; i < n_entries; ++i) {
+                        configTree->GetEntry(i);
+                        sums += ntot;
+                }*/
+            
+                //ntot = sums;
+		std::cout<<"calculated total ntot "<< ntot<<"\n";
 		double wt{};
 		wt = xsec*1000.*Lumi/((float)ntot);
 		//save the weight for error propagation later
 		sig_evtwt[subkey] = wt;
-		auto tempdf = df.Define("evtwt", std::to_string(wt));
+		std::cout<<"subkey:"<< subkey<< "wt:"<<wt<<"\n";
+		//#auto tempdf = df.Define("evtwt", std::to_string(wt));
+		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
+
 		//cast to RNode with uniqueptr
 		rdf_SigDict[subkey] = std::make_unique<RNode>(tempdf);
 		f->Close();
@@ -89,6 +112,24 @@ void BuildFitInput::BuildRVBranch(){
 		auto tempdf = rdf_SigDict[dfkey.first]->Define("Rv", "2.0*(rjrMVSum[1])/rjrASMass[1]");
 		rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
 	}
+}
+void BuildFitInput::BuildScaledEvtWt(double Lumi){
+	
+	for (const auto& dfkey :rdf_BkgDict){
+                //std::cout<<"building Rv for key:"<< dfkey <<"\n";
+                auto tempdf = rdf_BkgDict[dfkey.first]->Define("LumiEvtWt", "evtFillWgt*"+std::to_string(Lumi));
+                rdf_BkgDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+        }
+        for (const auto& dfkey :rdf_SigDict){
+                //std::cout<<"building Rv for key:"<< dfkey <<"\n";
+                auto tempdf = rdf_SigDict[dfkey.first]->Define("LumiEvtWt", "evtFillWgt*"+std::to_string(Lumi));
+                rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+        }
+	for (const auto& dfkey :rdf_DataDict){
+		auto tempdf = rdf_SigDict[dfkey.first]->Define("LumiEvtWt", "1");
+		rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+	}
+
 }
 void BuildFitInput::LoadData_byMap( map< std::string, stringlist>& DataDict ){
 	
@@ -189,6 +230,17 @@ void BuildFitInput::PrintSumReports( summap sumResults){
 		std::cout<<it.first.first<<" "<<it.first.second<<" "<<*sum_result<<"\n";
 	}
 	std::cout<<"\n";
+}
+errormap BuildFitInput::ComputeStatError( summap sumResults){
+	std::cout<<"Computing statistical error (sum of evtwt^2) ... \n";
+	errormap errorResults{};
+	for (const auto& it : sumResults){
+		ROOT::RDF::RResultPtr<double> sum_result = it.second;
+		double err = std::sqrt( *sum_result );
+		errorResults[std::make_pair( it.first.first, it.first.second)] = err;
+	}
+	return errorResults;
+
 }
 errormap BuildFitInput::ComputeStatError( countmap countResults, map< std::string, double >& evtwt ){
 	std::cout<<"Computing statistical error ... \n";

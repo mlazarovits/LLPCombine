@@ -19,8 +19,10 @@ int main(){
 //	std::string datacard_dir = "datacards_pseudoshape5mclnNupdn";
 	//std::string datacard_dir = "datacards_9binMC";
 	//std::string datacard_dir = "datacards_9binData_bficonfig";
-	std::string datacard_dir = "datacards_9bin3ch";
-
+	//std::string datacard_dir = "datacards_9bin3ch";
+//	std::string datacard_dir = "datacards_3ch_cleaned_v43";
+//	std::string datacard_dir = "datacards_2photon_prompt";
+	std::string datacard_dir = "datacards_2photon_prompt4bin";
 //	std::string jsonShapeUp ="./json/shapeUpTest.json";
 //	std::string jsonShapeDn ="./json/shapeDnTest.json";
 //	std::string jsonNominal ="./json/shapeNominalTest.json";
@@ -28,7 +30,10 @@ int main(){
 	//std::string input_json = "./json/test_9binCR_SV_wMC.json";
 	//std::string input_json = "./json/test_9binCR_SV_noMC.json";
 	//std::string input_json= "./json/test9binConfig.json";
-	std::string input_json= "./json/SV3chCR_MET18_v42.json";
+	//std::string input_json= "./json/SV3chCR_MET18_v42.json";
+	//std::string input_json= "./json/SV3chCR_MET18_v43.json";
+	//std::string input_json= "./json/photon_prompt_simple.json";
+	std::string input_json= "./json/photon_prompt_simple4bin.json";
 
 	// Load JSON and get signal processes
 	JSONFactory* j = new JSONFactory(input_json);
@@ -65,13 +70,13 @@ int main(){
 	for( long unsigned int i=0; i<signals.size(); i++){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );
-		//BF->BuildAsimovFit(j,signals[i], datacard_dir);
+		BF->BuildAsimovFit(j,signals[i], datacard_dir);
 		//BF->BuildABCDFit( j, signals[i], datacard_dir, ABCDbins );
 		//BF->BuildPseudoShapeTemplateFit(j,jUp,jDn, signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitMC(j,signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitData(j,signals[i], datacard_dir, channelMap);
-		BF->BuildMultiChannel9bin(j,signals[i], datacard_dir, channelMap);
-		break;
+		//BF->BuildMultiChannel9bin(j,signals[i], datacard_dir, channelMap);
+		//break;
 	}
 	
 }
