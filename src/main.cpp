@@ -9,44 +9,6 @@
 #include <sys/stat.h>
 #include <errno.h>
 
-int main(int argc, char *argv[]){
-	bool hprint = false;
-	std::string outputJSON = "test_v36.json";	
-        for(int i = 0; i < argc; i++){
-                if(strncmp(argv[i],"--help", 6) == 0){
-                        hprint = true;
-                }
-                if(strncmp(argv[i],"-h", 2) == 0){
-                        hprint = true;
-                }
-                if(strncmp(argv[i],"--output", 8) == 0){
-                	i++;
-                        outputJSON = string(argv[i])+".json";
-		}
-                if(strncmp(argv[i],"-o", 2) == 0){
-                	i++;
-                        outputJSON = string(argv[i])+".json";
-                }
-
-	}
-	if(hprint){
-                cout << "Making BFI jsons for BuildFit" << endl;
-                cout << "Usage: " << argv[0] << " [options]" << endl;
-                cout << "  options:" << endl;
-                cout << "   --help(-h)                    print options" << endl;
-                cout << "   --output(-o) [oname]          set output json name" << endl;
-
-		return -1;
-	}
-	double Lumi= 400.;
-	SampleTool* ST = new SampleTool();
-	
-	stringlist bkglist = {"Wjets", "Zjets", "Top", "Gjets","QCD", "Box"};
-	//stringlist bkglist = {"Wjets", "Zjets", "Gjets"};
-	stringlist siglist = {"sqsqG","gogoG"};
-	string year = "18";
-	stringlist datalist = {};//{"DisplacedJet"+year};
-	//stringlist siglist = {"gogoG","gogoZ","sqsqG"};
 // Function to process a single configuration file
 int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& options) {
 	// Load configuration

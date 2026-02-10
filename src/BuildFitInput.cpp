@@ -43,7 +43,7 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 	}
 }
 //need to give Lumi per year (ie if want 400 inv fb total for only 2018, give 400; if want 400 total for 2017+2018, give 200 per year)
-void BuildFitInput::LoadData_KeyValue( std::string key, stringlist datalist, double Lumi){
+void BuildFitInput::LoadData_KeyValue( std::string key, stringlist datalist){
 	//RDF df("kuSkimTree", bkglist);
 	for( unsigned int i=0; i< datalist.size(); i++){
 		std::string subkey = key+"_"+std::to_string(i);
@@ -149,7 +149,7 @@ void BuildFitInput::LoadData_byMap( map< std::string, stringlist>& DataDict ){
 	
 	for (const auto& pair : DataDict) {
 		std::cout<<"Loading RDataFrame for: "<<pair.first<<"\n";
-		LoadData_KeyValue( pair.first, pair.second, Lumi );
+		LoadData_KeyValue( pair.first, pair.second);
 	}
 
 }

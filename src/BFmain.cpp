@@ -4,73 +4,9 @@
 #include <string>
 #include <iostream>
 #include <filesystem> // Required for std::filesystem
-<<<<<<< HEAD
-#include <iostream>
-#include <string>
-using std::string;
-using std::cout;
-using std::endl;
-namespace fs = std::filesystem;
-
-=======
 #include <cstdlib>    // Required for std::system
->>>>>>> d51a4eda2117ff871089f7d3066a3f681930c0fa
 
-int main(int argc, char *argv[]){
-        bool hprint = false;
-	std::string datacard_dir = "datacards_eos";
-	std::string input_json = "./json/test_eos.json";
-        for(int i = 0; i < argc; i++){
-                if(strncmp(argv[i],"--help", 6) == 0){
-                        hprint = true;
-                }
-                if(strncmp(argv[i],"-h", 2) == 0){
-                        hprint = true;
-                }
-                if(strncmp(argv[i],"--input", 7) == 0){
-                        i++;
-                        input_json = string(argv[i]);
-                }
-                if(strncmp(argv[i],"-i", 2) == 0){
-                        i++;
-                        input_json = string(argv[i]);
-                }
-                if(strncmp(argv[i],"--output", 8) == 0){
-                        i++;
-                        datacard_dir = string(argv[i]);
-                }
-                if(strncmp(argv[i],"-o", 2) == 0){
-                        i++;
-                        datacard_dir = string(argv[i]);
-                }
-
-<<<<<<< HEAD
-        }
-        if(hprint){
-                cout << "Making BFI jsons for BuildFit" << endl;
-                cout << "Usage: " << argv[0] << " [options]" << endl;
-                cout << "  options:" << endl;
-                cout << "   --help(-h)                    print options" << endl;
-                cout << "   --input(-i) [inname]          set input json" << endl;
-                cout << "   --output(-o) [oname]          set output dir name" << endl;
-                return -1;
-        }
-//	std::string datacard_dir = "datacards";
-//	std::string input_json = "test.json";
-	//std::string datacard_dir = "datacards_22j";
-	//std::string input_json = "test_G1MMT22j.json";
-	//std::string datacard_dir = "datacards_11j";
-        //std::string input_json = "test_G1MMT11j.json";
-	//std::string datacard_dir = "datacards_2GLLL";
-        //std::string input_json = "test_G2LLL.json";
-
-
-	string name = input_json.substr(input_json.find("json/"),input_json.find(".json"));
-	name = name.substr(name.find("/")+1);
-	datacard_dir = "datacards_"+name;
-	cout << "datacard dir " << datacard_dir << endl;
-=======
-	
+int main(){
 	//std::string datacard_dir = "datacards_abcd";
 	//std::string input_json = "./json/test_v37_data.json";
 	//std::string datacard_dir = "datacards_pseudoshape2bbb";
@@ -95,7 +31,6 @@ int main(int argc, char *argv[]){
 	//std::string input_json= "./json/SV3chCR_MET18_v43.json";
 	//std::string input_json= "./json/photon_prompt_simple.json";
 	std::string input_json= "./json/photon_prompt_simple4bin.json";
->>>>>>> d51a4eda2117ff871089f7d3066a3f681930c0fa
 
 	// Load JSON and get signal processes
 	JSONFactory* j = new JSONFactory(input_json);
@@ -107,8 +42,6 @@ int main(int argc, char *argv[]){
 	std::vector<std::string> signals = j->GetSigProcs();
 	//BF->BuildAsimovFit(j,"gogoG_2000_1000_500_10");
 
-<<<<<<< HEAD
-=======
 	std::vector<std::string> ABCDbins = {"G1CRA","G1CRB","G1CRC","G1CRD"};
 	//channel map for combine paper fits
 	//channelmap channelMap = {{"ch1",{ "bin1", "bin2", "bin3", "bin4", "bin5", "bin6", "bin7", "bin8", "bin9", "bin10"}} };
@@ -128,7 +61,6 @@ int main(int argc, char *argv[]){
 	};
 
 
->>>>>>> d51a4eda2117ff871089f7d3066a3f681930c0fa
 	//regenerate datacard directories
 	std::filesystem::path dir_path = datacard_dir;
 	std::filesystem::remove_all(dir_path);
@@ -136,11 +68,6 @@ int main(int argc, char *argv[]){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );
 		BF->BuildAsimovFit(j,signals[i], datacard_dir);
-<<<<<<< HEAD
-		//break;
-	}
-	cout << "Wrote datacards to " << datacard_dir << "/" << endl;
-=======
 		//BF->BuildABCDFit( j, signals[i], datacard_dir, ABCDbins );
 		//BF->BuildPseudoShapeTemplateFit(j,jUp,jDn, signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitMC(j,signals[i], datacard_dir, channelMap);
@@ -149,5 +76,4 @@ int main(int argc, char *argv[]){
 		//break;
 	}
 	
->>>>>>> d51a4eda2117ff871089f7d3066a3f681930c0fa
 }
