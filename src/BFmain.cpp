@@ -18,15 +18,22 @@ int main(){
        // std::string datacard_dir = "datacards_pseudoshape4mclnN";
 //	std::string datacard_dir = "datacards_pseudoshape5mclnNupdn";
 	//std::string datacard_dir = "datacards_9binMC";
-	std::string datacard_dir = "datacards_9binData_bficonfig";
-
+	//std::string datacard_dir = "datacards_9binData_bficonfig";
+	//std::string datacard_dir = "datacards_9bin3ch";
+//	std::string datacard_dir = "datacards_3ch_cleaned_v43";
+//	std::string datacard_dir = "datacards_2photon_prompt";
+	std::string datacard_dir = "datacards_2photon_prompt4bin";
 //	std::string jsonShapeUp ="./json/shapeUpTest.json";
 //	std::string jsonShapeDn ="./json/shapeDnTest.json";
 //	std::string jsonNominal ="./json/shapeNominalTest.json";
 
 	//std::string input_json = "./json/test_9binCR_SV_wMC.json";
 	//std::string input_json = "./json/test_9binCR_SV_noMC.json";
-	std::string input_json= "./json/test9binConfig.json";
+	//std::string input_json= "./json/test9binConfig.json";
+	//std::string input_json= "./json/SV3chCR_MET18_v42.json";
+	//std::string input_json= "./json/SV3chCR_MET18_v43.json";
+	//std::string input_json= "./json/photon_prompt_simple.json";
+	std::string input_json= "./json/photon_prompt_simple4bin.json";
 
 	// Load JSON and get signal processes
 	JSONFactory* j = new JSONFactory(input_json);
@@ -43,10 +50,19 @@ int main(){
 	//channelmap channelMap = {{"ch1",{ "bin1", "bin2", "bin3", "bin4", "bin5", "bin6", "bin7", "bin8", "bin9", "bin10"}} };
 	
 	//channel map for 9bin sv test fit
+	/*
 	channelmap channelMap = {
 		{"chHad1",{"CRHad00","CRHad10","CRHad20","CRHad01","CRHad11","CRHad21","CRHad02","CRHad12","CRHad22"}},
 		{"chLep1",{"CRLep00","CRLep10","CRLep20","CRLep01","CRLep11","CRLep21","CRLep02","CRLep12","CRLep22"}}
 	};
+	*/
+	//3channel fit
+	channelmap channelMap = {
+		{"ch1",{"Ch1CRHad00","Ch1CRHad10","Ch1CRHad20","Ch1CRHad01","Ch1CRHad11","Ch1CRHad21","Ch1CRHad02","Ch1CRHad12","Ch1CRHad22"}},
+		{"ch2",{"Ch2CRHad00","Ch2CRHad10","Ch2CRHad20","Ch2CRHad01","Ch2CRHad11","Ch2CRHad21","Ch2CRHad02","Ch2CRHad12","Ch2CRHad22"}},
+		{"ch3",{"Ch3CRLep00","Ch3CRLep10","Ch3CRLep20","Ch3CRLep01","Ch3CRLep11","Ch3CRLep21","Ch3CRLep02","Ch3CRLep12","Ch3CRLep22"}}
+	};
+
 
 	//regenerate datacard directories
 	std::filesystem::path dir_path = datacard_dir;
@@ -54,12 +70,13 @@ int main(){
 	for( long unsigned int i=0; i<signals.size(); i++){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );
-		//BF->BuildAsimovFit(j,signals[i], datacard_dir);
+		BF->BuildAsimovFit(j,signals[i], datacard_dir);
 		//BF->BuildABCDFit( j, signals[i], datacard_dir, ABCDbins );
 		//BF->BuildPseudoShapeTemplateFit(j,jUp,jDn, signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitMC(j,signals[i], datacard_dir, channelMap);
-		BF->Build9binFitData(j,signals[i], datacard_dir, channelMap);
-		break;
+		//BF->Build9binFitData(j,signals[i], datacard_dir, channelMap);
+		//BF->BuildMultiChannel9bin(j,signals[i], datacard_dir, channelMap);
+		//break;
 	}
 	
 }
