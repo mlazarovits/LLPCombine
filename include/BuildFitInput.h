@@ -53,7 +53,9 @@ class BuildFitInput{
 
 	BuildFitInput();
 	void BuildRVBranch();//old skims dont have rv, need to build - this needs fixed upstream
-	
+	void BuildScaledEvtWt(double Lumi);
+
+
 	//load helpers
 	void LoadBkg_KeyValue( std::string key, stringlist bkglist, double Lumi );
 	void LoadData_KeyValue( std::string key, stringlist bkglist, double Lumi );
@@ -66,7 +68,9 @@ class BuildFitInput{
 	void FilterRegions( std::string filterName, std::string filterCuts );
 	countmap CountRegions(nodemap& filtered_df);
 	summap SumRegions(std::string branchname, nodemap& filtered_df);
-	errormap ComputeStatError( countmap countResults, map< std::string, double >& evtwt );
+	errormap ComputeStatError( countmap countResults, map< std::string, double >& evtwt ); //older method with const same evt weights
+	errormap ComputeStatError( summap sumResults);//proper way with sum of wts squared
+
 	
 	//bin objects
 	std::map<std::string, Bin*> analysisbins{};
