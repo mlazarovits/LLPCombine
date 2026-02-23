@@ -16,6 +16,11 @@ LDFLAGS = $(shell root-config --glibs)
 LIBS = -lCombineHarvesterCombineTools 
 LIBPATH = -L../../lib/el9_amd64_gcc12/
 
+#include yaml-cpp
+CXXFLAGS += -I/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/yaml-cpp/0.7.0-7eec219971f28ecc345c452b0ff3c186/include
+LIBPATH += -L/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/yaml-cpp/0.7.0-7eec219971f28ecc345c452b0ff3c186/lib64
+LIBS += -lyaml-cpp
+
 #Define src and objects
 SRC_DIR = src
 INC_DIR = include
