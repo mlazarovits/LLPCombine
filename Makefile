@@ -17,8 +17,8 @@ LIBS = -lCombineHarvesterCombineTools
 LIBPATH = -L../../lib/el9_amd64_gcc12/
 
 #include yaml-cpp
-CXXFLAGS += -I/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/yaml-cpp/0.7.0-7eec219971f28ecc345c452b0ff3c186/include
-LIBPATH += -L/cvmfs/cms.cern.ch/el9_amd64_gcc11/external/yaml-cpp/0.7.0-7eec219971f28ecc345c452b0ff3c186/lib64
+CXXFLAGS += -I/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/yaml-cpp/0.8.0-daa831833cbf55b73029800cc340c2bb/include
+LIBPATH +=  -L/cvmfs/cms.cern.ch/el9_amd64_gcc12/external/yaml-cpp/0.8.0-daa831833cbf55b73029800cc340c2bb/lib64
 LIBS += -lyaml-cpp
 
 #Define src and objects
@@ -26,7 +26,7 @@ SRC_DIR = src
 INC_DIR = include
 OBJS_DIR = obj
 BIN_DIR = .
-CPP_SRCS = $(SRC_DIR)/main.cpp $(SRC_DIR)/SampleTool.cpp $(SRC_DIR)/BuildFitInput.cpp $(SRC_DIR)/JSONFactory.cpp $(SRC_DIR)/ConfigParser.cpp $(SRC_DIR)/ArgumentParser.cpp
+CPP_SRCS = $(SRC_DIR)/main.cpp $(SRC_DIR)/SampleTool.cpp $(SRC_DIR)/BuildFitInput.cpp $(SRC_DIR)/JSONFactory.cpp $(SRC_DIR)/ConfigParser.cpp $(SRC_DIR)/ArgumentParser.cpp 
 CMSSW_CPP_SRCS = $(SRC_DIR)/BFmain.cpp $(SRC_DIR)/BuildFit.cpp $(SRC_DIR)/JSONFactory.cpp
 OBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJS_DIR)/%.o,$(CPP_SRCS))
 CMSSWOBJS = $(patsubst $(SRC_DIR)/%.cpp,$(OBJS_DIR)/%.o,$(CMSSW_CPP_SRCS))

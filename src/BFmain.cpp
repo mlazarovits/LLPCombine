@@ -7,38 +7,13 @@
 #include <cstdlib>    // Required for std::system
 
 int main(){
-	//std::string datacard_dir = "datacards_abcd";
-	//std::string input_json = "./json/test_v37_data.json";
-	//std::string datacard_dir = "datacards_pseudoshape2bbb";
-	//std::string datacard_dir = "datacards_pseudoshape3automc";
-	//std::string datacard_dir = "datacards_pseudoshape4automconly";
-       // std::string datacard_dir = "datacards_pseudoshape4mclnN";
-//	std::string datacard_dir = "datacards_pseudoshape5mclnNupdn";
-	//std::string datacard_dir = "datacards_9binMC";
-	//std::string datacard_dir = "datacards_9binData_bficonfig";
-	//std::string datacard_dir = "datacards_9bin3ch";
-//	std::string datacard_dir = "datacards_3ch_cleaned_v43";
-//	std::string datacard_dir = "datacards_2photon_prompt";
-	std::string datacard_dir = "datacards_2photon_prompt4bin";
-//	std::string jsonShapeUp ="./json/shapeUpTest.json";
-//	std::string jsonShapeDn ="./json/shapeDnTest.json";
-//	std::string jsonNominal ="./json/shapeNominalTest.json";
 
-	//std::string input_json = "./json/test_9binCR_SV_wMC.json";
-	//std::string input_json = "./json/test_9binCR_SV_noMC.json";
-	//std::string input_json= "./json/test9binConfig.json";
-	//std::string input_json= "./json/SV3chCR_MET18_v42.json";
-	//std::string input_json= "./json/SV3chCR_MET18_v43.json";
-	//std::string input_json= "./json/photon_prompt_simple.json";
-	std::string input_json= "./json/photon_prompt_simple4bin.json";
-
-	// Load JSON and get signal processes
+	BuildFit BF("config/test_simple_fitconfig.yaml");
+	string input_json = "json/testDelayedPhotonConfig.json";
 	JSONFactory* j = new JSONFactory(input_json);
-//	JSONFactory*  j = new JSONFactory(jsonNominal);
-//	JSONFactory* jUp = new JSONFactory(jsonShapeUp);
-//	JSONFactory* jDn = new JSONFactory(jsonShapeDn);
-//	BuildFit* BF = new BuildFit();
-	
+	BF.PrepFit(j, "gogoG_2000_1000_500_10");
+
+	/*	
 	std::vector<std::string> signals = j->GetSigProcs();
 	//BF->BuildAsimovFit(j,"gogoG_2000_1000_500_10");
 
@@ -47,12 +22,6 @@ int main(){
 	//channelmap channelMap = {{"ch1",{ "bin1", "bin2", "bin3", "bin4", "bin5", "bin6", "bin7", "bin8", "bin9", "bin10"}} };
 	
 	//channel map for 9bin sv test fit
-	/*
-	channelmap channelMap = {
-		{"chHad1",{"CRHad00","CRHad10","CRHad20","CRHad01","CRHad11","CRHad21","CRHad02","CRHad12","CRHad22"}},
-		{"chLep1",{"CRLep00","CRLep10","CRLep20","CRLep01","CRLep11","CRLep21","CRLep02","CRLep12","CRLep22"}}
-	};
-	*/
 	//3channel fit
 	channelmap channelMap = {
 		{"ch1",{"Ch1CRHad00","Ch1CRHad10","Ch1CRHad20","Ch1CRHad01","Ch1CRHad11","Ch1CRHad21","Ch1CRHad02","Ch1CRHad12","Ch1CRHad22"}},
@@ -64,16 +33,16 @@ int main(){
 	//regenerate datacard directories
 	std::filesystem::path dir_path = datacard_dir;
 	std::filesystem::remove_all(dir_path);
-	for( long unsigned int i=0; i<signals.size(); i++){
+	for( long unsigned int i=0; i<1;i++){//signals.size(); i++){
 		BuildFit* BF = new BuildFit();
 		std::filesystem::create_directories( datacard_dir+"/"+signals[i] );
-		BF->BuildAsimovFit(j,signals[i], datacard_dir);
+		//BF->BuildAsimovFit(j,signals[i], datacard_dir);
 		//BF->BuildABCDFit( j, signals[i], datacard_dir, ABCDbins );
 		//BF->BuildPseudoShapeTemplateFit(j,jUp,jDn, signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitMC(j,signals[i], datacard_dir, channelMap);
 		//BF->Build9binFitData(j,signals[i], datacard_dir, channelMap);
-		//BF->BuildMultiChannel9bin(j,signals[i], datacard_dir, channelMap);
+		BF->BuildMultiChannel9bin(j,signals[i], datacard_dir, channelMap);
 		//break;
 	}
-	
+	*/	
 }
