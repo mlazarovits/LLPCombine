@@ -6,6 +6,9 @@ using std::endl;
 
 //takes input fit config and JSONFactor as inputs
 BuildFit::BuildFit(string infile){
+	if(infile == ""){
+		return;
+	}
 	//check if file exists
 	if(!std::filesystem::exists(infile)){
 		cout << "File " << infile << " does not exist" << endl;
@@ -14,16 +17,15 @@ BuildFit::BuildFit(string infile){
 	YAML::Node base = YAML::LoadFile(infile);
 	if(base["shape_transfer_fit"]){
 		if(base["shape_transfer_fit"]["bin_association"])
-        		channelmap bin_ass = base["shape_transfer_fit"]["bin_association"].as<map<string,vector<string>>>();
+        		_shape_bin_ass = base["shape_transfer_fit"]["bin_association"].as<map<string,vector<string>>>();
 		if(base["shape_transfer_fit"]["channel_association"])
-        		channelmap ch_ass =  base["shape_transfer_fit"]["channel_association"].as<map<string,vector<string>>>();
+        		_shape_ch_ass =  base["shape_transfer_fit"]["channel_association"].as<map<string,vector<string>>>();
 	}
-
-	if(base["ABDC_fit"]){
-		if(base["ABDC_fit"]["bin_association"])
-			_abcd_bin_ass = base["ABDC_fit"]["bin_association"].as<map<string,vector<string>>>();
-		if(base["ABDC_fit"]["channel_association"])
-			_abcd_ch_ass =  base["ABDC_fit"]["ch_association"].as<map<string,vector<string>>>();
+	if(base["ABCD_fit"]){
+		if(base["ABCD_fit"]["bin_association"])
+			_abcd_bin_ass = base["ABCD_fit"]["bin_association"].as<map<string,vector<string>>>();
+		if(base["ABCD_fit"]["channel_association"])
+			_abcd_ch_ass =  base["ABCD_fit"]["ch_association"].as<map<string,vector<string>>>();
 	}
 	YAML::Node systs = base["systematics"];
 	//fill yamlSys classes - nested map
@@ -35,6 +37,12 @@ BuildFit::BuildFit(string infile){
 		_asimov = true;
 	else
 		_asimov = false;
+	if(base["datadriven"].as<bool>())
+		_datadriven = true;
+	else
+		_datadriven = false;
+
+
 
 }
 
@@ -57,44 +65,192 @@ cout << "built cats" << endl;
 			LoadDataProcesses(j, datakeys);
 		}
 	}
+	if(_datadriven)
+		GetDataProcs(j);
+	else
+		GetBkgProcs(j);
+
 	cout << "got bkg procs" << endl;
-	GetBkgProcs(j);
 	std::cout<<"Parsing signal point " << signalPoint << endl;
 	ExtractSignalDetails( signalPoint);
-
+	_yields = j->j;
 }
 
 void BuildFit::BuildShapeTransferFit(string signalPoint){
-	cb.AddObservations({"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, _cats);
-
-	cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, _bkgprocs, _cats, false);
-	cb.AddProcesses(   {_signalDetails[2]}, {_signalDetails[0]}, {"13.6Tev"}, {_signalDetails[1]}, {signalPoint}, _cats, true);
-
-
+	//channel name convention goes
+	//Ch#IDBin where Bin = xy coord in MsRs plane
 	//set observations - zero values taken care of when obs_rates are loaded from json
-	cb.ForEachObs([&](ch::Observation *x){
-		x->set_rate(_obs_rates[x->bin()]);
-	});
+	cb.AddObservations({"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, _cats);
+        cb.ForEachObs([&](ch::Observation *x){
+            x->set_rate(_obs_rates[x->bin()]);
+	    cout << x->bin() << " " << x->process() << " " << x->rate() << endl;
+        });
 
-	//take channel 1 as the anchor channel, enforce expectation onto other channels
-	//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
-	//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel
-	for(auto chit = _ch_ass.begin(); chit != _ch_ass.end(); chit++){
-		//get anchor channel as specified from fit config
+	cout << "analysis " << _signalDetails[0] << " channel " << _signalDetails[1] << endl;
+	vector<string> procs = _bkgprocs;
+	_bkgprocs.push_back(signalPoint);
+	for(auto proc : _bkgprocs){
+		//take channel 1 as the anchor channel, enforce expectation onto other channels
+		//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
+		//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel  
+		cout << " proc " << proc << endl;
+		bool sig = false;
+		if(proc == signalPoint)
+			sig = true;
+		for(auto chit = _shape_ch_ass.begin(); chit != _shape_ch_ass.end(); chit++){
+			//get anchor channel as specified from fit config
+			string anchor_ch = chit->first;
+			vector<string> buoy_chs = chit->second;
+			vector<string> anchor_bins = _shape_bin_ass[anchor_ch];
+			//set yields in every bin of the anchor channel to their nominal value
+			for(int b = 0; b < (int)anchor_bins.size(); b++){
+				double anchor_rate = _yields[anchor_bins[b]][proc][1].get<double>();
+				//set yield
+				ch::Process anchorproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[anchor_bins[b]],anchor_bins[b]), sig, anchor_rate);
+				cb.InsertProcess(anchorproc);
+				//get bin indices - should be last two characters based on naming convention
+				string bin = getBinIdx(anchor_bins[b]);
+				//set yield in buoy channels to that of connected anchor channel for this process
+				for(int i = 0; i < (int)buoy_chs.size(); i++){
+					vector<string> buoy_bins = _shape_bin_ass[buoy_chs[i]];
+					//make sure bin configuration for anchor channel matches that for buoy channel
+					if(buoy_bins.size() != anchor_bins.size())
+						continue;
+					//make sure anchor channel bin exists in buoy channel
+					if(find(buoy_bins.begin(), buoy_bins.end(), buoy_chs[i]+bin) == buoy_bins.end())
+						continue;
+					//match bin indices (assuming that bins have been defined identically)
+					string buoy_bin = buoy_chs[i]+bin;
+					//loop through bins in this channel
+					ch::Process buoyproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[buoy_bin],buoy_bin), sig, anchor_rate);
+					cb.InsertProcess(buoyproc);
+				}
+			}
+		}
+	}
+	//cb.PrintProcs();
+	//add systematics to tie bins and channels together
+	for(auto chit = _shape_ch_ass.begin(); chit != _shape_ch_ass.end(); chit++){
 		string anchor_ch = chit->first;
 		vector<string> buoy_chs = chit->second;
 
-	}	
-	//copy justin's syntax to get a working datacard
-	//see if the yields from the working datacard match those when the rates are set
-	//by declaring external Observation objects (ie ch::Observation obs), setting the rate (obs.set_rate(whatever)), and giving to cb object (cb.InsertObservation(obs))	
+		vector<string> anchor_bins = _shape_bin_ass[anchor_ch];
+		for(auto buoy_ch : buoy_chs){
+			vector<string> buoy_bins = _shape_bin_ass[buoy_ch];
+			//tie anchor channel norm to buoy channels norm
+			//buoy channel bins have rates set to their anchor counterparts
+			//so we want to tie these bins together via a rate param initialized to the ratio N = A/B
+			//where A = anchor channel anchor bin and B = buoy channel bin counterpart
+			//such that the expectation of the rate in each buoy channel bin_i is anchor channel bin_i * N
+			cb.cp().bin(buoy_bins).AddSyst(cb,buoy_ch+"Norm","rateParam",SystMap<>::init(0.115));
+			//can automatically add bin-by-bin systematics across anchor to buoy channels here
+			//or can set with the systematics section of the fit config
+			/*
+			for(auto anchor_bin : anchor_bins){
+				string anchor_binidx = getBinIdx(anchor_bin);
+				for(auto buoy_bin : buoy_bins){
+					//match bin indices
+					if(getBinIdx(buoy_bin) != anchor_binidx)
+						continue;
+					cout << "adding syst for bin pair " << anchor_bin << " " << buoy_bin << " named " << anchor_ch+buoy_ch+"Shape"+anchor_binidx << endl;
+					//tie anchor bins to buoy bins
+					//so individual bin pairs can wiggle around together
+					cb.cp().bin({anchor_bin, buoy_bin}).AddSyst(cb, anchor_ch+buoy_ch+"Shape"+anchor_binidx, "lnN", SystMap<>::init(1.05));
+				}
+			}
+			*/
+		}
 
+	}
+	
 }
 
-//BuildABCD
-//DoSystematics
-//WriteDatacard
 
+//BuildABCD
+void BuildFit::BuildABCDFit(string signalPoint){
+	//set observations based on which bins were specified in fit config	
+	cb.AddObservations({"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, _cats);
+        cb.ForEachObs([&](ch::Observation *x){
+            x->set_rate(_obs_rates[x->bin()]);
+	    cout << x->bin() << " " << x->process() << " " << x->rate() << endl;
+        });
+	cout << "analysis " << _signalDetails[0] << " channel " << _signalDetails[1] << endl;
+	vector<string> procs = _bkgprocs;
+	_bkgprocs.push_back(signalPoint);
+	for(auto proc : _bkgprocs){
+		//take channel 1 as the anchor channel, enforce expectation onto other channels
+		//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
+		//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel  
+		bool sig = false;
+		if(proc == signalPoint)
+			sig = true;
+		//get channel associations, if it exists
+		//if(_abcd_ch_ass.size() > 1){
+		//}	
+		for(auto binit = _abcd_bin_ass.begin(); binit != _abcd_bin_ass.end(); binit++){
+			string sr_bin = binit->first;
+			vector<string> cr_bins = binit->second; //convention is that these bins go [B, C, D]
+			//set rates of non-sr (cr) bins to be their nominal expected yield
+			for(auto cr_bin : cr_bins){
+				double bkgrate_cr = _yields[cr_bin][proc][1].get<double>();
+				ch::Process srbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[cr_bin],cr_bin), sig, bkgrate_cr);
+				cb.InsertProcess(srbin_proc);
+			}
+
+			//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
+			//A_pred = B*(C/D) from A*D = B*C
+			double sr_exp;
+			if(!sig){
+				sr_exp = _obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]]);
+			}
+			else{
+				sr_exp = _yields[sr_bin][proc][1].get<double>();
+			
+			}
+			ch::Process srbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[sr_bin],sr_bin), sig, sr_exp);
+			cb.InsertProcess(srbin_proc);
+
+			//tie all bins in this ABCD fit together
+			//since the rates were initialized to the nominal yields for these bins
+			//these systmatics at initialized to 1
+			cb.cp().bin(cr_bins).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init(cr_bins, 1));
+			//set prediction for sr bin
+			string cr_rateparams = "scale_"+cr_bins[0];
+			for(int i = 1; i < (int)cr_bins.size(); i++)
+				cr_rateparams += ",scale_"+cr_bins[i];
+			//A_pred = B*(C/D) from A*D = B*C
+			cb.cp().bin({sr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
+						("(@0*@1/@2)",cr_rateparams)
+					);
+			//option to pin individual rates with logNormals is set in DoSystematics()
+		}
+
+	}
+
+	//cb.PrintAll();
+	cb.PrintProcs();
+	cout << "current bins - abcd fit" << endl;
+	auto bins = cb.bin_set();
+	for(auto b : bins) cout << b << endl;
+}
+
+//DoSystematics
+void BuildFit::DoSystematics(){
+	cout << "current bins" << endl;
+	auto bins = cb.bin_set();
+	for(auto b : bins) cout << b << endl;
+	for(auto syst : _systs){
+		//put in check that systematics connect bins that are actually recorded/in datacard
+		cb.cp().bin(syst._bins).AddSyst(cb, syst._name, syst._type, SystMap<>::init(syst._init_val));
+	}
+
+}
+//WriteDatacard
+void BuildFit::WriteDatacard(string datacard_dir, string signalPoint, bool verbose){
+	if(verbose)
+		cout << "Writing datacard to " << datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt" << endl;
+	cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
+}
 
 
 ch::Categories BuildFit::BuildCats(JSONFactory* j){
@@ -103,6 +259,7 @@ ch::Categories BuildFit::BuildCats(JSONFactory* j){
 	for (json::iterator it = j->j.begin(); it != j->j.end(); ++it) {
   		//std::cout << it.key() <<"\n";
 		_cats.push_back( {binNum, it.key()} );
+		_invcats[it.key()] = binNum;
 		binNum++;
 	}
 	return _cats;
@@ -152,13 +309,12 @@ std::vector<std::string> BuildFit::GetBkgProcs(JSONFactory* j){
 	return _bkgprocs;
 }
 std::vector<std::string> BuildFit::GetDataProcs(JSONFactory* j){
-	
-	std::vector<std::string> bkgprocs{};
+	std::vector<std::string> bkgprocs;	
 	for (json::iterator it = j->j.begin(); it != j->j.end(); ++it){
                 //inner loop process iterator
                 std::string binname = it.key();
                 for (json::iterator it2 = it.value().begin(); it2 != it.value().end(); ++it2){
-                //      std::cout<< it2.key()<<"\n";
+                      std::cout<< it2.key()<<"\n";
                         if(  BFTool::ContainsAnySubstring(it2.key(),datakeys) ){
                                 bkgprocs.push_back(it2.key());
                         }
@@ -166,7 +322,9 @@ std::vector<std::string> BuildFit::GetDataProcs(JSONFactory* j){
         }//make this set unique
         std::set<std::string> my_bkg_set(bkgprocs.begin(), bkgprocs.end());
         std::vector<std::string> bkgprocsunique(my_bkg_set.begin(), my_bkg_set.end());
-
+	cout << "GetDataProcs" << endl;
+	for(auto c : bkgprocsunique) cout << c << endl;
+	_bkgprocs = bkgprocsunique;
 	return bkgprocsunique;	
 
 }
@@ -344,7 +502,8 @@ void BuildFit::BuildAsimovFit(JSONFactory* j, std::string signalPoint, std::stri
 void BuildFit::BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap){
 	ch::Categories cats = BuildCats(j);
         std::cout<<"building obs rates \n";
-        std::map<std::string, float> obs_rates = LoadDataProcesses(j, {"MET18"});
+        std::map<std::string, float> obs_rates = LoadDataProcesses(j, {"data_obs"});
+        //std::map<std::string, float> obs_rates = LoadDataProcesses(j, {"MET18"});
         std::cout<<"Getting process list\n";
         std::vector<std::string> bkgprocs = GetDataProcs(j);
         std::cout<<"Parse Signal point\n";
@@ -365,14 +524,14 @@ void BuildFit::BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, st
         });
 	//take channel 1 as the anchor channel, enforce expectation onto other channels
 	cb.ForEachProc([&j](ch::Process *x) {
-            std::cout<<x->bin()<<" "<<x->process()<<"\n";
+            //std::cout<<x->bin()<<" "<<x->process()<<"\n";
             json json_array = j->j[x->bin()][x->process()];
             float temprate = json_array[1].get<float>();
-            std::string c1 = "Ch1CRHad"; //hardcode anchor channel for now
-	    std::string c2 = "Ch2CRHad";
-            std::string c3 = "Ch3CRLep";
+            std::string c1 = "Ch1Pho1CR"; //hardcode anchor channel for now
+	    std::string c2 = "Ch2Pho2CR";
+            //std::string c3 = "Ch3CRLep";
             size_t foundPos = x->bin().find(c2);
-	    size_t foundPos2 = x->bin().find(c3); //very bad, need better solution to be more general
+	   // size_t foundPos2 = x->bin().find(c3); //very bad, need better solution to be more general
             if( foundPos != std::string::npos){
                 std::string mirrorbin = x->bin();
                 mirrorbin.replace(foundPos, c2.length(), c1);
@@ -393,41 +552,48 @@ void BuildFit::BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, st
                         x->set_rate(temprate);
                 }
             }
-	    if( foundPos2 != std::string::npos){
-                std::string mirrorbin = x->bin();
-                mirrorbin.replace(foundPos2, c3.length(), c1);
-                json_array = j->j[mirrorbin][x->process()];
-                temprate = json_array[1].get<float>();
-                if(temprate==0){
-                        x->set_rate(1e-8);
-                }
-                else{
-                        x->set_rate(temprate);
-                }
-            }
-            else{
-                if(temprate==0){
-                        x->set_rate(1e-8);
-                }
-                else{
-                        x->set_rate(temprate);
-                }
-            }
+		cout << "set rate in bin " << x->bin() << " to " << temprate << " for process " << x->process() << endl;
+	    //if( foundPos2 != std::string::npos){
+            //    std::string mirrorbin = x->bin();
+            //    mirrorbin.replace(foundPos2, c3.length(), c1);
+            //    json_array = j->j[mirrorbin][x->process()];
+            //    temprate = json_array[1].get<float>();
+            //    if(temprate==0){
+            //            x->set_rate(1e-8);
+            //    }
+            //    else{
+            //            x->set_rate(temprate);
+            //    }
+            //}
+            //else{
+            //    if(temprate==0){
+            //            x->set_rate(1e-8);
+            //    }
+            //    else{
+            //            x->set_rate(temprate);
+            //    }
+            //}
 	});
-	std::vector<std::string> bincoords = { "00","10","20", "01","11","21","02","12","22"};
-        std::string ch1 = "Ch1CRHad";
-        std::string ch2 = "Ch2CRHad";
-	std::string ch3 = "Ch3CRHad";
+	std::vector<std::string> bincoords = { "00","10","01","11"};
+        std::string ch1 = "Ch1Pho1CR";
+        std::string ch2 = "Ch2Pho2CR";
+	//std::vector<std::string> bincoords = { "00","10","20", "01","11","21","02","12","22"};
+        //std::string ch1 = "Ch1CRHad";
+        //std::string ch2 = "Ch2CRHad";
+	//std::string ch3 = "Ch3CRHad";
         for(int i=0; i<(int)bincoords.size(); i++){
                 cb.cp().bin({ch1+bincoords[i], ch2+bincoords[i]}).AddSyst(cb, "c1c2binShape"+bincoords[i], "lnN", SystMap<>::init(1.05));
-		cb.cp().bin({ch1+bincoords[i], ch3+bincoords[i]}).AddSyst(cb, "c1c3binShape"+bincoords[i], "lnN", SystMap<>::init(1.05));
+		////cb.cp().bin({ch1+bincoords[i], ch3+bincoords[i]}).AddSyst(cb, "c1c3binShape"+bincoords[i], "lnN", SystMap<>::init(1.05));
 
         }
         //make ch2 normalization
         std::vector<std::string> ch2bins = channelMap["ch2"];
-	std::vector<std::string> ch3bins = channelMap["ch3"];
-        cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.085));
-	cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.44));
+	for(auto c : ch2bins) cout << c << endl;
+        cb.cp().bin(ch2bins).AddSyst(cb, "c2phoNorm", "rateParam", SystMap<>::init(0.115));
+	////std::vector<std::string> ch3bins = channelMap["ch3"];
+        ////cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.085));
+	////cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.44));
+	cout << "Writing to " << datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt" << endl;
         cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
 
 	
