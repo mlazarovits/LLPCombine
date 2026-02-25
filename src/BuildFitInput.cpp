@@ -1,5 +1,5 @@
 #include "BuildFitInput.h"
-
+#include <TSystem.h>
 
 BuildFitInput::BuildFitInput(){
 	std::cout<<"Now just between us girls.... \n";
@@ -16,7 +16,7 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 		//also make the event weight branch here while we have the correct bkg file
 		float sumEvtWgt{};
 		float xsec{};
-		float sums =0.;
+		//float sums =0.;
 		TFile* f = TFile::Open(bkglist[i].c_str());
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
 		configTree->SetBranchAddress("sumEvtWgt", &sumEvtWgt);
@@ -53,16 +53,16 @@ cout << "subkey " << subkey << endl;
 		
 		//also make the event weight branch here while we have the correct bkg file
 		float sumEvtWgt{};
-		float xsec{};
+		//float xsec{};
 		TFile* f = TFile::Open(datalist[i].c_str());
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
 		configTree->SetBranchAddress("sumEvtWgt", &sumEvtWgt);
-		configTree->SetBranchAddress("sCrossSection", &xsec);
+		//configTree->SetBranchAddress("sCrossSection", &xsec);
 		configTree->GetEntry(0);
 		//TODO - will need to update for data when sumEvtWgts are correct
 		//for now just look at raw number of events for data
 		double wt{};
-		wt = xsec*1000./sumEvtWgt;
+		wt = 1.;//xsec*1000./sumEvtWgt;
 		//save the weight for error propagation later
 		data_evtwt[subkey] = wt;
 		auto tempdf = df.Define("evtwt", std::to_string(wt));
@@ -78,20 +78,29 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 	for( unsigned int i=0; i< siglist.size(); i++){//signal keys are vector doubles (mode, mgo, mn2, mn1, ctau)
 		//std::string subkey = key+"_"+std::to_string(i);//1 file per?
 		std::string subkey = BFTool::GetSignalTokens( siglist[i]);
+		if(gSystem->AccessPathName(siglist[i].c_str())){
+			cout << "File " << siglist[i] << " not found. Skipping..." << endl;
+			return;
+		}
 
-		ROOT::RDataFrame df("kuSkimTree", siglist[i]);
-		_base_rdf_SigDict[subkey] = std::make_unique<RNode>(df);
-		
+
 		//also make the event weight branch here while we have the correct bkg file
 		int ntot{};
 		float xsec{};
-		float sums =0.;
-
+		//float sums =0.;
 		TFile* f = TFile::Open(siglist[i].c_str());
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
 		configTree->SetBranchAddress("nTotEvts", &ntot);//cross section is genweight!!
 		configTree->SetBranchAddress("sCrossSection", &xsec);
 		configTree->GetEntry(0);
+		//catch for signal samples with bad weights
+		if(ntot == 0){
+			cout << "sample " << subkey << " has bad weights. Skipping..." << endl;
+			continue;
+		}
+		ROOT::RDataFrame df("kuSkimTree", siglist[i]);
+		_base_rdf_SigDict[subkey] = std::make_unique<RNode>(df);
+		
 		/*Long64_t n_entries = configTree->GetEntries();
                 for (Long64_t i = 0; i < n_entries; ++i) {
                         configTree->GetEntry(i);
@@ -130,18 +139,19 @@ void BuildFitInput::BuildRVBranch(){
 void BuildFitInput::BuildScaledEvtWt(double Lumi){
 	
 	for (const auto& dfkey :rdf_BkgDict){
-                //std::cout<<"building Rv for key:"<< dfkey <<"\n";
+                std::cout<<"building Rv for key:"<< dfkey.first <<"\n";
                 auto tempdf = rdf_BkgDict[dfkey.first]->Define("LumiEvtWt", "evtFillWgt*"+std::to_string(Lumi));
                 rdf_BkgDict[dfkey.first] = std::make_unique<RNode>(tempdf);
         }
         for (const auto& dfkey :rdf_SigDict){
-                //std::cout<<"building Rv for key:"<< dfkey <<"\n";
+                std::cout<<"building Rv for key:"<< dfkey.first <<"\n";
                 auto tempdf = rdf_SigDict[dfkey.first]->Define("LumiEvtWt", "evtFillWgt*"+std::to_string(Lumi));
                 rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
         }
 	for (const auto& dfkey :rdf_DataDict){
-		auto tempdf = rdf_SigDict[dfkey.first]->Define("LumiEvtWt", "1");
-		rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+                std::cout<<"building Rv for key:"<< dfkey.first <<"\n";
+		auto tempdf = rdf_DataDict[dfkey.first]->Define("LumiEvtWt", "1");
+		rdf_DataDict[dfkey.first] = std::make_unique<RNode>(tempdf);
 	}
 
 }
@@ -321,8 +331,6 @@ void BuildFitInput::ConstructBkgBinObjects( countmap countResults, summap sumRes
 		proc_cut_pair cutpairkey = it.first;
 		std::string procname = it.first.first;
 		std::string binname = cutpairkey.second;
-		//ROOT::RDF::RResultPtr<long long unsigned int> count_result = it.second;
-		
 		Process* thisproc = new Process(procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
 		analysisbins[ binname ]->bkgProcs.insert({procname, thisproc} ); 
 	}
@@ -344,10 +352,17 @@ void BuildFitInput::AddDataToBinObjects( countmap countResults, summap sumResult
 			if( binname != cutpairkey.second ) continue;
 			std::string binname2 = it2.first.second;
 			std::string procname = "data";//it2.first.first;
-			std::cout << "procname " << procname << " binname " << binname2 << endl;	
-			Process* thisproc = new Process( procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
-			//analysisbins[binname]->data.insert({procname, thisproc} );
-			analysisbins[binname]->data.second->Add(thisproc);
+			std::cout << "procname " << procname << " binname " << binname2 << " cutpairkey " << cutpairkey.first << " " << cutpairkey.second << endl;
+			if(!_unblind && (binname.find("SR") != string::npos)){
+				Process* thisproc = new Process( procname, 1e-12, 1e-12, sqrt(1e-12));
+				analysisbins[binname]->data.second->Add(thisproc);
+				break;
+			}
+			else{
+				Process* thisproc = new Process( procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
+				analysisbins[binname]->data.second->Add(thisproc);
+			}
+
 		}
 	}
 }
@@ -360,7 +375,7 @@ void BuildFitInput::AddSigToBinObjects( countmap countResults, summap sumResults
 			if( binname != cutpairkey.second ) continue;
 			std::string binname2 = it2.first.second;
 			std::string procname = it2.first.first;
-			
+		cout << "AddSigToBinObjects - procname " << procname << endl;	
 			Process* thisproc = new Process( procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
 			analysisbins[binname]->signals.insert({procname, thisproc} );
 		}

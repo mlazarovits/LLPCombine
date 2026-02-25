@@ -184,7 +184,7 @@ void BuildFit::BuildABCDFit(string signalPoint){
 		bool sig = false;
 		if(proc == signalPoint)
 			sig = true;
-		//get channel associations, if it exists
+		//TODO - get channel associations, if it exists
 		//if(_abcd_ch_ass.size() > 1){
 		//}	
 		for(auto binit = _abcd_bin_ass.begin(); binit != _abcd_bin_ass.end(); binit++){

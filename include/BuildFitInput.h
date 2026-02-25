@@ -71,6 +71,14 @@ class BuildFitInput{
 	errormap ComputeStatError( countmap countResults, map< std::string, double >& evtwt ); //older method with const same evt weights
 	errormap ComputeStatError( summap sumResults);//proper way with sum of wts squared
 
+
+	bool _unblind = false;
+	void SetUnblind(bool u){
+		_unblind = u;
+	       if(_unblind){
+	       	cout << "WARNING!!!! unblinding SR yields!!!!!" << endl;
+ 		}		
+	}
 	
 	//bin objects
 	std::map<std::string, Bin*> analysisbins{};
