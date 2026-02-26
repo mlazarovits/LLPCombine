@@ -140,6 +140,18 @@ SampleTool::SampleTool(){
 				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim.root",
 				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim.root"};
 
+	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
+	
+	MasterDict["MET16"] = { pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim.root"};
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){
 	// Clear any existing background dictionary

@@ -34,12 +34,14 @@ struct yamlSys{
                         _name = syst["name"].as<string>();
                         _init_val = syst["init_val"].as<double>();
                         _bins = syst["bins"].as<vector<string>>();
-
+			if(!syst["procs"])
+				_procs = "bkg";
                 };
                 string _type;
 		string _name;
                 double _init_val;
                 vector<string> _bins;
+		string _procs;
 };
 
 
@@ -50,10 +52,13 @@ class BuildFit{
 		ch::CombineHarvester cb{};
 	
 		void PrepFit(JSONFactory* j, string signalPoint, vector<string> datakeys = {});
-		void BuildShapeTransferFit(string signalPoint);
-		void BuildABCDFit(string signalPoint);
+		void SetObservations();
+		void SetSignalRates();
+		void BuildShapeTransferFit();
+		void BuildABCDFit();
+		void BuildABCDFitChannelToChannel();
 		void DoSystematics();
-		void WriteDatacard(string datacard_dir, string signalPoint, bool verbose = false);
+		void WriteDatacard(string datacard_dir, bool verbose = false);
 
 		ch::Categories BuildCats(JSONFactory* j);
 		std::map<std::string, float> BuildAsimovData(JSONFactory* j);
@@ -74,8 +79,9 @@ class BuildFit{
 		void BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, std::string datacard_dir, channelmap channelMap);
 
 		std::vector<std::string> sigkeys = { "gogoZ", "gogoG", "gogoGZ", "sqsqZ", "sqsqG", "sqsqGZ" };
-		std::vector<std::string> datakeys = { "MET18", "DisplacedJet18"};
+		std::vector<std::string> datakeys = { "MET18", "DisplacedJet18", "data"};
 
+		string GetFitName(){ return _fitname; }
 
 	private:
 		channelmap _shape_ch_ass; //channel association for shape transfer fit
@@ -91,11 +97,27 @@ class BuildFit{
 		std::vector<std::string> _bkgprocs;
 		std::vector<std::string> _signalDetails;
 		json _yields;
+		std::set<string> _bins_superset;
+		string _fitname;
+		string _signalPoint;
+		string _shape_anchor_bin = "00";
+		string _bkg_proc = "bkg";
+
+		//get total yield over all processes for a given bin
+		double getTotYield(string bin){
+			double bin_tot_yield = 0;
+                        for(auto proc : _bkgprocs){
+                                bin_tot_yield += _yields[bin][proc][1].get<double>();
+                        }
+			return bin_tot_yield;
+		}
 
 		//get bin indices - should be last two characters based on naming convention
 		string getBinIdx(string binname){
 			return binname.substr(binname.size() - 2);
 		}
+
+		void sumMCBkgs();
 
 		ch::Process create_proc(string mass, string analysis, string era, string channel, string proc, pair<int, string> bininfo, bool signal, double rate){
 			ch::Process newproc;

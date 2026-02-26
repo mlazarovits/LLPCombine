@@ -76,6 +76,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	
 	// Initialize BuildFitInput
 	BuildFitInput* BFI = new BuildFitInput();
+	BFI->SetUnblind(options.unblind);
 
 	BFI->LoadData_byMap(ST->DataDict);
 	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
@@ -180,7 +181,17 @@ int main(int argc, char* argv[]) {
 		argParser.PrintHelp(argv[0]);
 		return 1;
 	}
-	
+
+	//do unblinding check
+	if(options.unblind){
+	        string proceed;
+                std::cout << "WARNING unblinding analysis!!!!!!!" << std::endl;
+                std::cout << "Are you sure you want to proceed? y/n" << std::endl;
+                std:: cin >> proceed;
+                if(proceed != "y")
+			return 1;
+	};
+
 	// Show batch mode status
 	if (options.batch_mode && options.verbosity >= 0) {
 		std::cout << "=== LLPCombine Batch Mode ===" << std::endl;

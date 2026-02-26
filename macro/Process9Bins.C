@@ -1,3 +1,7 @@
+#include <string>
+#include <vector>
+using std::string;
+using std::vector;
 
 void FillBin( TH1D* combinedhist,int num, std::string binN, TFile* f, std::string bindir){
 	//bindir = shapes_prefit or shapes_fit_b
@@ -43,42 +47,42 @@ void Process9Bins(){
 	//std::string workdir = "MCfit/";
 	//std::string f = "fitDiagnostics.MC9bin.root";
 
-	std::string workdir = "Datafit/";
-	std::string f = "fitDiagnostics.Data9bin.root";
+	std::string workdir = "./";
+	std::string f = "fitDiagnosticsSVOnly4BinCR.root";
+	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso", "Ch3CRSVHad", "Ch4CRSVHad"};
+	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso"};//, "Ch3CRSVHad", "Ch4CRSVHad"};
+	std::vector<string> chs = {"Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
 
 	TFile* tf = TFile::Open(f.c_str());
 	
 	//binorders
-	std::vector<std::string> bingrid = {"00","10","20","01","11","21","02","12","22"};
-	
-	std::string ch = "CRHad";
-	TFile* fout = new TFile((workdir+"combinedBinHists.root").c_str(), "RECREATE");
-	
-	TH1D* prefitch1= new TH1D(("hpre"+ch).c_str(), "prefit shape", 9, -0.5,9.5);
-	TH1D* bpostfitch1= new TH1D(("hpostb"+ch).c_str(), "post-fit bonly",9,-0.5,9.5);
-	TH1D* hdatach1 = new TH1D(("hdata"+ch).c_str(), "data",9,-0.5,9.5);
-	//combine bins into 1 plot
-	for(int i=0; i<bingrid.size(); i++){
-		FillBin( prefitch1,i+1, ch+bingrid[i], tf, "shapes_prefit");
-		FillBin( bpostfitch1,i+1, ch+bingrid[i], tf, "shapes_fit_b");
-		FillDataBin( hdatach1,i+1, ch+bingrid[i], tf);
-		//break;
+	std::vector<std::string> bingrid = {"00","10","01","11"};
+
+	vector<TH1D*> hists;
+	for(auto ch : chs){
+		cout << "doing channel " << ch << endl;
+		TH1D* prefitch1= new TH1D(("hpre"+ch).c_str(), "prefit shape", bingrid.size(), -0.5,bingrid.size()+0.5);
+		TH1D* bpostfitch1= new TH1D(("hpostb"+ch).c_str(), "post-fit bonly",bingrid.size(),-0.5,bingrid.size()+0.5);
+		TH1D* hdatach1 = new TH1D(("hdata"+ch).c_str(), "data",bingrid.size(),-0.5,bingrid.size()+0.5);
+		tf->cd();
+		//combine bins into 1 plot
+		for(int i=0; i<bingrid.size(); i++){
+			FillBin( prefitch1,i+1, ch+bingrid[i], tf, "shapes_prefit");
+			FillBin( bpostfitch1,i+1, ch+bingrid[i], tf, "shapes_fit_b");
+			FillDataBin( hdatach1,i+1, ch+bingrid[i], tf);
+			//break;
+		}
+		hists.push_back(prefitch1);
+		hists.push_back(bpostfitch1);
+		hists.push_back(hdatach1);
 	}
-	ch = "CRLep";
-	TH1D* prefitch2= new TH1D(("hpre"+ch).c_str(), "prefit shape", 9, -0.5,9.5);
-	TH1D* bpostfitch2= new TH1D(("hpostb"+ch).c_str(), "post-fit bonly",9,-0.5,9.5);
-	TH1D* hdatach2 = new TH1D(("hdata"+ch).c_str(), "data",9,-0.5,9.5);
-	//combine bins into 1 plot
-	for(int i=0; i<bingrid.size(); i++){
-		FillBin( prefitch2,i+1, ch+bingrid[i], tf, "shapes_prefit");
-		FillBin( bpostfitch2,i+1, ch+bingrid[i], tf, "shapes_fit_b");
-		FillDataBin( hdatach2,i+1, ch+bingrid[i], tf);
-		//break;
-	}
-	
-	
+	TFile* fout = new TFile((workdir+"SVcombinedBinHists.root").c_str(), "RECREATE");
+	fout->cd();
+	for(auto hist : hists)
+		hist->Write();
+	tf->cd();	
 	tf->Close();
-	fout->Write();
+	fout->cd();
 	fout->Close();
 
 
