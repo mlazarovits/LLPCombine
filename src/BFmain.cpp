@@ -82,8 +82,10 @@ int main(int argc, char* argv[]){
 		BF.PrepFit(j, signals[i]);
 		//do fit - function won't do anything if their corresponding section in the config yaml isn't filled
 		BF.BuildShapeTransferFit();
-		BF.BuildABCDFit();
-		//BF.BuildABCDFitChannelToChannel();
+		//needs to come after fit initialization because asimov observations are set differently
+		//depending on which fit is run (for now)
+		BF.BuildABCDFitChannelToChannel();
+		BF.SetObservations(); 
 		BF.DoSystematics();
 		//write datacard
 		BF.WriteDatacard(datacard_dir, true);

@@ -48,10 +48,13 @@ void Process9Bins(){
 	//std::string f = "fitDiagnostics.MC9bin.root";
 
 	std::string workdir = "./";
-	std::string f = "fitDiagnosticsSVOnly4BinCR.root";
+	//std::string f = "fitDiagnosticsSVOnly4BinCR.root";
 	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso", "Ch3CRSVHad", "Ch4CRSVHad"};
 	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso"};//, "Ch3CRSVHad", "Ch4CRSVHad"};
-	std::vector<string> chs = {"Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
+	//std::vector<string> chs = {"Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
+
+	std::string f = "fitDiagnostics1PhoDelayed.root";
+	std::vector<string> chs = {"Ch1CR1PhoBHEarly","Ch2CR1PhoBHLate","Ch3CR1PhonotBHEarly","Ch4SR1PhonotBHLate"}
 
 	TFile* tf = TFile::Open(f.c_str());
 	

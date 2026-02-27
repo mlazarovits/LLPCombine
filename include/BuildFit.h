@@ -117,7 +117,7 @@ class BuildFit{
 			return binname.substr(binname.size() - 2);
 		}
 
-		void sumMCBkgs();
+		void sumBkgs();
 
 		ch::Process create_proc(string mass, string analysis, string era, string channel, string proc, pair<int, string> bininfo, bool signal, double rate){
 			ch::Process newproc;

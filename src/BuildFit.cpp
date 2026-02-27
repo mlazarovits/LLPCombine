@@ -68,7 +68,7 @@ void BuildFit::PrepFit(JSONFactory* j, string signalPoint, vector<string> datake
 	_yields = j->j;
 	BuildCats(j);
 cout << "built cats" << endl;	
-	if(_asimov){
+	if(_asimov && !_datadriven){
 		cout << "building asimov data" << endl;
 		BuildAsimovData(j);
 	}
@@ -87,15 +87,13 @@ cout << "built cats" << endl;
 	else
 		GetBkgProcs(j);
 
-	cout << "got bkg procs" << endl;
-	for(auto b : _obs_rates) cout << b.first << " " << b.second << endl;
+	//sums over all bkg processes to get 1 bkg process
+	//there only is 1 bkg process bc the bkg estimation will be done in data
+	sumBkgs();
 	std::cout<<"Parsing signal point " << signalPoint << endl;
 	_signalPoint = signalPoint;
 	ExtractSignalDetails( _signalPoint);
-	SetObservations();
-	cout << "got obs" << endl;
 	SetSignalRates();
-	cout << "finished prep" << endl;
 }
 
 
@@ -128,7 +126,7 @@ void BuildFit::SetSignalRates(){
 }
 
 //create 1 bkg process that will behave like the bkg process from data in the datacard
-void BuildFit::sumMCBkgs(){
+void BuildFit::sumBkgs(){
 	string newproc = "bkg";
 	for(auto bin : _bins_superset){
 		double wt_yield = 0;
@@ -222,20 +220,17 @@ void BuildFit::BuildABCDFitChannelToChannel(){
 	}
 	//set observations based on which bins were specified in fit config	
 	cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {_bkg_proc}, _cats, false);
-        cb.ForEachObs([&](ch::Observation *x){
-            x->set_rate(_obs_rates[x->bin()]);
-        });
 	//initialize rate of each process to 1 (bkg procs only rn) across all bins
 	//such that rate * rateParam = expectation in each bin
         cb.ForEachProc([&](ch::Process *x){
             x->set_rate(1.);
         });
-	
 	//only applies ABCD treatment to background processes
 	for(auto chit = _abcd_ch_ass.begin(); chit != _abcd_ch_ass.end(); chit++){
 		string sr_ch = chit->first;
 		vector<string> cr_chs = chit->second;
 		vector<string> cr_bins;
+		cout << "sr_ch " << sr_ch << endl;
 		//set rates of cr channels to be their nominal expected yield
 		for(auto cr_ch : cr_chs){
 			//assuming only one bin per channel right now
@@ -246,9 +241,13 @@ void BuildFit::BuildABCDFitChannelToChannel(){
 			cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
 
 		}
+		//for a datadriven asimov fit (ie when the SR is blinded), set the observed yields in the SR bins to the expectation
 		//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
 		//A_pred = B*(C/D) from A*D = B*C
 		string sr_bin = sr_ch+"00";
+		if(_asimov && _datadriven){
+			_obs_rates[sr_bin] = double(int(_obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]])));
+		}
 		//since the rates were initialized to the nominal yields for these bins
 		//these systmatics are initialized to 1 and can float
 		//get parameter names for CR bin rate params
@@ -271,10 +270,12 @@ void BuildFit::BuildABCDFit(){
 	cout << "analysis " << _signalDetails[0] << " channel " << _signalDetails[1] << endl;
 	//take channel 1 as the anchor channel, enforce expectation onto other channels
 	//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
-	//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel  
+	//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel 
+	cout << "# binass " << _abcd_bin_ass.size() << endl; 
 	for(auto binit = _abcd_bin_ass.begin(); binit != _abcd_bin_ass.end(); binit++){
 		string sr_bin = binit->first;
 		vector<string> cr_bins = binit->second; //convention is that these bins go [B, C, D]
+		cout << "sr bin " << sr_bin << endl;
 		//set rates of non-sr (cr) bins to be their nominal expected yield
 		for(auto cr_bin : cr_bins){
 			double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
@@ -297,6 +298,7 @@ void BuildFit::BuildABCDFit(){
 		for(int i = 1; i < (int)cr_bins.size(); i++)
 			cr_rateparams += ",scale_"+cr_bins[i];
 		//A_pred = B*(C/D) from A*D = B*C
+		cout << "_bkg_proc " << _bkg_proc << endl;
 		cb.cp().process({_bkg_proc}).bin({sr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
 					("(@0*@1/@2)",cr_rateparams)
 				);
@@ -397,7 +399,6 @@ std::vector<std::string> BuildFit::GetBkgProcs(JSONFactory* j){
 			}
 		}
 	}
-	sumMCBkgs();
 	return _bkgprocs;
 }
 std::vector<std::string> BuildFit::GetDataProcs(JSONFactory* j){

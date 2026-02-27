@@ -1,5 +1,6 @@
 #include <string>
 #include <vector>
+#include <TStyle.h>
 using std::vector;
 using std::string;
 
@@ -22,7 +23,8 @@ TCanvas* MakePlot(std::string targetPath, std::string ch, std::string title){
 	TH1D* hpre = (TH1D*) f->Get(("hpre"+ch).c_str());
 	TH1D* hpost = (TH1D*) f->Get(("hpostb"+ch).c_str());
 	TH1D* hdata = (TH1D*) f->Get(("hdata"+ch).c_str());
-	TLegend* leg = new TLegend(0.5,0.5,0.6,0.6);
+	TLegend* leg = new TLegend(0.7,0.7,0.8,0.9);
+	gStyle->SetOptStat(0000);
 
 	hpre->SetLineColor(kBlue);
 	hpre->SetLineWidth(2);
@@ -41,7 +43,6 @@ cout << "ch" << ch << endl;
 	for (int i = 1; i <= numBins; ++i) {
     double x = hdata->GetBinCenter(i); // Get the center of the bin for the x-coordinate
     double y = hdata->GetBinContent(i); // Get the bin content for the y-coordinate
-    cout << "data bin content " << y << endl;
     graph->SetPoint(i-1, x, y); // Set the point in the TGraph
     		if(y > maxy)
 			maxy = y;
@@ -56,7 +57,8 @@ cout << "ch" << ch << endl;
 	GetBinGrid(hpre->GetNbinsX(), bingrid);
 
 	for( int i=0; i<bingrid.size(); i++){
-		hpre->GetXaxis()->SetBinLabel(i+1, bingrid[i].c_str());
+		//hpre->GetXaxis()->SetBinLabel(i+1, bingrid[i].c_str());
+		//hpre->GetXaxis()->SetBinLabel(i+1, );
 		if(hpre->GetBinContent(i+1) > maxy)
 			maxy = hpre->GetBinContent(i+1);
 		if(hpost->GetBinContent(i+1) > maxy)
@@ -87,12 +89,14 @@ void Plot9Shapes(){
 	vector<TCanvas*> cvs;
 	//vector<string> chs = {"Ch1CRPho1PromptMedIso","Ch2CRPho2PromptMedIso","Ch3CRSVHad","Ch4CRSVHad"};
 	//vector<string> chs = {"Ch1CRPho1PromptMedIso","Ch2CRPho2PromptMedIso"};
-	vector<string> chs = {"Ch3CRSVHadLowDxy","Ch4CRSVHadHighDxy"};
+	//vector<string> chs = {"Ch3CRSVHadLowDxy","Ch4CRSVHadHighDxy"};
+
+	vector<string> chs = {"Pho1Delayed"};//{"Ch1CR1PhoBHEarly","Ch2CR1PhoBHLate","Ch3CR1PhonotBHEarly","Ch4SR1PhonotBHLate"};
 	for(auto ch : chs){
-		TCanvas* cv = MakePlot("SVcombinedBinHists.root", ch, ch+"_Data_4binfit");
+		TCanvas* cv = MakePlot("1PhoDelayedcombinedBinHists.root", ch, ch+"_Data_4binfit");
 		cvs.push_back(cv);
 	}
-	TFile* fout = new TFile("svonlyshapes.root","RECREATE");
+	TFile* fout = new TFile("1phodelayedshapes.root","RECREATE");
 	fout->cd();
 	for(auto cv : cvs)
 		cv->Write();
