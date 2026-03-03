@@ -226,40 +226,52 @@ void BuildFit::BuildABCDFitChannelToChannel(){
             x->set_rate(1.);
         });
 	//only applies ABCD treatment to background processes
+	//separate ABCD factors for each bin, bins in channel tied together with extra systematics
 	for(auto chit = _abcd_ch_ass.begin(); chit != _abcd_ch_ass.end(); chit++){
 		string sr_ch = chit->first;
-		vector<string> cr_chs = chit->second;
-		vector<string> cr_bins;
 		cout << "sr_ch " << sr_ch << endl;
-		//set rates of cr channels to be their nominal expected yield
-		for(auto cr_ch : cr_chs){
-			//assuming only one bin per channel right now
-			//TODO - update to accommodate multiple bins
-			string cr_bin = cr_ch+"00";
-			cr_bins.push_back(cr_bin);
-			double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
-			cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
+		vector<string> sr_bins = _abcd_bin_ass[sr_ch];
+		vector<string> cr_chs = chit->second;
+		for(auto sr_bin : sr_bins){
+			cout << "sr_bin " << sr_bin << endl;
+			vector<string> cr_bins;
+			string binidx = getBinIdx(sr_bin);
+			vector<string> cr_bins_matchidx; //get bins of CR channels that match this bin idx
+			//set rates of cr channels to be their nominal expected yield
+			for(auto cr_ch : cr_chs){
+				//assuming only one bin per channel right now
+				cr_bins = _abcd_bin_ass[cr_ch];
+				for(auto cr_bin : cr_bins){
+					if(getBinIdx(cr_bin) != binidx)
+						continue;
+					cr_bins_matchidx.push_back(cr_bin);
+					double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
+					cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
+				}
 
+			}
+			for(auto bin :  cr_bins_matchidx) cout << "match bin " << bin << endl;
+			//for a datadriven asimov fit (ie when the SR is blinded), set the observed yields in the SR bins to the expectation
+			//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
+			//A_pred = B*(C/D) from A*D = B*C
+			if(_asimov && _datadriven){
+				_obs_rates[sr_bin] = double(int(_obs_rates[cr_bins_matchidx[0]] * (_obs_rates[cr_bins_matchidx[1]] / _obs_rates[cr_bins_matchidx[2]])));
+			}
+
+
+			//since the rates were initialized to the nominal yields for these bins
+			//these systmatics are initialized to 1 and can float
+			//get parameter names for CR bin rate params
+			string cr_rateparams = "scale_"+cr_bins_matchidx[0];
+			for(int i = 1; i < (int)cr_bins_matchidx.size(); i++)
+				cr_rateparams += ",scale_"+cr_bins_matchidx[i];
+			//set prediction for sr bin
+			//A_pred = B*(C/D) from A*D = B*C
+			//tie all bins in this ABCD fit together for bkg prediction in SR bin
+			cb.cp().process({_bkg_proc}).bin({sr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
+						("(@0*@1/@2)",cr_rateparams)
+					);
 		}
-		//for a datadriven asimov fit (ie when the SR is blinded), set the observed yields in the SR bins to the expectation
-		//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
-		//A_pred = B*(C/D) from A*D = B*C
-		string sr_bin = sr_ch+"00";
-		if(_asimov && _datadriven){
-			_obs_rates[sr_bin] = double(int(_obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]])));
-		}
-		//since the rates were initialized to the nominal yields for these bins
-		//these systmatics are initialized to 1 and can float
-		//get parameter names for CR bin rate params
-		string cr_rateparams = "scale_"+cr_bins[0];
-		for(int i = 1; i < (int)cr_bins.size(); i++)
-			cr_rateparams += ",scale_"+cr_bins[i];
-		//set prediction for sr bin
-		//A_pred = B*(C/D) from A*D = B*C
-		//tie all bins in this ABCD fit together for bkg prediction in SR bin
-		cb.cp().process({_bkg_proc}).bin({sr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
-					("(@0*@1/@2)",cr_rateparams)
-				);
 
 	}
 	
