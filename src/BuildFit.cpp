@@ -360,12 +360,14 @@ ch::Categories BuildFit::BuildCats(JSONFactory* j){
 	}
 	return _cats;
 }
+//sets observation to sum of MC backgrounds (skips MC sig and data)
 std::map<std::string, float> BuildFit::BuildAsimovData(JSONFactory* j){
 	_obs_rates.clear();
 	//outer loop bin iterator
 	for (json::iterator it = j->j.begin(); it != j->j.end(); ++it){
 		//inner loop process iterator
 		std::string binname = it.key();
+		//cout << "binname " << binname << endl;
 		//make sure bin in json exists in yaml file
 		if(find(_bins_superset.begin(), _bins_superset.end(), binname) == _bins_superset.end())
 			continue;
@@ -376,6 +378,8 @@ std::map<std::string, float> BuildFit::BuildAsimovData(JSONFactory* j){
 			if( BFTool::ContainsAnySubstring( it2.key(), sigkeys)){ //does this skip data too?
 				continue;
 			}
+			//skip data obs
+			if(it2.key() == "data") continue;
 			else{
 				//get the wnevents, index 1 of array
 				json json_array = it2.value();
@@ -387,7 +391,7 @@ std::map<std::string, float> BuildFit::BuildAsimovData(JSONFactory* j){
 		_obs_rates[binname] = float(int(totalBkg));
 		if(_obs_rates[binname] == 0)
 			_obs_rates[binname] = 1e-8; //avoiding fit issues
-		//std::cout<<"adding totalbkg: "<<binname<<" "<< float(int(totalBkg))<< " " << _obs_rates[binname] << "\n";
+		std::cout<<"adding totalbkg: "<<binname<<" "<< float(int(totalBkg))<< " " << _obs_rates[binname] << "\n";
 	}
 	if(_obs_rates.size() < 1)
 		cout << "Error: no observation yields set. This may be due to a mismatch in binnames between the BFI json and the fit config yaml file" << endl;
