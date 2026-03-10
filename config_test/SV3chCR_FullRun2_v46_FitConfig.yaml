@@ -1,0 +1,121 @@
+#test fit config
+fit_name: "SV3chCR"
+asimov: True
+datadriven: False
+
+#main fit
+#naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch1CRHad:
+      - "Ch1CRHad00"
+      - "Ch1CRHad01"
+      - "Ch1CRHad02"
+      - "Ch1CRHad10"
+      - "Ch1CRHad20"
+      - "Ch1CRHad11"
+      - "Ch1CRHad12"
+      - "Ch1CRHad21"
+      - "Ch1CRHad22"
+    Ch2CRHad:
+      - "Ch2CRHad00"
+      - "Ch2CRHad01"
+      - "Ch2CRHad02"
+      - "Ch2CRHad10"
+      - "Ch2CRHad20"
+      - "Ch2CRHad11"
+      - "Ch2CRHad12"
+      - "Ch2CRHad21"
+      - "Ch2CRHad22"
+    Ch3CRLep:
+      - "Ch3CRLep00"
+      - "Ch3CRLep01"
+      - "Ch3CRLep02"
+      - "Ch3CRLep10"
+      - "Ch3CRLep20"
+      - "Ch3CRLep11"
+      - "Ch3CRLep12"
+      - "Ch3CRLep21"
+      - "Ch3CRLep22"
+  channel_association:
+    Ch1CRHad:
+      - "Ch2CRHad"
+      - "Ch3CRLep"
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys1:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad00"
+          - "Ch2CRHad00"
+  sys2:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad01"
+          - "Ch2CRHad01"
+  sys3:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape02"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad02"
+          - "Ch2CRHad02"
+  sys4:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad10"
+          - "Ch2CRHad10"
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape11"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad11"
+          - "Ch2CRHad11"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape12"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad12"
+          - "Ch2CRHad12"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape20"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad20"
+          - "Ch2CRHad20"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape21"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad21"
+          - "Ch2CRHad21"
+  sys9:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape22"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRHad22"
+          - "Ch2CRHad22"

@@ -1,0 +1,94 @@
+analysis:
+  name: "test_simple_bfi"
+  luminosity: 400.0
+  output_json: "testSimpleBFI.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET18"]
+
+baseline_cuts: &baseline_cuts
+  - "(selMet > 100)"
+  - "(selMet < 150)"
+  - "(SV_nLeptonic == 0)"
+  - "(SV_nHadronic == 0)"
+  
+#channel definitions
+Ch1Pho1CR: &Ch1Pho1CR
+  - "(nSelPhotons == 1)"
+  - "(rjr_Ms[0] < 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+
+Ch2Pho2CR: &Ch2Pho2CR
+  - "(nSelPhotons == 2)"
+  - "(rjr_Ms[0] < 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+
+#bin definitions
+bin00: &bin00
+  - "(rjr_Rs[0] < 0.5)"
+  - "(rjr_Ms[0] < 500)"
+
+bin10: &bin10
+  - "(rjr_Rs[0] < 0.5)"
+  - "(rjr_Ms[0] >= 500)"
+
+bin01: &bin01
+  - "(rjr_Rs[0] >= 0.5)"
+  - "(rjr_Ms[0] < 500)"
+
+bin11: &bin11
+  - "(rjr_Rs[0] >= 0.5)"
+  - "(rjr_Ms[0] >= 500)"
+
+#bin declarations
+bins:
+  Ch1Pho1CR00:
+    description: "Ch1Pho1CR00"
+    cuts:
+      - *baseline_cuts
+      - *Ch1Pho1CR
+      - *bin00
+  Ch1Pho1CR10:
+    description: "Ch1Pho1CR10"
+    cuts:
+      - *baseline_cuts
+      - *Ch1Pho1CR
+      - *bin10
+  Ch1Pho1CR01:
+    description: "Ch1Pho1CR01"
+    cuts:
+      - *baseline_cuts
+      - *Ch1Pho1CR
+      - *bin01
+  Ch1Pho1CR11:
+    description: "Ch1Pho1CR11"
+    cuts:
+      - *baseline_cuts
+      - *Ch1Pho1CR
+      - *bin11
+  Ch2Pho2CR00:
+    description: "Ch2Pho2CR00"
+    cuts:
+      - *baseline_cuts
+      - *Ch2Pho2CR
+      - *bin00
+  Ch2Pho2CR10:
+    description: "Ch2Pho2CR10"
+    cuts:
+      - *baseline_cuts
+      - *Ch2Pho2CR
+      - *bin10
+  Ch2Pho2CR01:
+    description: "Ch2Pho2CR01"
+    cuts:
+      - *baseline_cuts
+      - *Ch2Pho2CR
+      - *bin01
+  Ch2Pho2CR11:
+    description: "Ch2Pho2CR11"
+    cuts:
+      - *baseline_cuts
+      - *Ch2Pho2CR
+      - *bin11

@@ -1,0 +1,97 @@
+#test fit config
+fitname: "PhoSV_4binCR_MConly"
+asimov: True
+datadriven: False
+
+#main fit
+#naming convention: Ch#[CR/SR]IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch1CRPho1PromptMedIso:
+      - "Ch1CRPho1PromptMedIso00"
+      - "Ch1CRPho1PromptMedIso01"
+      - "Ch1CRPho1PromptMedIso10"
+      - "Ch1CRPho1PromptMedIso11"
+    Ch2CRPho2PromptMedIso:
+      - "Ch2CRPho2PromptMedIso00"
+      - "Ch2CRPho2PromptMedIso01"
+      - "Ch2CRPho2PromptMedIso10"
+      - "Ch2CRPho2PromptMedIso11"
+    Ch3CRSVHadLowDxy:
+      - "Ch3CRSVHadLowDxy00"
+      - "Ch3CRSVHadLowDxy01"
+      - "Ch3CRSVHadLowDxy10"
+      - "Ch3CRSVHadLowDxy11"
+    Ch4CRSVHadHighDxy:
+      - "Ch4CRSVHadHighDxy00"
+      - "Ch4CRSVHadHighDxy01"
+      - "Ch4CRSVHadHighDxy10"
+      - "Ch4CRSVHadHighDxy11"
+  channel_association:
+    Ch2CRPho2PromptMedIso:
+      - "Ch1CRPho1PromptMedIso"
+    Ch3CRSVHadLowDxy:
+      - "Ch4CRSVHadHighDxy"
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys0:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch3CRSVHadLowDxy00"
+          - "Ch4CRSVHadHighDxy00"
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRPho1PromptMedIso00"
+          - "Ch2CRPho2PromptMedIso00"
+  #sys1:
+  #    type: "lnN"
+  #    name: "Ch4CRSVHadHighDxyNorm"
+  #    init_val: 1.5 
+  #    bins:
+  #        - "Ch3CRSVHadLowDxy00"
+  #        - "Ch4CRSVHadHighDxy00"
+  #        - "Ch3CRSVHadLowDxy01"
+  #        - "Ch4CRSVHadHighDxy01"
+  #        - "Ch3CRSVHadLowDxy10"
+  #        - "Ch4CRSVHadHighDxy10"
+  #        - "Ch3CRSVHadLowDxy11"
+  #        - "Ch4CRSVHadHighDxy11"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRPho1PromptMedIso01"
+          - "Ch2CRPho2PromptMedIso01"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRPho1PromptMedIso10"
+          - "Ch2CRPho2PromptMedIso10"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch1Ch2Shape11"
+      init_val: 1.05 
+      bins:
+          - "Ch1CRPho1PromptMedIso11"
+          - "Ch2CRPho2PromptMedIso11"

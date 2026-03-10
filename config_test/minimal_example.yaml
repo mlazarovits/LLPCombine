@@ -1,0 +1,18 @@
+# Minimal LLPCombine configuration example
+# This is the simplest possible configuration
+
+analysis:
+  name: "minimal_test"
+  luminosity: 400.0
+  output_json: "minimal_output.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets"]
+  signals: ["gogoG"]
+
+bins:
+  single_bin:
+    description: "Simple analysis bin"
+    cuts:
+      - "nSelPhotons >= 1"
+      - "rjr_Mr[1] > 1000"

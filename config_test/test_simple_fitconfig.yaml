@@ -1,0 +1,52 @@
+#test fit config
+fit_name: "simple-fit"
+asimov: False
+datadriven: True
+
+#main fit
+#naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch1Pho1CR:
+      - "Ch1Pho1CR00"
+      - "Ch1Pho1CR10"
+      - "Ch1Pho1CR01"
+      - "Ch1Pho1CR11"
+    Ch2Pho2CR:
+      - "Ch2Pho2CR00"
+      - "Ch2Pho2CR10"
+      - "Ch2Pho2CR01"
+      - "Ch2Pho2CR11"
+        #Ch3CR:
+        #  - "Ch3CR00"
+        #  - "Ch3CR10"
+        #  - "Ch3CR01"
+        #  - "Ch3CR11"
+        #Ch4CR:
+        #  - "Ch4CR00"
+        #  - "Ch4CR10"
+        #  - "Ch4CR01"
+        #  - "Ch4CR11"
+  channel_association:
+    Ch1Pho1CR:
+      - "Ch2Pho2CR"
+        #- "Ch4CR"
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+ABCD_fit:
+  bin_association:
+    Ch1Pho1CR11: #SR bin or bin to predict yield
+      - "Ch1Pho1CR00"
+      - "Ch1Pho1CR10"
+      - "Ch1Pho1CR01"
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  sys1:
+      type: "lnN"
+      name: "Ch1Pho1CRCh2Pho2CRShape01"
+      init_val: 1.05 
+      bins:
+          - "Ch1Pho1CR01"
+          - "Ch2Pho2CR01"
