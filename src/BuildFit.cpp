@@ -189,8 +189,6 @@ void BuildFit::BuildShapeTransferFit(){
 		vector<string> buoy_chs = chit->second;
 		vector<string> anchor_bins = _shape_bin_ass.at(anchor_ch);
 		//cout << "sys - anchor ch " << anchor_ch << " anchor bin " << anchor_bins[0] << endl;
-		//TODO - add "anchor bin" option to fit config
-		//assuming anchor_bin in anchor_ch is lower-left hand bin00 summed over all processes
 		double anchorch_anchorbin_tot_yield = getTotYield(anchor_ch+_shape_anchor_bin);
 		for(auto buoy_ch : buoy_chs){
 			//cout << "sys - buoy ch anchor bin " << buoy_bins[0] << endl;
@@ -279,6 +277,18 @@ void BuildFit::BuildABCDFitChannelToChannel(){
 
 //BuildABCD - MsRs ABCD within one channel
 void BuildFit::BuildABCDFit(){
+	//check that channel association exists within ABCD fit config
+	if(_abcd_bin_ass.size() < 1){
+		cout << "No channel association specified for ABCD fit. This fit config will not be written. Returning." << endl;
+		return;
+	}
+	//set observations based on which bins were specified in fit config	
+	cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {_bkg_proc}, _cats, false);
+	//initialize rate of each process to 1 (bkg procs only rn) across all bins
+	//such that rate * rateParam = expectation in each bin
+        cb.ForEachProc([&](ch::Process *x){
+            x->set_rate(1.);
+        });
 	cout << "analysis " << _signalDetails[0] << " channel " << _signalDetails[1] << endl;
 	//take channel 1 as the anchor channel, enforce expectation onto other channels
 	//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
@@ -288,23 +298,34 @@ void BuildFit::BuildABCDFit(){
 		string sr_bin = binit->first;
 		vector<string> cr_bins = binit->second; //convention is that these bins go [B, C, D]
 		cout << "sr bin " << sr_bin << endl;
+		/*
 		//set rates of non-sr (cr) bins to be their nominal expected yield
 		for(auto cr_bin : cr_bins){
 			double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
 			ch::Process crbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],_bkg_proc,make_pair(_invcats[cr_bin],cr_bin), false, bkgrate_cr);
 			cb.InsertProcess(crbin_proc);
 		}
-
 		//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
 		//A_pred = B*(C/D) from A*D = B*C
-		double sr_exp = _obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]]);
-		ch::Process srbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],_bkg_proc,make_pair(_invcats[sr_bin],sr_bin), false, sr_exp);
-		cb.InsertProcess(srbin_proc);
+		//double sr_exp = _obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]]);
+		//ch::Process srbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],_bkg_proc,make_pair(_invcats[sr_bin],sr_bin), false, sr_exp);
+		//cb.InsertProcess(srbin_proc);
+		*/
+		//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
+		//A_pred = B*(C/D) from A*D = B*C
+		if(_asimov && _datadriven){
+			_obs_rates[sr_bin] = double(int(_obs_rates[cr_bins[0]] * (_obs_rates[cr_bins[1]] / _obs_rates[cr_bins[2]])));
+		}
 
 		//tie all bins in this ABCD fit together
 		//since the rates were initialized to the nominal yields for these bins
 		//these systmatics at initialized to 1
-		cb.cp().process({_bkg_proc}).bin(cr_bins).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init(cr_bins, 1));
+		//cb.cp().process({_bkg_proc}).bin(cr_bins).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init(cr_bins, 1));
+		for(auto cr_bin : cr_bins){
+			double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
+			cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
+		}
+
 		//set prediction for sr bin
 		string cr_rateparams = "scale_"+cr_bins[0];
 		for(int i = 1; i < (int)cr_bins.size(); i++)

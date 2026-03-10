@@ -64,11 +64,11 @@ int main(int argc, char* argv[]){
 	//if(find(signals.begin(), signals.end(), signal) == signals.end())
 	//	return -1;
 
+	std::string datacard_dir = "datacards";
 	for( long unsigned int i=0; i<1;i++){//signals.size(); i++){
 		BuildFit BF(inconfig);
 		string fitname = BF.GetFitName();
 		std::cout << "fitname " << fitname << std::endl;
-		std::string datacard_dir = "datacards";
 		if(fitname.size() > 1)
 			datacard_dir += "_"+fitname;
 		datacard_dir += "/"+signals[i];
@@ -77,18 +77,20 @@ int main(int argc, char* argv[]){
 		//recreate datacards
 		std::filesystem::remove_all(dir_path);
 		std::filesystem::create_directories( datacard_dir );
-		//one BF instances per signal point - creates one CH object and therefore one datacard per signal point
 		cout << "sig " << signals[i] << endl;
+		//one BF instances per signal point - creates one CH object and therefore one datacard per signal point
 		BF.PrepFit(j, signals[i]);
 		//do fit - function won't do anything if their corresponding section in the config yaml isn't filled
 		BF.BuildShapeTransferFit();
-		//needs to come after fit initialization because asimov observations are set differently
-		//depending on which fit is run (for now)
-		BF.BuildABCDFitChannelToChannel();
 		BF.SetObservations(); 
 		BF.DoSystematics();
 		//write datacard
 		BF.WriteDatacard(datacard_dir, true);
+
+
+		//needs to come after fit initialization because asimov observations are set differently
+		//depending on which fit is run (for now)
+		//BF.BuildABCDFitChannelToChannel();
 	}
 
 	/*
