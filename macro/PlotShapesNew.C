@@ -23,11 +23,12 @@ TCanvas* MakePlot(std::string targetPath, std::string ch, std::string title){
 	TH1D* hpre = (TH1D*) f->Get(("hpre"+ch).c_str());
 	TH1D* hpost = (TH1D*) f->Get(("hpostb"+ch).c_str());
 	TH1D* hdata = (TH1D*) f->Get(("hdata"+ch).c_str());
-	TLegend* leg = new TLegend(0.7,0.7,0.8,0.9);
-	gStyle->SetOptStat(0000);
+	TLegend* leg = new TLegend(0.72,0.66,0.88,0.9);
+	leg->SetMargin(0.25);
 
 	hpre->SetLineColor(kBlue);
 	hpre->SetLineWidth(2);
+	hpre->GetXaxis()->SetLabelSize(0.06);
 	//hpre->SetMarkerStyle(8);
 	leg->AddEntry(hpre,"Prefit","l");
 
@@ -51,14 +52,11 @@ cout << "ch" << ch << endl;
 	graph->SetMarkerColor(kBlack); // Blue markers
 	leg->AddEntry(graph,"data","p");
 
-	//std::vector<std::string> bingrid = {"00","01","02","10","11","12","20","21","22"};
-	//std::vector<std::string> bingrid = {"00","10","20","01","11","21","02","12","22"};
 	vector<string> bingrid;
 	GetBinGrid(hpre->GetNbinsX(), bingrid);
 
 	for( int i=0; i<bingrid.size(); i++){
-		//hpre->GetXaxis()->SetBinLabel(i+1, bingrid[i].c_str());
-		//hpre->GetXaxis()->SetBinLabel(i+1, );
+		hpre->GetXaxis()->SetBinLabel(i+1, bingrid[i].c_str());
 		if(hpre->GetBinContent(i+1) > maxy)
 			maxy = hpre->GetBinContent(i+1);
 		if(hpost->GetBinContent(i+1) > maxy)
@@ -76,7 +74,7 @@ cout << "ch" << ch << endl;
 	return cv;	
 }
 
-void Plot9Shapes(){
+void PlotShapesNew(string infile, string ofilename = "test", string ohistname = "fit"){
 	//automcfit  automconlyfit  basefit  bbbfit  MClnN  mclnNupdn
 
 	//MakePlot("basefit","Base shape as lnNs, uncertainty from up/down shape");
@@ -91,12 +89,14 @@ void Plot9Shapes(){
 	//vector<string> chs = {"Ch1CRPho1PromptMedIso","Ch2CRPho2PromptMedIso"};
 	//vector<string> chs = {"Ch3CRSVHadLowDxy","Ch4CRSVHadHighDxy"};
 
-	vector<string> chs = {"Ch1CR1PhoBHEarly","Ch2CR1PhoBHLate","Ch3CR1PhonotBHEarly","Ch4SR1PhonotBHLate"};
+	//vector<string> chs = {"Ch1CR1PhoBHEarly","Ch2CR1PhoBHLate","Ch3CR1PhonotBHEarly","Ch4SR1PhonotBHLate"};
+	std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso", "Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
 	for(auto ch : chs){
-		TCanvas* cv = MakePlot("1PhoDelayed2BincombinedBinHists.root", ch, ch+"_Data_ABCDfit");
+		TCanvas* cv = MakePlot(infile, ch, ch+"_"+ohistname);
 		cvs.push_back(cv);
 	}
-	TFile* fout = new TFile("1phodelayed2binshapes_asimov.root","RECREATE");
+	TFile* fout = new TFile((ofilename+".root").c_str(),"RECREATE");
+	cout << "writing shape hists to " << fout->GetName() << endl;
 	fout->cd();
 	for(auto cv : cvs)
 		cv->Write();
