@@ -8,7 +8,7 @@ JSONFactory::JSONFactory(std::map<std::string, Bin*> analysisbins){
 		//std::map<std::string, Process* > bkgprocs = it.second->bkgProcs;
 		std::map<std::string, Process* > combinedprocs = it.second->combinedProcs;
 		std::map<std::string, Process* > signals = it.second->signals;
-		std::map<std::string, Process* > dataprocs = it.second->dataProcs;
+		std::pair<std::string, Process* > data = it.second->data;
 		for(const auto& it2: combinedprocs ){
 			std::string procname = it2.first;
 			j[binname][procname] = { it2.second->nevents, it2.second->wnevents, it2.second->staterror };
@@ -17,9 +17,10 @@ JSONFactory::JSONFactory(std::map<std::string, Bin*> analysisbins){
 			std::string procname = it2.first;
 			j[binname][procname] = { it2.second->nevents, it2.second->wnevents, it2.second->staterror };
 		}
-		for(const auto& it2: dataprocs){ 
-			std::string procname = it2.first;
-			j[binname][procname] = { it2.second->nevents, it2.second->wnevents, it2.second->staterror };
+		//data - if specified
+		if(data.second != nullptr){
+			std::string procname = data.first;
+			j[binname][procname] = { data.second->nevents, data.second->wnevents, data.second->staterror };
 		}
 	}
 }

@@ -1,0 +1,188 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "PhoSV_4binCR_v46_MConly"
+  luminosity: 400.0
+  output_json: "PhoSV_4binCR_v46_MConly.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+
+baseline_cuts: &baseline_cuts
+  - "(selMet > 150)" 
+
+CRHighdxyHad: &CRHighdxyHad
+  - "(HadronicSV_dxySig[0] < 1000) && (HadronicSV_dxySig[0] >= 600 )"
+
+CRLowdxyHad: &CRLowdxyHad
+  - "(HadronicSV_dxySig[0] < 600 && HadronicSV_dxySig[0] >= 100)"
+
+nHad1: &nHad1
+  - "(SV_nHadronic >= 1) && (SV_nLeptonic == 0) && (nSelPhotons == 0 )"
+nPho1: &nPho1
+  - "(nSelPhotons == 1 ) && (SV_nLeptonic == 0) && (SV_nHadronic == 0)"
+nPho2: &nPho2
+  - "(nSelPhotons == 2 ) && (SV_nLeptonic == 0) && (SV_nHadronic == 0)"
+
+pho1Prompt: &pho1Prompt
+  - "selPhoWTimeSig[0] < 2.5 && selPhoWTimeSig[0] > -2.5"
+  
+#non iso sideband (can split into MedIso1 and MedIso2 when barrel discr is trained)
+pho1MedIso: &pho1MedIso
+  - " ( (selPhoEta[0] < 1.479 && selPhoEta[0] > -1.479) && !((selPhoEcalRHSumEtConeDR04[0] < 10.) && (selPhoHadTowOverEM[0] < 0.02) && (selPhoTrkSumPtSolidConeDR04[0] < 6.) ) ) || ( (selPhoEta[0] < -1.479 || selPhoEta[0] > 1.479 ) && ( selPho_isoANNScore[0] < 0.0033837) ) "
+
+pho2PromptPrompt: &pho2PromptPrompt
+  - "(selPhoWTimeSig[0] < 2.5 && selPhoWTimeSig[0] > -2.5) && (selPhoWTimeSig[1] < 2.5 && selPhoWTimeSig[1] > -2.5)"
+
+#non iso sideband (can split into MedIso1 and MedIso2 when barrel discr is trained)
+#at least 1 med iso photon
+pho2MedIso: &pho2MedIso
+  - " ( ((selPhoEta[0] < 1.479 && selPhoEta[0] > -1.479) && !((selPhoEcalRHSumEtConeDR04[0] < 10.) && (selPhoHadTowOverEM[0] < 0.02) && (selPhoTrkSumPtSolidConeDR04[0] < 6.)) ) || ( (selPhoEta[0] < -1.479 || selPhoEta[0] > 1.479 ) && ( selPho_isoANNScore[0] < 0.0033837)) ) || ( ((selPhoEta[1] < 1.479 && selPhoEta[1] > -1.479) && ((selPhoEcalRHSumEtConeDR04[1] < 10.) && (selPhoHadTowOverEM[1] < 0.02) && (selPhoTrkSumPtSolidConeDR04[1] < 6.)) ) || ( (selPhoEta[1] < -1.479 || selPhoEta[1] > 1.479 ) && ( selPho_isoANNScore[1] < 0.0033837))  ) "
+
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+    
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] < 1500) && (rjr_Rs[1] < 0.2)"
+b10: &b10
+  - "(rjr_Ms[1] >= 1500) && (rjr_Rs[1] < 0.2)"
+b01: &b01
+  - "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] < 1500) && (rjr_Rs[1] >= 0.2)"
+b11: &b11
+  - "(rjr_Ms[1] >= 1500) && (rjr_Rs[1] >= 0.2)"
+
+
+bins:
+  Ch1CRPho1PromptMedIso00:
+    cuts:
+      - *baseline_cuts
+      - *nPho1
+      - *Cleaning
+      - *kin
+      - *pho1Prompt
+      - *pho1MedIso
+      - *b00
+  Ch1CRPho1PromptMedIso10:
+      - *baseline_cuts
+      - *nPho1
+      - *Cleaning
+      - *kin
+      - *pho1Prompt
+      - *pho1MedIso
+      - *b10
+  Ch1CRPho1PromptMedIso01:
+      - *baseline_cuts
+      - *nPho1
+      - *Cleaning
+      - *kin
+      - *pho1Prompt
+      - *pho1MedIso
+      - *b01
+  Ch1CRPho1PromptMedIso11:
+      - *baseline_cuts
+      - *nPho1
+      - *Cleaning
+      - *kin
+      - *pho1Prompt
+      - *pho1MedIso
+      - *b11
+
+  Ch2CRPho2PromptMedIso00:
+    cuts:
+      - *baseline_cuts
+      - *nPho2
+      - *Cleaning
+      - *kin
+      - *pho2PromptPrompt
+      - *pho2MedIso
+      - *b00
+  Ch2CRPho2PromptMedIso10:
+      - *baseline_cuts
+      - *nPho2
+      - *Cleaning
+      - *kin
+      - *pho2PromptPrompt
+      - *pho2MedIso
+      - *b10
+  Ch2CRPho2PromptMedIso01:
+      - *baseline_cuts
+      - *nPho2
+      - *Cleaning
+      - *kin
+      - *pho2PromptPrompt
+      - *pho2MedIso
+      - *b01
+  Ch2CRPho2PromptMedIso11:
+      - *baseline_cuts
+      - *nPho2
+      - *Cleaning
+      - *kin
+      - *pho2PromptPrompt
+      - *pho2MedIso
+      - *b11
+
+  Ch3CRSVHadLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *CRLowdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch3CRSVHadLowDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch3CRSVHadLowDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch3CRSVHadLowDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch4CRSVHadHighDxy00:
+    cuts:
+      - *baseline_cuts
+      - *CRHighdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch4CRSVHadHighDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *CRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch4CRSVHadHighDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *CRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch4CRSVHadHighDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *CRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b11

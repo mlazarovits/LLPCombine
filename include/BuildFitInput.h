@@ -58,12 +58,12 @@ class BuildFitInput{
 
 	//load helpers
 	void LoadBkg_KeyValue( std::string key, stringlist bkglist, double Lumi );
-	void LoadData_KeyValue( std::string key, stringlist datalist );
+	void LoadData_KeyValue( std::string key, stringlist datalist);
 	void LoadSig_KeyValue( std::string key, stringlist siglist, double Lumi );
 	
 	void LoadSig_byMap( map< std::string, stringlist>& SigDict, double Lumi );
 	void LoadBkg_byMap( map< std::string, stringlist>& BkgDict, double Lumi );
-	void LoadData_byMap( map< std::string, stringlist>& DataDict );
+	void LoadData_byMap( map< std::string, stringlist>& DataDict);
 	
 	void FilterRegions( std::string filterName, std::string filterCuts );
 	countmap CountRegions(nodemap& filtered_df);
@@ -71,6 +71,14 @@ class BuildFitInput{
 	errormap ComputeStatError( countmap countResults, map< std::string, double >& evtwt ); //older method with const same evt weights
 	errormap ComputeStatError( summap sumResults);//proper way with sum of wts squared
 
+
+	bool _unblind = false;
+	void SetUnblind(bool u){
+		_unblind = u;
+	       if(_unblind){
+	       	cout << "WARNING!!!! unblinding SR yields!!!!!" << endl;
+ 		}		
+	}
 	
 	//bin objects
 	std::map<std::string, Bin*> analysisbins{};

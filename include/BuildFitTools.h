@@ -37,11 +37,8 @@ class Bin{
 	std::map<std::string, Process*> bkgProcs{};
 	std::map<std::string, Process*> combinedProcs{};
 	std::map<std::string, Process*> signals{};
-	std::map<std::string, Process*> dataProcs{};
-
 	std::pair<std::string, Process*> totalBkg{};
-	std::pair<std::string, Process*> totalData{};
-
+	std::pair<std::string, Process*> data{};
 
 };
 

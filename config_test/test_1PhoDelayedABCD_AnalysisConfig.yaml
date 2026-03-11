@@ -1,0 +1,110 @@
+analysis:
+  name: "test_1PhoDelayed"
+  luminosity: 136
+  output_json: "test_1PhoDelayedABCD_ValYields.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET17"]
+
+baseline_cuts: &baseline_cuts
+  - "(selMet > 150)"
+  - "(SV_nLeptonic == 0)"
+  - "(SV_nHadronic == 0)"
+    #- "(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 == 1)"
+    #- "(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight == 1)"
+    #- "(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)"
+    #- "(Trigger_PFMET120_PFMHT120_IDTight == 1)"
+    #- "(Flag_BadPFMuonFilter == 1)"
+    #- "(Flag_EcalDeadCellTriggerPrimitiveFilter == 1)"
+    #- "(Flag_HBHENoiseFilter == 1)"
+    #- "(Flag_HBHENoiseIsoFilter == 1)"
+    #- "(Flag_ecalBadCalibFilter == 1)"
+    #- "(Flag_eeBadScFilter == 1)"
+    #- "(Flag_goodVertices == 1)"
+  
+#channel definitions
+Ch1CR1PhoBHEarly: &Ch1CR1PhoBHEarly
+  - "(nSelPhotons == 1)"
+  - "(selPho_beamHaloCNNScore[0] >= 0.9999)"
+  - "(selPho_beamHaloCNNScore[0] < 0.99999)"
+  - "(selPhoWTimeSig[0] < -2.5)"
+
+Ch2CR1PhoBHLate: &Ch2CR1PhoBHLate
+  - "(nSelPhotons == 1)"
+  - "(selPho_beamHaloCNNScore[0] >= 0.9999)"
+  - "(selPho_beamHaloCNNScore[0] < 0.99999)"
+  - "(selPhoWTimeSig[0] > 2.5)"
+
+Ch3CR1PhonotBHEarly: &Ch3CR1PhonotBHEarly
+  - "(nSelPhotons == 1)"
+  - "(selPho_beamHaloCNNScore[0] >= 0.917252)"
+  - "(selPho_beamHaloCNNScore[0] < 0.9999)"
+  - "(selPhoWTimeSig[0] < -2.5)"
+
+Ch4SR1PhonotBHLate: &Ch4SR1PhonotBHLate
+  - "(nSelPhotons == 1)"
+  - "(selPho_beamHaloCNNScore[0] >= 0.917252)"
+  - "(selPho_beamHaloCNNScore[0] < 0.9999)"
+  - "(selPhoWTimeSig[0] > 2.5)"
+
+
+#bin definitions
+bin00: &bin00
+  - "(rjr_Ms[0] >= 700) && (rjr_Ms[0] < 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+bin10: &bin10
+  - "(rjr_Ms[0] >= 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+
+#bin declarations
+bins:
+  Ch1CR1PhoBHEarly00:
+    description: "Ch1CR1PhoBHEarly00"
+    cuts:
+      - *baseline_cuts
+      - *Ch1CR1PhoBHEarly
+      - *bin00
+  Ch1CR1PhoBHEarly10:
+    description: "Ch1CR1PhoBHEarly10"
+    cuts:
+      - *baseline_cuts
+      - *Ch1CR1PhoBHEarly
+      - *bin10
+  Ch2CR1PhoBHLate00:
+    description: "Ch2CR1PhoBHLate00"
+    cuts:
+      - *baseline_cuts
+      - *Ch2CR1PhoBHLate
+      - *bin00
+  Ch2CR1PhoBHLate10:
+    description: "Ch2CR1PhoBHLate10"
+    cuts:
+      - *baseline_cuts
+      - *Ch2CR1PhoBHLate
+      - *bin10
+  Ch3CR1PhonotBHEarly00:
+    description: "Ch3CR1PhonotBHEarly00"
+    cuts:
+      - *baseline_cuts
+      - *Ch3CR1PhonotBHEarly
+      - *bin00
+  Ch3CR1PhonotBHEarly10:
+    description: "Ch3CR1PhonotBHEarly10"
+    cuts:
+      - *baseline_cuts
+      - *Ch3CR1PhonotBHEarly
+      - *bin10
+  Ch4SR1PhonotBHLate00:
+    description: "Ch4SR1PhonotBHLate00"
+    cuts:
+      - *baseline_cuts
+      - *Ch4SR1PhonotBHLate
+      - *bin00
+  Ch4SR1PhonotBHLate10:
+    description: "Ch4SR1PhonotBHLate10"
+    cuts:
+      - *baseline_cuts
+      - *Ch4SR1PhonotBHLate
+      - *bin10

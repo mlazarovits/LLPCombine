@@ -22,8 +22,8 @@ class SampleTool{
 	
 	
 	void LoadBkgs( stringlist& bkglist );
-	void LoadSigs( stringlist& siglist );
 	void LoadData( stringlist& datalist );
+	void LoadSigs( stringlist& siglist );
 	
 	SampleTool();
 	

@@ -56,6 +56,9 @@ ProgramOptions ArgumentParser::Parse(int argc, char* argv[]) {
         else if (arg == "--dry-run") {
             options.dry_run = true;
         }
+        else if (arg == "--unblind") {
+            options.unblind = true;
+        }
         else if (arg.front() == '-') {
             std::cerr << "Warning: Unknown option: " << arg << std::endl;
         }
@@ -104,6 +107,7 @@ void ArgumentParser::PrintHelp(const std::string& program_name) const {
     std::cout << "  -l, --luminosity LUMI   Integrated luminosity (fb^-1)\n";
     std::cout << "      --verbosity LEVEL   Verbosity level (0-3)\n";
     std::cout << "      --dry-run           Validate configuration without processing\n\n";
+    std::cout << "      --unblind           Unblinds signal regions\n\n";
     std::cout << "Batch Processing Support:\n";
     std::cout << "  Multiple configs:       " << program_name << " config1.yaml config2.yaml config3.yaml\n";
     std::cout << "  Config list file:       " << program_name << " configs.txt (or .list)\n";

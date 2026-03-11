@@ -1,0 +1,125 @@
+# Comprehensive LLPCombine Analysis Configuration
+# Example with multiple signal regions and control regions
+
+analysis:
+  name: "Comprehensive_LLP_Search_2024"
+  luminosity: 400.0
+  output_json: "comprehensive_v36.json"
+  output_dir: "./results/"
+
+samples:
+  backgrounds:
+    - "Wjets"
+    - "Zjets" 
+    - "Gjets"
+    - "Top"
+    - "QCD"
+    - "VV"      # Diboson
+    - "TTGJets" # TTbar + photon
+  signals:
+    - "gogoG"   # Gluino pair production
+    - "gogoZ"   # Gluino to Z
+    - "sqsqG"   # Squark pair production
+
+# Define common cut building blocks for reuse
+common_cuts: &razor_base
+  - "rjr_Mr[1] > 500"     # Basic razor mass requirement
+  - "rjr_Rv[1] > 0.0"     # Basic razor variable requirement
+
+photon_quality: &photon_cuts
+  - "selPhoPt[0] > 200"  # Leading photon pT
+  - "selPhoEta[0] < 2.4" # Photon pseudorapidity
+
+# Analysis bins definition
+bins:
+  # Signal regions
+  G1MMT11j:
+    description: "Single photon, high mass, asymmetric jets (1+1)"
+    cuts:
+      - "nSelPhotons == 1"
+      - *photon_cuts
+      - "rjr_Mr[1] > 2750"
+      - "rjr_R[1] > 0.275"
+      - "rjr_Rv[1] > 0.3"
+      - "((rjrNJetsJa[1] == 1 && rjrNJetsJb[1] >= 1) || (rjrNJetsJa[1] >= 1 && rjrNJetsJb[1] == 1))"
+    
+  G1MMT22j:
+    description: "Single photon, high mass, symmetric high jets (2+2)"
+    cuts:
+      - "nSelPhotons == 1"
+      - *photon_cuts
+      - "rjr_Mr[1] > 2750"
+      - "rjr_R[1] > 0.275"
+      - "rjr_Rv[1] > 0.3"
+      - "rjrNJetsJa[1] >= 2"
+      - "rjrNJetsJb[1] >= 2"
+      
+  G2LLL:
+    description: "Two photons, lower mass threshold"
+    cuts:
+      - "nSelPhotons == 2"
+      - "selPhoPt[0] > 200"
+      - "selPhoPt[1] > 100"  # Sub-leading photon
+      - "rjr_Mr[1] > 2000"
+      - "rjr_R[1] > 0.2"
+      - "rjr_Rv[1] > 0.0"
+  
+  # Control regions for background estimation
+  G1LowMass:
+    description: "Single photon control region (low mass)"
+    cuts:
+      - "nSelPhotons == 1"
+      - *photon_cuts
+      - "rjr_Mr[1] > 1000"
+      - "rjr_Mr[1] < 2000"   # Mass sideband
+      - "rjr_R[1] > 0.1"
+      
+  G1LowR:
+    description: "Single photon control region (low R)"
+    cuts:
+      - "nSelPhotons == 1"
+      - *photon_cuts
+      - "rjr_Mr[1] > 2750"
+      - "rjr_R[1] > 0.1"
+      - "rjr_R[1] < 0.275"   # R sideband
+      - "rjr_Rv[1] > 0.3"
+
+# Systematic uncertainties
+systematics:
+  experimental:
+    - name: "luminosity"
+      type: "lnN"
+      value: 1.025
+      processes: ["all"]
+    - name: "trigger_efficiency"
+      type: "lnN"
+      value: 1.03
+      processes: ["signals"]
+    - name: "photon_id_efficiency"
+      type: "lnN"
+      value: 1.02
+      processes: ["all"]
+    - name: "jet_energy_scale"
+      type: "lnN"
+      value: 1.05
+      processes: ["backgrounds"]
+  
+  theoretical:
+    - name: "pdf_uncertainty"
+      type: "lnN"
+      value: 1.05
+      processes: ["backgrounds"]
+    - name: "scale_uncertainty"
+      type: "lnN"
+      value: 1.10
+      processes: ["signals"]
+    - name: "isr_uncertainty"
+      type: "lnN"
+      value: 1.03
+      processes: ["signals"]
+
+# Runtime options
+options:
+  verbosity: 2          # Detailed output
+  parallel: true        # Enable parallel processing
+  dry_run: false        # Actually run the analysis

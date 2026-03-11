@@ -4,7 +4,7 @@
 
 SampleTool::SampleTool(){
 
-	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v45/";
+	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
 	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim.root",
@@ -117,10 +117,49 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-2150_mN2-300_mN1-100_ct0p1_rjrskim_v43.root"};
  
 
-	MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
+	MasterDict["gogoGZ"] = {pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-1000_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-500_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-500_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2100_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2100_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2150_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2150_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2150_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2150_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2200_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2200_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1000_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1000_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1500_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1500_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2300_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2300_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2350_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2350_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2350_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2350_ct0p5_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
+		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"
+	};
+
+	//MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
 	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root"};
 
 
+	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
+	
+	MasterDict["MET16"] = { pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim.root"};
 	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v45.root",
                                 pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v45.root",
                                 pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v45.root",
@@ -137,27 +176,6 @@ SampleTool::SampleTool(){
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim_v45.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim_v45.root"};
 
-/*
-	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v45.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v45.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v45.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim_v45.root"};
-
-	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim_v45.root"};
-		
-	MasterDict["MET16"] = {pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim_v45.root",
-				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim_v45.root",
-				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim_v45.root",
-				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim_v45.root",
-				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim_v45.root"};
-*/
-	
-	
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){
 	// Clear any existing background dictionary
@@ -171,16 +189,6 @@ void SampleTool::LoadBkgs( stringlist& bkglist ){
 		} 
 		BkgDict[bkglist[i]] = MasterDict[bkglist[i]];		
 	}
-}
-void SampleTool::LoadData( stringlist& datalist ){
-        for( long unsigned int i=0; i<datalist.size(); i++){
-                //check if background exists
-                if( MasterDict.count(datalist[i]) == 0 ){
-                        std::cout<<"Data: "<<datalist[i]<<" not found ... skipping ...\n";
-                        continue;
-                }
-                DataDict[datalist[i]] = MasterDict[datalist[i]];
-        }
 }
 void SampleTool::LoadSigs( stringlist& siglist ){
 	// Clear any existing signal dictionary and keys
@@ -203,6 +211,16 @@ void SampleTool::LoadSigs( stringlist& siglist ){
 			//keylist.push_back( GetSignalTokens( s_strings[j] ) );
 			SignalKeys.push_back( BFTool::GetSignalTokens( s_strings[j] ) );
 		}
+	}
+}
+void SampleTool::LoadData( stringlist& datalist ){
+	for( long unsigned int i=0; i<datalist.size(); i++){
+		//check if data exists
+		if( MasterDict.count(datalist[i]) == 0 ){
+			std::cout<<"Data sample: "<<datalist[i]<<" not found ... skipping ...\n";
+			continue;
+		} 
+		DataDict[datalist[i]] = MasterDict[datalist[i]];		
 	}
 }
 void SampleTool::PrintDict( map<string,stringlist>& d ){

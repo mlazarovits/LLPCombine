@@ -1,0 +1,35 @@
+# Simple two-bin analysis for all lepton and hadron SVs 
+
+analysis:
+  name: "splitSVLepHad"
+  luminosity: 400.0
+  output_json: "splitSVLepHad.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets"]
+  signals: ["gogoZTest"]
+
+baseline_cuts: &sv_cuts
+  - "SV_passBaseline[0]" 
+  - "SV_tightZWindowSelection[0]"
+
+rjr_base_cuts: &rjr_cuts
+  - "rjr_Ms[1] > 2000"
+  - "rjr_Rs[1] > 0.2"
+
+bins:
+  hadronic_bin:
+    description: "hadronic SV bin"
+    cuts:
+      - *sv_cuts
+      - *rjr_cuts
+      - "SV_nHadronic == 1"
+
+  leptonic_bin:
+    description: "leptonic SV bin"
+    cuts:
+      - *sv_cuts
+      - *rjr_cuts
+      - "SV_nLeptonic == 1"
+
+

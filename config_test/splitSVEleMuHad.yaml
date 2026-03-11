@@ -1,0 +1,41 @@
+# Simple three-bin analysis for electron, muon and hadron SVs 
+
+analysis:
+  name: "splitSVEleMuHad"
+  luminosity: 400.0
+  output_json: "splitSVEleMuHad.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets"]
+  signals: ["gogoZTest"]
+
+baseline_cuts: &sv_cuts
+  - "SV_passBaseline[0]" 
+  - "SV_tightZWindowSelection[0]"
+
+rjr_base_cuts: &rjr_cuts
+  - "rjr_Ms[1] > 2000"
+  - "rjr_Rs[1] > 0.2"
+
+bins:
+  hadronic_bin:
+    description: "hadronic SV bin"
+    cuts:
+      - *sv_cuts
+      - *rjr_cuts
+      - "SV_nHadronic == 1"
+
+  electron_bin:
+    description: "dielectron SV bin"
+    cuts:
+      - *sv_cuts
+      - *rjr_cuts
+      - "SV_nElectron == 1"
+
+  muon_bin:
+    description: "dimuon SV bin"
+    cuts:
+      - *sv_cuts
+      - *rjr_cuts
+      - "SV_nMuon == 1"
+

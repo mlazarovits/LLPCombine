@@ -1,0 +1,68 @@
+#test fit config
+fitname: "SV_4binCR_MConly"
+asimov: True
+datadriven: False
+
+#main fit
+#naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  anchor_bin: "00"
+  bin_association:
+    Ch3CRSVHadLowDxy:
+      - "Ch3CRSVHadLowDxy00"
+      - "Ch3CRSVHadLowDxy01"
+      - "Ch3CRSVHadLowDxy10"
+      - "Ch3CRSVHadLowDxy11"
+    Ch4CRSVHadHighDxy:
+      - "Ch4CRSVHadHighDxy00"
+      - "Ch4CRSVHadHighDxy01"
+      - "Ch4CRSVHadHighDxy10"
+      - "Ch4CRSVHadHighDxy11"
+  channel_association:
+    Ch3CRSVHadLowDxy: #anchor
+      - "Ch4CRSVHadHighDxy" #buoy
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+#only apply to bkg for now
+#TODO - add procs field
+systematics:
+  #pin CR channels
+  sys1:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch3CRSVHadLowDxy00"
+          - "Ch4CRSVHadHighDxy00"
+  sys2:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch3CRSVHadLowDxy01"
+          - "Ch4CRSVHadHighDxy01"
+  sys3:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch3CRSVHadLowDxy10"
+          - "Ch4CRSVHadHighDxy10"
+  sys4:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape11"
+      init_val: 1.05 
+      bins:
+          - "Ch3CRSVHadLowDxy11"
+          - "Ch4CRSVHadHighDxy11"

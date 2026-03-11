@@ -13,8 +13,9 @@ struct ProgramOptions {
     bool help;
     bool dry_run;
     bool version;
+    bool unblind;
     bool batch_mode;  // New: indicates batch processing
-    
+
     ProgramOptions() : 
         output_dir(""),
         luminosity(-1.0),  // -1 indicates not set
@@ -22,6 +23,7 @@ struct ProgramOptions {
         help(false),
         dry_run(false),
         version(false),
+	unblind(false),
         batch_mode(false) {}
 };
 

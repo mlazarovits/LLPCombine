@@ -1,6 +1,3 @@
-
-#!/usr/bin/env python3
-
 import os
 import sys
 import argparse
@@ -46,8 +43,10 @@ def get_directories(path, verbose=False):
             print(f"Scanning directory: {path}")
         
         # Get all entries in the directory
-        all_entries = os.listdir(path)
-        
+        if(len(sigs) == 0):
+            all_entries = os.listdir(path)
+        else:
+            all_entries = sigs
         # Iterate through entries and check if they are directories
         for entry in all_entries:
             full_path = os.path.join(path, entry)
@@ -68,7 +67,6 @@ def get_directories(path, verbose=False):
         
     return directories
 
-<<<<<<< HEAD
 #datacard_dir = "datacards"
 #datacard_dir = "../datacards_22j"
 #datacard_dir = "../datacards_11j"
@@ -77,34 +75,24 @@ def get_directories(path, verbose=False):
 datacard_dir = "../datacards_sq"
 datacard_subdir_list = get_directories(datacard_dir)
 
+args = parser.parse_args()
+
+datacard_subdir_list = get_directories(args.directory, args.sigs)
 
 #print(datacard_subdir_list)
+match = "datacards_"
+endidx = -1
+if(args.directory.find("/") != -1):
+    endidx = args.directory.find("/")
+else:
+    endidx = len(args.directory)
+oname = args.directory[args.directory.find(match)+len(match):endidx]
+ofile = "output/Significances_"+oname+".txt"
 
 with open("../output/Significance_sq.txt", "w") as file:
     sig=-1;
     for subdir in datacard_subdir_list:
         f = rt.TFile.Open(datacard_dir+"/"+subdir+"/higgsCombine.Test.Significance.mH120.root")
-=======
-def extract_significance(datacard_dir, subdir, root_file_pattern, verbose=False):
-    """Extract significance value from ROOT file"""
-    root_file_path = os.path.join(datacard_dir, subdir, root_file_pattern)
-    
-    if verbose:
-        print(f"  Looking for ROOT file: {root_file_path}")
-    
-    if not os.path.exists(root_file_path):
-        if verbose:
-            print(f"  Warning: ROOT file not found: {root_file_path}")
-        return None
-    
-    try:
-        f = rt.TFile.Open(root_file_path)
-        if not f or f.IsZombie():
-            if verbose:
-                print(f"  Error: Cannot open ROOT file: {root_file_path}")
-            return None
-            
->>>>>>> ba44017 (Add comprehensive configuration system and batch processing)
         tree = f.Get("limit")
         if not tree:
             if verbose:

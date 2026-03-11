@@ -1,0 +1,77 @@
+# Simple two-bin analysis for all lepton and hadron SVs 
+
+analysis:
+  name: "testDelayedPhotonConfig"
+  luminosity: 4.0
+  output_json: "testDelayedPhotonConfig.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET18"]
+
+baseline_cuts: &baseline_cuts
+  - "selCMet > 150"
+  - "rjrPTS[0] < 150"
+  - "(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 == 1 || Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight == 1 || Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1 || Trigger_PFMET120_PFMHT120_IDTight == 1)"
+  - "(Flag_BadPFMuonFilter == 1 && Flag_EcalDeadCellTriggerPrimitiveFilter == 1 && Flag_HBHENoiseFilter == 1 && Flag_HBHENoiseIsoFilter == 1 && Flag_ecalBadCalibFilter == 1 && Flag_eeBadScFilter == 1 && Flag_goodVertices == 1)"
+
+CRdxyHad: &CRdxyHad
+  - "( HadronicSV_dxySig[0] > 100)"
+  - "(HadronicSV_dxySig[0] < 1000)"
+
+CRBHearly: &CRBHearly
+  - "(selPho_beamHaloCNNScore[0] > 0.92)"
+  - "(selPhoWTimeSig[0] < -2.5)"
+
+
+CRBHlate: &CRBHlate
+  - "(selPho_beamHaloCNNScore[0] > 0.92)"
+  - "(selPhoWTimeSig[0] > 2.5)"
+
+nPho1: &nPho1
+  - "(nSelPhotons == 1)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 700)"
+  - "(rjr_Ms[0] <1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+
+b10: &b10
+  - "(rjr_Ms[0] >= 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+	
+bins:
+  CRBHearly00:
+    description: "crbhearly00"
+    cuts:
+      - *baseline_cuts
+      - *nPho1
+      - *CRBHearly
+      - *b00
+  CRBHearly10:
+    description: "crbhearly10"
+    cuts:
+      - *baseline_cuts
+      - *nPho1
+      - *CRBHearly
+      - *b10
+  CRBHlate00:
+    description: "crbhlate00"
+    cuts:
+      - *baseline_cuts
+      - *nPho1
+      - *CRBHlate
+      - *b00
+  CRBHlate10:
+    description: "crbhlate10"
+    cuts:
+      - *baseline_cuts
+      - *nPho1
+      - *CRBHlate
+      - *b10
+
+
+
+
+

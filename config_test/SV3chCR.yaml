@@ -1,0 +1,168 @@
+# Simple two-bin analysis for all lepton and hadron SVs 
+
+analysis:
+  name: "SV3chCR"
+  luminosity: 136
+  output_json: "SV3chCR_FullRun2_v46.json"
+
+samples:
+  backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET18","MET17","MET16"]
+
+baseline_cuts: &baseline_cuts
+  #- "(selMet > 150) && (nSelPhotons == 0)" 
+  - "(selMet > 150)" 
+
+CRdxyHad: &CRdxyHad
+  - "( HadronicSV_dxySig[0] > 100) && (HadronicSV_dxySig[0] < 1000)"
+CRdxyLep: &CRdxyLep
+  - "( LeptonicSV_dxySig[0] > 100) && (LeptonicSV_dxySig[0] < 1000)"
+
+nHad1: &nHad1
+  - "(SV_nHadronic == 1) && (SV_nLeptonic == 0)"
+nLep1: &nLep1
+  - "(SV_nLeptonic == 1) && (SV_nHadronic == 0)"
+
+b00: &b00
+  - "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] >= 0.15) && (rjr_Rs[1] < 0.3)"
+b10: &b10
+  - "(rjr_Ms[1] >= 2000) &&(rjr_Ms[1] <3000) && (rjr_Rs[1] >= 0.15) &&(rjr_Rs[1] < 0.3)"
+b20: &b20
+  - "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] >= 0.15) && (rjr_Rs[1] < 0.3)"
+b01: &b01
+  - "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)"
+b11: &b11    
+  - "(rjr_Ms[1] >= 2000) && (rjr_Ms[1] <3000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)"
+b21: &b21    
+  - "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] >= 0.3) && (rjr_Rs[1] < 0.4)"
+b02: &b02
+  - "(rjr_Ms[1] >= 1000) && (rjr_Ms[1] <2000) && (rjr_Rs[1] > 0.4)"
+b12: &b12
+  - "(rjr_Ms[1] >= 2000) && (rjr_Ms[1] <3000) && (rjr_Rs[1] > 0.4)"
+b22: &b22    
+  - "(rjr_Ms[1] >= 3000) && (rjr_Rs[1] > 0.4)"
+
+ch1_cuts: &ch1_cuts
+  - "(selMet > 150) && ( HadronicSV_dxySig[0] > 100) && (HadronicSV_dxySig[0] < 1000) && (HadronicSV_dxySig[0] < 600) && (SV_nHadronic == 1) && (SV_nLeptonic == 0)"
+
+ch2_cuts: &ch2_cuts
+  - "(selMet > 150) && ( HadronicSV_dxySig[0] > 100) && (HadronicSV_dxySig[0] < 1000) && (HadronicSV_dxySig[0] >= 600) && (SV_nHadronic == 1) && (SV_nLeptonic == 0)"
+
+ch3_cuts: &ch3_cuts
+  - "(selMet > 150) && ( LeptonicSV_dxySig[0] > 100) && (LeptonicSV_dxySig[0] < 1000)  && (SV_nHadronic == 0) && (SV_nLeptonic == 1)"
+
+
+bins:
+  Ch1CRHad00:
+    cuts:
+      - *ch1_cuts
+      - *b00
+  Ch1CRHad10:
+    cuts:
+      - *ch1_cuts
+      - *b10
+  Ch1CRHad20:
+    cuts:
+      - *ch1_cuts
+      - *b20
+  Ch1CRHad01:
+    cuts:
+      - *ch1_cuts
+      - *b01
+  Ch1CRHad11:
+    cuts:
+      - *ch1_cuts
+      - *b11
+  Ch1CRHad21:
+    cuts:
+      - *ch1_cuts
+      - *b21
+  Ch1CRHad02:
+    cuts:
+      - *ch1_cuts
+      - *b02
+  Ch1CRHad12:
+    cuts:
+      - *ch1_cuts
+      - *b12
+  Ch1CRHad22:
+    cuts:
+      - *ch1_cuts
+      - *b22
+
+  Ch2CRHad00:
+    cuts:
+      - *ch2_cuts
+      - *b00
+  Ch2CRHad10:
+    cuts:
+      - *ch2_cuts
+      - *b10
+  Ch2CRHad20:
+    cuts:
+      - *ch2_cuts
+      - *b20
+  Ch2CRHad01:
+    cuts:
+      - *ch2_cuts
+      - *b01
+  Ch2CRHad11:
+    cuts:
+      - *ch2_cuts
+      - *b11
+  Ch2CRHad21:
+    cuts:
+      - *ch2_cuts
+      - *b21
+  Ch2CRHad02:
+    cuts:
+      - *ch2_cuts
+      - *b02
+  Ch2CRHad12:
+    cuts:
+      - *ch2_cuts
+      - *b12
+  Ch2CRHad22:
+    cuts:
+      - *ch2_cuts
+      - *b22
+
+  Ch3CRLep00:
+    cuts:
+      - *ch3_cuts
+      - *b00
+  Ch3CRLep10:
+    cuts:
+      - *ch3_cuts
+      - *b10
+  Ch3CRLep20:
+    cuts:
+      - *ch3_cuts
+      - *b20
+  Ch3CRLep01:
+    cuts:
+      - *ch3_cuts
+      - *b01
+  Ch3CRLep11:
+    cuts:
+      - *ch3_cuts
+      - *b11
+  Ch3CRLep21:
+    cuts:
+      - *ch3_cuts
+      - *b21
+  Ch3CRLep02:
+    cuts:
+      - *ch3_cuts
+      - *b02
+  Ch3CRLep12:
+    cuts:
+      - *ch3_cuts
+      - *b12
+  Ch3CRLep22:
+    cuts:
+      - *ch3_cuts
+      - *b22
+
+
