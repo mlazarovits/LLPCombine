@@ -150,7 +150,7 @@ SampleTool::SampleTool(){
 
 	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root"};
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
@@ -163,18 +163,7 @@ SampleTool::SampleTool(){
 	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v45.root",
                                 pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v45.root",
                                 pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v45.root",
-                                pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim_v45.root",
-				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim_v45.root",
-                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim_v45.root",
-                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim_v45.root",
-                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim_v45.root",
-                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim_v45.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim_v45.root"};
+                                pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim_v45.root"};
 
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){

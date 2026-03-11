@@ -45,6 +45,7 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 //need to give Lumi per year (ie if want 400 inv fb total for only 2018, give 400; if want 400 total for 2017+2018, give 200 per year)
 void BuildFitInput::LoadData_KeyValue( std::string key, stringlist datalist){
 	//RDF df("kuSkimTree", bkglist);
+	/*
 	for( unsigned int i=0; i< datalist.size(); i++){
 		std::string subkey = key+"_"+std::to_string(i);
 cout << "subkey " << subkey << endl;
@@ -71,6 +72,13 @@ cout << "subkey " << subkey << endl;
 		f->Close();
 		
 	}
+	*/
+	ROOT::RDataFrame df("kuSkimTree", datalist);
+	_base_rdf_DataDict[key] = std::make_unique<RNode>(df);
+	double wt{};
+        wt = 1.0;
+	auto tempdf = df.Define("evtwt", std::to_string(wt));
+	rdf_DataDict[key] = std::make_unique<RNode>(tempdf);
 }
 
 void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, double Lumi){
