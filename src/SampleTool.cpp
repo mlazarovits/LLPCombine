@@ -76,7 +76,6 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_gogoG_AODSIM_mGl-2000_mN2-500_mN1-1_ct0p1_rjrskim.root",    
 				pathPrefix+"SMS_SVIPM100_v31_gogoG_AODSIM_mGl-2000_mN2-500_mN1-250_ct0p1_rjrskim.root",  
 				pathPrefix+"SMS_SVIPM100_v31_gogoG_AODSIM_mGl-2500_mN2-1500_mN1-1000_ct0p1_rjrskim.root"};
-
 						   
 	MasterDict["gogoZ"] = {	pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-1500_mN2-500_mN1-100_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-1900_mN1-200_ct0p001_rjrskim.root",
@@ -93,7 +92,21 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p3_rjrskim.root"};
 	
-				   
+	MasterDict["gogoGZ"] = { pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-1000_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-500_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2100_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2200_mN1-2150_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2150_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-2250_mN1-2200_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-1200_mN1-500_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1000_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2000_mN1-1500_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2300_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2350_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2350_ct0p1_rjrskim.root",
+				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root"};			   
+
 	MasterDict["sqsqG"] = { pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-1700_mN2-1500_mN1-100_ct0p1_rjrskim_v43.root",
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-1700_mN2-300_mN1-100_ct0p1_rjrskim_v43.root",
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-1850_mN2-1650_mN1-100_ct0p1_rjrskim_v43.root",
@@ -134,11 +147,6 @@ SampleTool::SampleTool(){
 	//MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
 	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root"};
 
-	
-	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim.root",
-				pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim.root"};
 
 	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
@@ -152,6 +160,22 @@ SampleTool::SampleTool(){
 				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim.root",
 				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim.root",
 				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim.root"};
+	MasterDict["MET18"] = { pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018A_rjrskim_v45.root",
+                                pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018B_rjrskim_v45.root",
+                                pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018C_rjrskim_v45.root",
+                                pathPrefix+"MET_R18_SVIPM100_v31_MET_AOD_Run2018D_rjrskim_v45.root",
+				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim_v45.root",
+                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim_v45.root",
+                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim_v45.root",
+                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016G_rjrskim_v45.root",
+                                pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016H_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim_v45.root",
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim_v45.root"};
+
 }
 void SampleTool::LoadBkgs( stringlist& bkglist ){
 	// Clear any existing background dictionary

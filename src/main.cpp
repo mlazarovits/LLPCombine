@@ -81,7 +81,8 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	BFI->LoadData_byMap(ST->DataDict);
 	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
 	BFI->LoadSig_byMap(ST->SigDict, luminosity);
-	BFI->BuildScaledEvtWt(luminosity);
+	//BFI->BuildScaledEvtWt(luminosity);
+	
 
 		
 	// Create analysis bins from configuration
@@ -120,6 +121,8 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	errormap errorResults = BFI->ComputeStatError(countResults, BFI->bkg_evtwt);
 	errormap errorResults_S = BFI->ComputeStatError(countResults_S, BFI->sig_evtwt);
 	errormap errorResults_obs = BFI->ComputeStatError(countResults_obs, BFI->data_evtwt);
+	//errormap errorResults_obs = BFI->ComputeStatError(countResults_obs, 1);
+
 
 	// Aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects(countResults, sumResults, errorResults);
@@ -192,6 +195,7 @@ int main(int argc, char* argv[]) {
 			return 1;
 	};
 
+/*	
 	// Show batch mode status
 	if (options.batch_mode && options.verbosity >= 0) {
 		std::cout << "=== LLPCombine Batch Mode ===" << std::endl;
@@ -201,7 +205,7 @@ int main(int argc, char* argv[]) {
 		}
 		std::cout << std::endl;
 	}
-	
+*/	
 	// Process all configuration files
 	int total_processed = 0;
 	int total_failed = 0;
@@ -218,7 +222,7 @@ int main(int argc, char* argv[]) {
 			}
 		}
 	}
-	
+/*	
 	// Print batch summary
 	if (options.batch_mode) {
 		std::cout << "\n=== Batch Processing Summary ===" << std::endl;
@@ -227,6 +231,6 @@ int main(int argc, char* argv[]) {
 			std::cout << "Failed: " << total_failed << " files" << std::endl;
 		}
 	}
-	
+*/	
 	return (total_failed > 0) ? 1 : 0;
 }

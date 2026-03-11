@@ -80,9 +80,26 @@ pushd ../
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3ch --there
 
-dcdir=datacards_3ch_cleaned_v43
+#dcdir=datacards_3ch_cleaned_v43
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chv43cleaned --there
+
+#dcdir=datacards_3chPhoton_iso
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chPhoNiso --there
+
+#dcdir=datacards_ABCDpho1_BH
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .DataABCDPho1BH --there
+
+
+#dcdir=datacards_3chPhoton_iso_run2
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data6bin3chPhoNisoRun2 --there
+
+dcdir=datacards_SV9bin_run2
 combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
-combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chv43cleaned --there
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chSVRun2 --ther
 
 popd
 

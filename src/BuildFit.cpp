@@ -553,8 +553,8 @@ void BuildFit::BuildABCDFit(JSONFactory* j, std::string signalPoint, std::string
         std::string D = ABCDbins[3];
 
 	//set the fake proc rate in A to be multiplicative, not the observation
-        double bkgrateA = obs_rates[B]*(obs_rates[C]/obs_rates[D]);
-
+//        double bkgrateA = obs_rates[B]*(obs_rates[C]/obs_rates[D]);
+	double bkgrateA = obs_rates[B]*(obs_rates[D]/obs_rates[C]);
 	
         cb.AddObservations({"*"}, {signalDetails[0]}, {"13.6TeV"}, {signalDetails[1]}, cats);
         cb.AddProcesses(   {"*"}, {signalDetails[0]}, {"13.6TeV"}, {signalDetails[1]}, bkgprocs, cats, false);
@@ -584,15 +584,18 @@ void BuildFit::BuildABCDFit(JSONFactory* j, std::string signalPoint, std::string
 	);
      
 	//optional pin rates lognormals
-	cb.cp().bin({B}).AddSyst(cb, "lnN_"+B, "lnN", SystMap<>::init(1.001));
-	cb.cp().bin({C}).AddSyst(cb, "lnN_"+C, "lnN", SystMap<>::init(1.50));
+	cb.cp().bin({B}).AddSyst(cb, "lnN_"+B, "lnN", SystMap<>::init(1.50));
+	cb.cp().bin({C}).AddSyst(cb, "lnN_"+C, "lnN", SystMap<>::init(1.20));
 	cb.cp().bin({D}).AddSyst(cb, "lnN_"+D, "lnN", SystMap<>::init(1.50));
 
 
 	//create the A prediction bin
-	 cb.cp().bin({A}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
-          ("(@0*@1/@2)", "scale_"+B +",scale_"+C+ ",scale_"+D)
-      );
+	// cb.cp().bin({A}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
+        //  ("(@0*@1/@2)", "scale_"+B +",scale_"+C+ ",scale_"+D)
+    //  );
+    	cb.cp().bin({A}).AddSyst(cb, "scale_$BIN", "rateParam", SystMapFunc<>::init
+          ("(@0*@2/@1)", "scale_"+B +",scale_"+C+ ",scale_"+D)
+	);
 	cb.PrintAll();
         cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
 
@@ -717,12 +720,14 @@ void BuildFit::BuildMultiChannel9bin(JSONFactory* j, std::string signalPoint, st
         }
         //make ch2 normalization
         std::vector<std::string> ch2bins = channelMap["ch2"];
-	for(auto c : ch2bins) cout << c << endl;
-        cb.cp().bin(ch2bins).AddSyst(cb, "c2phoNorm", "rateParam", SystMap<>::init(0.115));
-	////std::vector<std::string> ch3bins = channelMap["ch3"];
-        ////cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.085));
-	////cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.44));
-	cout << "Writing to " << datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt" << endl;
+	std::vector<std::string> ch3bins = channelMap["ch3"];
+        cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.085));
+	cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.44));
+
+
+//	cb.cp().bin(ch2bins).AddSyst(cb, "c2lepNorm", "rateParam", SystMap<>::init(0.648));
+//        cb.cp().bin(ch3bins).AddSyst(cb, "c3lepNorm", "rateParam", SystMap<>::init(0.21));
+
         cb.WriteDatacard(datacard_dir+"/"+signalPoint+"/"+signalPoint+".txt");
 
 	
