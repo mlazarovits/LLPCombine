@@ -55,8 +55,8 @@ class BuildFit{
 		void SetObservations();
 		void SetSignalRates();
 		void BuildShapeTransferFit();
+		void BuildABCDFitSingleBin();
 		void BuildABCDFit();
-		void BuildABCDFitChannelToChannel();
 		void DoSystematics();
 		void WriteDatacard(string datacard_dir, bool verbose = false);
 
