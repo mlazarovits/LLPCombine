@@ -4,7 +4,10 @@
 
 SampleTool::SampleTool(){
 
-	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
+	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49_wSVs/";
+	MasterDict["gogoGZ"] = { pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-1200_mN1-500_ct0p1_rjrskim.root"};
+	
+	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
 	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim.root",
@@ -91,7 +94,8 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p001_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoZ_AODSIM_mGl-2000_mN2-400_mN1-350_ct0p3_rjrskim.root"};
-	
+
+	/*	
 	MasterDict["gogoGZ"] = { pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-1000_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-500_ct0p1_rjrskim.root",
@@ -106,6 +110,7 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2400_mN1-2350_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2350_ct0p1_rjrskim.root",
 				pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root"};			   
+	*/	
 
 	MasterDict["sqsqG"] = { pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-1700_mN2-1500_mN1-100_ct0p1_rjrskim_v43.root",
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-1700_mN2-300_mN1-100_ct0p1_rjrskim_v43.root",
@@ -116,7 +121,7 @@ SampleTool::SampleTool(){
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-2150_mN2-1950_mN1-100_ct0p1_rjrskim_v43.root",
 				pathPrefix+"SMS_SVIPM100_v31_sqsqG_AODSIM_mGl-2150_mN2-300_mN1-100_ct0p1_rjrskim_v43.root"};
  
-
+  /*
 	MasterDict["gogoGZ"] = {pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p1_rjrskim.root",
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1300_mN1-1000_ct0p5_rjrskim.root",
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2300_mN2-1600_mN1-1000_ct0p1_rjrskim.root",
@@ -143,14 +148,14 @@ SampleTool::SampleTool(){
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"
 	};
-
+*/
 	//MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
 	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root"};
 
 
 	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root"};
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
