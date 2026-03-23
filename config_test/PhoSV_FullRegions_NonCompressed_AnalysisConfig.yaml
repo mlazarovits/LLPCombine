@@ -1,0 +1,178 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "PhoSV_FullRegions_NonCompressed_v49_MConly"
+  luminosity: 400.0
+  output_json: "PhoSV_FullRegions_NonCompressed_v49_MConly.json"
+
+samples:
+  #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ_test"]
+  #data: []
+
+baseline_cuts: &baseline_cuts
+  - "(selMet > 150)" 
+
+nHad1: &nHad1
+  - "(SV_nHadronic >= 1) && (SV_nLeptonic == 0) && (nblTightIsoPhotons == 0 )"
+
+#dxy sideband
+CRLowdxyHad: &CRLowdxyHad
+  - "(HadronicSV_dxySig[0] < 1000)"
+  
+#dxy signal region
+SRHighdxyHad: &SRHighdxyHad
+  - "(HadronicSV_dxySig[0] >= 1000)"
+
+#to make orthogonal to SV regions (as much as possible for now...)
+nPhoge1: &nPhoge1
+  - "(SV_nHadronic == 0) && (SV_nLeptonic == 0) && (nBaseLinePhotons > 0)"
+
+#non iso sideband (med = loose not tight)
+#nbltightisophotons == 0  (could overlap with SV regions - SRs and CRs)
+phoMedIso: &phoMedIso
+  - "passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1" 
+
+#tight iso - prompt photon SR
+#> 0 tight iso photons
+phoTightIso: &phoTightIso
+  - "passNPhoGe1SelectionPromptTightIsoSR == 1" 
+
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+    
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] < 0.2)"
+b10: &b10
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] < 0.2)"
+b01: &b01
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] >= 0.2)"
+b11: &b11
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.2)"
+
+
+bins:
+  Ch1CRPhoPromptMedIso00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *phoMedIso
+      - *kin
+      - *b00
+  Ch1CRPhoPromptMedIso10:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *phoMedIso
+      - *kin
+      - *b10
+  Ch1CRPhoPromptMedIso01:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoMedIso
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch1CRPhoPromptMedIso11:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoMedIso
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch2SRPhoPromptTightIso00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch2SRPhoPromptTightIso10:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch2SRPhoPromptTightIso01:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch2SRPhoPromptTightIso11:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch3CRSVHadLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *CRLowdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch3CRSVHadLowDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch3CRSVHadLowDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch3CRSVHadLowDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch4SRSVHadHighDxy00:
+    cuts:
+      - *baseline_cuts
+      - *SRHighdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch4SRSVHadHighDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch4SRSVHadHighDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch4SRSVHadHighDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b11
