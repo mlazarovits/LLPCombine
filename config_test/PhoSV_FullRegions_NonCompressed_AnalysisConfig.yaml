@@ -8,7 +8,7 @@ analysis:
 
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
-  signals: ["gogoGZ_test"]
+  signals: ["gogoGZ_test"] 
   #data: []
 
 baseline_cuts: &baseline_cuts
