@@ -210,7 +210,7 @@ void BuildFit::BuildShapeTransferFit(){
 
 
 //BuildABCD - channel-to-channel ABCD
-void BuildFit::BuildABCDFitChannelToChannel(){
+void BuildFit::BuildABCDFit(){
 	//check that channel association exists within ABCD fit config
 	if(_abcd_ch_ass.size() < 1){
 		cout << "No channel association specified for ABCD fit. This fit config will not be written. Returning." << endl;
@@ -221,6 +221,7 @@ void BuildFit::BuildABCDFitChannelToChannel(){
 	//initialize rate of each process to 1 (bkg procs only rn) across all bins
 	//such that rate * rateParam = expectation in each bin
         cb.ForEachProc([&](ch::Process *x){
+		if(x->process() != _bkg_proc) return;
             x->set_rate(1.);
         });
 	//only applies ABCD treatment to background processes
@@ -276,7 +277,7 @@ void BuildFit::BuildABCDFitChannelToChannel(){
 }	
 
 //BuildABCD - MsRs ABCD within one channel
-void BuildFit::BuildABCDFit(){
+void BuildFit::BuildABCDFitSingleBin(){
 	//check that channel association exists within ABCD fit config
 	if(_abcd_bin_ass.size() < 1){
 		cout << "No channel association specified for ABCD fit. This fit config will not be written. Returning." << endl;
