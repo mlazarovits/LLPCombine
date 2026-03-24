@@ -36,7 +36,9 @@ SampleTool::SampleTool(){
                             pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
 
 	
-	
+	MasterDict["MET23"] = { pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023B-19Dec2023-v1_rjrskim.root",
+							pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023D-19Dec2023-v1_rjrskim.root"};
+
 		pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
 
 	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim.root",

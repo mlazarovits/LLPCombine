@@ -1,0 +1,473 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "PhoSV_FullRegions_NonCompressed_v49_MConly"
+  luminosity: 400.0
+  output_json: "PhoSV_FullRegions_NonCompressed_v49_MConly_SVtest.json"
+
+samples:
+  #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"] 
+  #data: []
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)" 
+
+nHad1: &nHad1
+  - "(SV_nHadronic >= 1) && (SV_nLeptonic == 0) && (nblTightIsoPhotons == 0 )"
+
+phoSVge1: &phoSVge1
+  - "((SV_nHadronic >= 1)|| (SV_nLeptonic >= 1)) && (nblTightIsoPhotons >= 1 )"
+
+#dxy sideband
+CRLowdxyHad: &CRLowdxyHad
+  - "(SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1) "
+  
+#dxy signal region
+SRHighdxyHad: &SRHighdxyHad
+  - "(SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0)"
+
+#to make orthogonal to SV regions (as much as possible for now...)
+nPhoge1: &nPhoge1
+  - "(SV_nHadronic == 0) && (SV_nLeptonic == 0) && (nBaseLinePhotons > 0)"
+
+#exclusive with bh (require ==0 bh photons) and early/delayed CR/SRs bc lead ID'd photon is prompt
+#non iso sideband (med = loose not tight)
+#nbltightisophotons == 0  (could overlap with SV regions - SRs and CRs)
+phoMedIso: &phoMedIso
+  - "passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1" 
+
+#tight iso - prompt photon SR
+#> 0 tight iso photons
+phoTightIso: &phoTightIso
+  - "passNPhoGe1SelectionPromptTightIsoSR == 1" 
+
+#delayed sideband - beam halo
+#> 0 bh photons
+phoEarlyBH: &phoEarlyBH
+  - "passNPhoGe1SelectionEarlyBeamHaloCR == 1"
+phoLateBH: &phoLateBH
+  - "passNPhoGe1SelectionLateBeamHaloCR == 1"
+
+#early CR - not beam halo
+phoEarlyNotBH: &phoEarlyNotBH
+  - "passNPhoGe1SelectionEarlyNotBHCR == 1"
+
+#delayed SR - not beam halo
+phoLateNotBH: &phoLateNotBH
+  - "passNPhoGe1SelectionLateNotBHSR == 1"
+
+#mixedCR reqs
+phoSVCRPrompt: &phoSVCRPrompt
+  - "(passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1) && ((SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1))"
+
+phoSVCRLate: &phoSVCRLate
+  - "(passNPhoGe1SelectionEarlyNotBHCR == 1) && ((SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1))"
+
+
+#mixedSR reqs
+phoSVSRPrompt: &phoSVSRPrompt
+  - "(passNPhoGe1SelectionPromptTightIsoSR == 1) && ((SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0))"
+
+phoSVSRLate: &phoSVSRLate
+  - "(passNPhoGe1SelectionLateNotBHSR == 1) && ((SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0))"
+
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+    
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] < 0.2)"
+b10: &b10
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] < 0.2)"
+b01: &b01
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] >= 0.2)"
+b11: &b11
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.2)"
+
+
+bins:
+  Ch1CRPhoPromptMedIso00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *phoMedIso
+      - *kin
+      - *b00
+  Ch1CRPhoPromptMedIso10:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *phoMedIso
+      - *kin
+      - *b10
+  Ch1CRPhoPromptMedIso01:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoMedIso
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch1CRPhoPromptMedIso11:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoMedIso
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch2SRPhoPromptTightIso00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch2SRPhoPromptTightIso10:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch2SRPhoPromptTightIso01:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch2SRPhoPromptTightIso11:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoTightIso
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch3CRPhoEarlyBH00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyBH
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch3CRPhoEarlyBH10:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyBH
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch3CRPhoEarlyBH01:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyBH
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch3CRPhoEarlyBH11:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyBH
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch4CRPhoLateBH00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateBH
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch4CRPhoLateBH10:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateBH
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch4CRPhoLateBH01:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateBH
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch4CRPhoLateBH11:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateBH
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch5CRPhoEarlyNotBH00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyNotBH
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch5CRPhoEarlyNotBH10:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyNotBH
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch5CRPhoEarlyNotBH01:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyNotBH
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch5CRPhoEarlyNotBH11:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoEarlyNotBH
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch6SRPhoLateNotBH00:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateNotBH
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch6SRPhoLateNotBH10:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateNotBH
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch6SRPhoLateNotBH01:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateNotBH
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch6SRPhoLateNotBH11:
+    cuts:
+      - *baseline_cuts
+      - *nPhoge1
+      - *phoLateNotBH
+      - *Cleaning
+      - *kin
+      - *b11
+
+
+  Ch7CRSVHadLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *CRLowdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch7CRSVHadLowDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch7CRSVHadLowDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch7CRSVHadLowDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *CRLowdxyHad
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch8SRSVHadHighDxy00:
+    cuts:
+      - *baseline_cuts
+      - *SRHighdxyHad
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch8SRSVHadHighDxy10:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch8SRSVHadHighDxy01:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch8SRSVHadHighDxy11:
+      - *baseline_cuts
+      - *nHad1
+      - *SRHighdxyHad
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch9CRPhoSVPrompt00:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch9CRPhoSVPrompt01:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch9CRPhoSVPrompt10:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch9CRPhoSVPrompt11:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch10SRPhoSVPrompt00:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+
+  Ch10SRPhoSVPrompt01:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch10SRPhoSVPrompt10:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch10SRPhoSVPrompt11:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
+
+
+
+  Ch11CRPhoSVLate00:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch11CRPhoSVLate01:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch11CRPhoSVLate10:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch11CRPhoSVLate11:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch12SRPhoSVLate00:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+
+  Ch12SRPhoSVLate01:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch12SRPhoSVLate10:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch12SRPhoSVLate11:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
