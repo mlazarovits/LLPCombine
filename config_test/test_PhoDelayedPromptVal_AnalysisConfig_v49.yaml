@@ -9,7 +9,7 @@ samples:
   data: ["MET23"]
 
 baseline_cuts: &baseline_cuts
-  - "(selMet > 150)"
+  - "(selCMet > 150)"
   - "(rjrPTS[0] < 150)"
   - "(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60 == 1)"
   - "(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight == 1)"
@@ -38,20 +38,22 @@ Ch1CR2PhoBHEarly: &Ch1CR2PhoBHEarly
   - "(tagged_lead_timesig < -2.5)"
 
 Ch1CRPhoBHEarly: &Ch1CRPhoBHEarly
-  - "(Ch1CR1PhoBHEarly || Ch1CR2PhoBHEarly)"
+  - "( (nBaseLinePhotons == 1) && (baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999) && (tagged_lead_timesig < -2.5)    ) || (  (nBaseLinePhotons == 2) && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99999))) && (tagged_lead_timesig < -2.5)    )"
+  #- "(Ch1CR1PhoBHEarly || Ch1CR2PhoBHEarly)"
 
 Ch2CR1PhoBHLate: &Ch2CR1PhoBHLate
   - "(nBaseLinePhotons == 1)"
   - "(baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999)"
-  - "(baseLinePhoton_beamHaloCNNScore > 2.5)"
+  - "(tagged_lead_timesig > 2.5)"
 
 Ch2CR2PhoBHLate: &Ch2CR2PhoBHLate
   - "(nBaseLinePhotons == 2)"
   - "(((baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99999)))"
-  - "(baseLinePhoton_beamHaloCNNScore > 2.5)"
+  - "(tagged_lead_timesig > 2.5)"
 
 Ch2CRPhoBHLate: &Ch2CRPhoBHLate
-  - "(Ch2CR1PhoBHLate || Ch2CR2PhoBHLate)"
+  - "((nBaseLinePhotons == 1) && (baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999) && (tagged_lead_timesig > 2.5)    ) || ( (nBaseLinePhotons == 2) && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[0] < 0.99999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.9999) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99999))) && (tagged_lead_timesig > 2.5)   )"
+    #- "(Ch2CR1PhoBHLate || Ch2CR2PhoBHLate)"
 
 Ch3CR1PhonotBHEarly: &Ch3CR1PhonotBHEarly
   - "(nBaseLinePhotons == 1)"
@@ -63,8 +65,9 @@ Ch3CR2PhonotBHEarly: &Ch3CR2PhonotBHEarly
   - "(((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[1] < 0.9999)))"
   - "(tagged_lead_timesig < -2.5)"
 
-Ch3CRPhoBHLate: &Ch3CRPhoBHLate
-  - "(Ch3CR1PhoBHLate || Ch3CR2PhoBHLate)"
+Ch3CRPhonotBHEarly: &Ch3CRPhonotBHEarly
+  - "(  (nBaseLinePhotons == 1) && (baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && (tagged_lead_timesig < -2.5)   ) || (  (nBaseLinePhotons == 2) && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[1] < 0.9999))) && (tagged_lead_timesig < -2.5)    )"
+    #- "(Ch3CR1PhonotBHEarly || Ch3CR2PhonotBHEarly)"
 
 #Ch4 - delayed photon proxy SR
 Ch4CR1PhonotBHLate: &Ch4CR1PhonotBHLate
@@ -77,8 +80,9 @@ Ch4CR2PhonotBHLate: &Ch4CR2PhonotBHLate
   - "(((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[1] < 0.9999)))"
   - "(tagged_lead_timesig > 2.5)"
 
-Ch4CRPhoBHLate: &Ch4CRPhoBHLate
-  - "(Ch4CR1PhoBHLate || Ch4CR2PhoBHLate)"
+Ch4CRPhonotBHLate: &Ch4CRPhonotBHLate
+  - "( (nBaseLinePhotons == 1) && (baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && (tagged_lead_timesig > 2.5)    ) || ( (nBaseLinePhotons == 2) && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[0] < 0.9999)) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && (baseLinePhoton_beamHaloCNNScore[1] < 0.9999))) && (tagged_lead_timesig > 2.5)    )"
+    #- "(Ch4CR1PhonotBHLate || Ch4CR2PhonotBHLate)"
 
 #iso1 is proxy CR, iso2 is proxy SR
 Ch5CRPho1Iso: &Ch5CRPho1Iso
