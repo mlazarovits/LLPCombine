@@ -1,0 +1,108 @@
+# Simple hadron to hadron validation bins
+
+analysis:
+  name: "SV_hadronic_validation"
+  luminosity: 12
+  output_json: "SVHadronic_v49.json"
+
+samples:
+  #backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET23"]
+
+baseline_cuts: &baseline_cuts
+  #- "(selMet > 150) && (nSelPhotons == 0)" 
+  - "(selCMet > 150)" 
+
+CRdxyHadLow: &CRdxyHadLow
+  - "( HadronicSV_dxySig[0] >= 100) && (HadronicSV_dxySig[0] < 600)"
+CRdxyHadHigh: &CRdxyHadHigh
+  - "( HadronicSV_dxySig[0] >= 600) && (HadronicSV_dxySig[0] < 1000)"
+
+nHad1: &nHad1
+  - "(SV_nHadronic == 1) && (nblTightIsoPhotons == 0 )"
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] < 0.2)"
+b10: &b10
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] < 0.2)"
+b01: &b01
+  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] >= 0.2)"
+b11: &b11
+  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.2)"
+
+bins:
+  Ch7CRHadLow00:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch7CRHadLow01:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch7CRHadLow10:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch7CRHadLow11:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch8CRHadHigh00:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch8CRHadHigh01:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch8CRHadHigh10:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch8CRHadHigh11:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b11
+
+
+

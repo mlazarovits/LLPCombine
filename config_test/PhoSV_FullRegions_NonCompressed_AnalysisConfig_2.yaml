@@ -4,7 +4,7 @@
 analysis:
   name: "PhoSV_FullRegions_NonCompressed_v49_MConly"
   luminosity: 400.0
-  output_json: "PhoSV_FullRegions_NonCompressed_v49_MConly.json"
+  output_json: "PhoSV_FullRegions_NonCompressed_v49_MConly_SVtest.json"
 
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
@@ -22,11 +22,11 @@ phoSVge1: &phoSVge1
 
 #dxy sideband
 CRLowdxyHad: &CRLowdxyHad
-  - "(HadronicSV_dxySig[0] < 1000)"
+  - "(SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1) "
   
 #dxy signal region
 SRHighdxyHad: &SRHighdxyHad
-  - "(HadronicSV_dxySig[0] >= 1000)"
+  - "(SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0)"
 
 #to make orthogonal to SV regions (as much as possible for now...)
 nPhoge1: &nPhoge1
@@ -60,18 +60,18 @@ phoLateNotBH: &phoLateNotBH
 
 #mixedCR reqs
 phoSVCRPrompt: &phoSVCRPrompt
-  - "(passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1) || (HadronicSV_dxySig[0] < 1000)"
+  - "(passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1) && ((SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1))"
 
 phoSVCRLate: &phoSVCRLate
-  - "(passNPhoGe1SelectionEarlyNotBHCR == 1) || (HadronicSV_dxySig[0] < 1000)"
+  - "(passNPhoGe1SelectionEarlyNotBHCR == 1) && ((SV_nLepStdDxySigGeq1000 < 1) || (SV_nHadStdDxySigGeq1000 < 1))"
 
 
 #mixedSR reqs
 phoSVSRPrompt: &phoSVSRPrompt
-  - "(passNPhoGe1SelectionPromptTightIsoSR == 1) && (HadronicSV_dxySig[0] >= 1000)"
+  - "(passNPhoGe1SelectionPromptTightIsoSR == 1) && ((SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0))"
 
 phoSVSRLate: &phoSVSRLate
-  - "(passNPhoGe1SelectionLateNotBHSR == 1) && (HadronicSV_dxySig[0] >= 1000)"
+  - "(passNPhoGe1SelectionLateNotBHSR == 1) && ((SV_nHadStdDxySigGeq1000>0) ||  (SV_nLepStdDxySigGeq1000>0))"
 
 
 Cleaning: &Cleaning
@@ -377,7 +377,7 @@ bins:
       - *kin
       - *b11
 
-  Ch9SRPhoSVPrompt00:
+  Ch10SRPhoSVPrompt00:
       - *baseline_cuts
       - *phoSVSRPrompt
       - *phoSVge1
@@ -385,31 +385,31 @@ bins:
       - *kin
       - *b00
 
-  Ch9SRPhoSVPrompt01:
+  Ch10SRPhoSVPrompt01:
       - *baseline_cuts
       - *phoSVSRPrompt
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
-  Ch9SRPhoSVPrompt10:
+      - *b01
+  Ch10SRPhoSVPrompt10:
       - *baseline_cuts
       - *phoSVSRPrompt
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
-  Ch9SRPhoSVPrompt11:
+      - *b10
+  Ch10SRPhoSVPrompt11:
       - *baseline_cuts
       - *phoSVSRPrompt
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
+      - *b11
 
 
 
-  Ch10CRPhoSVLate00:
+  Ch11CRPhoSVLate00:
     cuts:
       - *baseline_cuts
       - *phoSVCRLate
@@ -417,7 +417,7 @@ bins:
       - *Cleaning
       - *kin
       - *b00
-  Ch10CRPhoSVLate01:
+  Ch11CRPhoSVLate01:
     cuts:
       - *baseline_cuts
       - *phoSVCRLate
@@ -425,7 +425,7 @@ bins:
       - *Cleaning
       - *kin
       - *b01
-  Ch10CRPhoSVLate10:
+  Ch11CRPhoSVLate10:
     cuts:
       - *baseline_cuts
       - *phoSVCRLate
@@ -433,7 +433,7 @@ bins:
       - *Cleaning
       - *kin
       - *b10
-  Ch10CRPhoSVLate11:
+  Ch11CRPhoSVLate11:
     cuts:
       - *baseline_cuts
       - *phoSVCRLate
@@ -442,7 +442,7 @@ bins:
       - *kin
       - *b11
 
-  Ch11SRPhoSVLate00:
+  Ch12SRPhoSVLate00:
       - *baseline_cuts
       - *phoSVSRLate
       - *phoSVge1
@@ -450,24 +450,24 @@ bins:
       - *kin
       - *b00
 
-  Ch11SRPhoSVLate01:
+  Ch12SRPhoSVLate01:
       - *baseline_cuts
       - *phoSVSRLate
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
-  Ch11SRPhoSVLate10:
+      - *b01
+  Ch12SRPhoSVLate10:
       - *baseline_cuts
       - *phoSVSRLate
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
-  Ch11SRPhoSVLate11:
+      - *b10
+  Ch12SRPhoSVLate11:
       - *baseline_cuts
       - *phoSVSRLate
       - *phoSVge1
       - *Cleaning
       - *kin
-      - *b00
+      - *b11
