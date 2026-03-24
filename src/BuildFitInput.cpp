@@ -35,7 +35,7 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 		bkg_evtwt[subkey] = wt;
 		//auto tempdf = df.Define("evtwt", std::to_string(wt));
 		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
-		auto tempdf2 = df.Define("evtwt2", "evtwt*evtwt");	
+		auto tempdf2 = tempdf.Define("evtwt2", "evtwt*evtwt");	
 
 		//cast to RNode with uniqueptr
 		rdf_BkgDict[subkey] = std::make_unique<RNode>(tempdf2);
@@ -127,7 +127,7 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 		std::cout<<"subkey:"<< subkey<< "wt:"<<wt<<"\n";
 		//#auto tempdf = df.Define("evtwt", std::to_string(wt));
 		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
-		auto tempdf2 = df.Define("evtwt2", "evtwt*evtwt");
+		auto tempdf2 = tempdf.Define("evtwt2", "evtwt*evtwt");
 
 
 		//cast to RNode with uniqueptr

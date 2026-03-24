@@ -8,14 +8,17 @@ analysis:
 
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
-  signals: ["gogoGZ_test"] 
+  signals: ["gogoGZ"] 
   #data: []
 
 baseline_cuts: &baseline_cuts
-  - "(selMet > 150)" 
+  - "(selCMet > 150)" 
 
 nHad1: &nHad1
   - "(SV_nHadronic >= 1) && (SV_nLeptonic == 0) && (nblTightIsoPhotons == 0 )"
+
+phoSVge1: &phoSVge1
+  - "((SV_nHadronic >= 1)|| (SV_nLeptonic >= 1)) && (nblTightIsoPhotons >= 1 )"
 
 #dxy sideband
 CRLowdxyHad: &CRLowdxyHad
@@ -54,6 +57,22 @@ phoEarlyNotBH: &phoEarlyNotBH
 #delayed SR - not beam halo
 phoLateNotBH: &phoLateNotBH
   - "passNPhoGe1SelectionLateNotBHSR == 1"
+
+#mixedCR reqs
+phoSVCRPrompt: &phoSVCRPrompt
+  - "(passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1) || (HadronicSV_dxySig[0] < 1000)"
+
+phoSVCRLate: &phoSVCRLate
+  - "(passNPhoGe1SelectionEarlyNotBHCR == 1) || (HadronicSV_dxySig[0] < 1000)"
+
+
+#mixedSR reqs
+phoSVSRPrompt: &phoSVSRPrompt
+  - "(passNPhoGe1SelectionPromptTightIsoSR == 1) && (HadronicSV_dxySig[0] >= 1000)"
+
+phoSVSRLate: &phoSVSRLate
+  - "(passNPhoGe1SelectionLateNotBHSR == 1) && (HadronicSV_dxySig[0] >= 1000)"
+
 
 Cleaning: &Cleaning
   - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
@@ -324,3 +343,131 @@ bins:
       - *Cleaning
       - *kin
       - *b11
+
+  Ch9CRPhoSVPrompt00:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch9CRPhoSVPrompt01:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch9CRPhoSVPrompt10:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch9CRPhoSVPrompt11:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch9SRPhoSVPrompt00:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+
+  Ch9SRPhoSVPrompt01:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch9SRPhoSVPrompt10:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch9SRPhoSVPrompt11:
+      - *baseline_cuts
+      - *phoSVSRPrompt
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+
+
+
+  Ch10CRPhoSVLate00:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch10CRPhoSVLate01:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b01
+  Ch10CRPhoSVLate10:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch10CRPhoSVLate11:
+    cuts:
+      - *baseline_cuts
+      - *phoSVCRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b11
+
+  Ch11SRPhoSVLate00:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+
+  Ch11SRPhoSVLate01:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch11SRPhoSVLate10:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch11SRPhoSVLate11:
+      - *baseline_cuts
+      - *phoSVSRLate
+      - *phoSVge1
+      - *Cleaning
+      - *kin
+      - *b00
