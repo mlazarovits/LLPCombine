@@ -4,10 +4,43 @@
 
 SampleTool::SampleTool(){
 
-	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49_wSVs/";
-	MasterDict["gogoGZ"] = { pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-1200_mN1-500_ct0p1_rjrskim.root"};
+	string pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
+						
+	MasterDict["gogoGZ"] = { pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct0p1_rjrskim.root",
+							pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1600_mN1-1000_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1600_mN1-1000_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1600_mN1-500_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-1600_mN1-500_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2200_mN1-2100_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2200_mN1-2100_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2200_mN1-2150_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2200_mN1-2150_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2250_mN1-2150_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2250_mN1-2150_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2250_mN1-2200_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2300_mN2-2250_mN1-2200_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-1200_mN1-500_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-1200_mN1-500_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2000_mN1-1000_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2000_mN1-1000_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2000_mN1-1500_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2000_mN1-1500_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2400_mN1-2300_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2400_mN1-2300_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2400_mN1-2350_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2400_mN1-2350_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2350_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2350_ct0p5_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
+                            pathPrefix+"SMS_SVHPM100_v34_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
+
 	
-	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
+	MasterDict["MET23"] = { pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023B-19Dec2023-v1_rjrskim.root",
+							pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023D-19Dec2023-v1_rjrskim.root"};
+
+		pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
+
 	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim.root",
 				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim.root",
@@ -148,18 +181,23 @@ SampleTool::SampleTool(){
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
 		pathPrefix+"SMS_SVIPM100_v31_gogoGZ_AODSIM_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"
 	};
+
+	MasterDict["gogoGZ_test"] = {pathPrefix+"SMS_gogoGZ_SVHPM100_FullMini_v34_SMS-GlGl-GZ_FULLMINI_mGl-2500_mN2-1200_mN1-500_ct1_rjrskim.root"};
+
+
 */
+
 	//MasterDict["DisplacedJet18"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D_rjrskim_v38.root"};
 	//MasterDict["DisplacedJet17"] = { pathPrefix+"DisJet_R18_SVIPM100_v31_DisplacedJet_AOD_Run2018D-15Feb2022_UL2018-v1_v29_rjrskim_v37.root"};
 
 
 	MasterDict["MET17"] = { pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017A_rjrskim.root",
 				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017B_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
-				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
-	
+				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017C_rjrskim.root"};
+//				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017D_rjrskim.root",
+///				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017E_rjrskim.root",
+//				pathPrefix+"MET_R17_SVIPM100_v31_MET_AOD_Run2017F_rjrskim.root"};
+
 	MasterDict["MET16"] = { pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016B_rjrskim.root",
 				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016C_rjrskim.root",
 				pathPrefix+"MET_R16_SVIPM100_v31_MET_AOD_Run2016D_rjrskim.root",

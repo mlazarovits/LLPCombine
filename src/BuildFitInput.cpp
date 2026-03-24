@@ -35,9 +35,10 @@ void BuildFitInput::LoadBkg_KeyValue( std::string key, stringlist bkglist, doubl
 		bkg_evtwt[subkey] = wt;
 		//auto tempdf = df.Define("evtwt", std::to_string(wt));
 		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
+		auto tempdf2 = tempdf.Define("evtwt2", "evtwt*evtwt");	
 
 		//cast to RNode with uniqueptr
-		rdf_BkgDict[subkey] = std::make_unique<RNode>(tempdf);
+		rdf_BkgDict[subkey] = std::make_unique<RNode>(tempdf2);
 		f->Close();
 		
 	}
@@ -106,6 +107,7 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 			cout << "sample " << subkey << " has bad weights. Skipping..." << endl;
 			continue;
 		}
+		
 		ROOT::RDataFrame df("kuSkimTree", siglist[i]);
 		_base_rdf_SigDict[subkey] = std::make_unique<RNode>(df);
 		
@@ -116,6 +118,7 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
                 }*/
             
                 //ntot = sums;
+
 		std::cout<<"calculated total ntot "<< ntot<<"\n";
 		double wt{};
 		wt = xsec*1000.*Lumi/((float)ntot);
@@ -124,9 +127,11 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 		std::cout<<"subkey:"<< subkey<< "wt:"<<wt<<"\n";
 		//#auto tempdf = df.Define("evtwt", std::to_string(wt));
 		auto tempdf = df.Define("evtwt", "evtFillWgt * "+std::to_string(Lumi) );
+		auto tempdf2 = tempdf.Define("evtwt2", "evtwt*evtwt");
+
 
 		//cast to RNode with uniqueptr
-		rdf_SigDict[subkey] = std::make_unique<RNode>(tempdf);
+		rdf_SigDict[subkey] = std::make_unique<RNode>(tempdf2);
 		f->Close();
 		
 	}

@@ -111,6 +111,11 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
         //summap sumResults_S = BFI->SumRegions("evtFillWgt", BFI->sig_filtered_dataframes);
         //summap sumResults_obs = BFI->SumRegions("LumiEvtWt", BFI->data_filtered_dataframes);
 
+	//new evtwt error calculation
+	summap errorsumResults = BFI->SumRegions("evtwt2", BFI->bkg_filtered_dataframes);
+    summap errorsumResults_S = BFI->SumRegions("evtwt2", BFI->sig_filtered_dataframes);
+
+
 	//book error sums	
 		
 
@@ -118,8 +123,10 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	BFI->ReportRegions(verbosity > 2 ? 1 : 0);
 	
 	// Compute errors and report bins
-	errormap errorResults = BFI->ComputeStatError(countResults, BFI->bkg_evtwt);
-	errormap errorResults_S = BFI->ComputeStatError(countResults_S, BFI->sig_evtwt);
+	//errormap errorResults = BFI->ComputeStatError(countResults, BFI->bkg_evtwt);
+	//errormap errorResults_S = BFI->ComputeStatError(countResults_S, BFI->sig_evtwt);
+	errormap errorResults = BFI->ComputeStatError(errorsumResults);
+    errormap errorResults_S = BFI->ComputeStatError(errorsumResults_S);
 	errormap errorResults_obs = BFI->ComputeStatError(countResults_obs, BFI->data_evtwt);
 	//errormap errorResults_obs = BFI->ComputeStatError(countResults_obs, 1);
 
