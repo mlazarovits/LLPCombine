@@ -23,7 +23,7 @@ shape_transfer_fit:
     Ch4CRPhoIso2:
       - "Ch4CRPhoIso200"
       - "Ch4CRPhoIso210"
-      - "Ch4CRPhoISo220"
+      - "Ch4CRPhoIso220"
   channel_association:
     Ch1CRHadLow: #anchor
       - "Ch2CRHadHigh" #buoy

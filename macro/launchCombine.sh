@@ -101,9 +101,14 @@ pushd ../
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chSVRun2 --ther
 
-dcdir=datacards_SV_Hadronic_Validation
+#dcdir=datacards_SV_Hadronic_Validation
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .SVHadronicValidation --there
+
+dcdir=datacards_PhoSV_Hadronic_Compressed_Validation
 combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
-combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .SVHadronicValidation --there
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .PhoSVHadronicCompressedValidation --there
+
 
 popd
 
@@ -123,7 +128,7 @@ dcdir=$1
 # Check if the datacard directory exists
 if [ ! -d "${dcdir}" ]; then
     echo "Error: Datacard directory '${dcdir}' not found"
-    exit 1
+   # exit 1
 fi
 
 # Check if there are any signal subdirectories with .txt files
