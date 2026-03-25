@@ -1,0 +1,75 @@
+#test fit config
+fitname: "SV_Hadronic_Validation"
+asimov: True
+datadriven: True
+
+#main fit
+#naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  anchor_bin: "01"
+  bin_association:
+    Ch7CRHadLow:
+      - "Ch7CRHadLow00"
+      - "Ch7CRHadLow01"
+      - "Ch7CRHadLow10"
+      - "Ch7CRHadLow11"
+    Ch8CRHadHigh:
+      - "Ch8CRHadHigh00"
+      - "Ch8CRHadHigh01"
+      - "Ch8CRHadHigh10"
+      - "Ch8CRHadHigh11"
+  channel_association:
+    Ch7CRHadLow: #anchor
+      - "Ch8CRHadHigh" #buoy
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+#only apply to bkg for now
+#TODO - add procs field
+systematics:
+  #pin CR channels
+  sys1:
+      type: "lnN"
+      name: "lnN_Ch7Ch8Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch7CRHadLow00"
+          - "Ch8CRHadHigh00"
+  sys2:
+      type: "lnN"
+      name: "lnN_Ch7Ch8Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch7CRHadLow01"
+          - "Ch8CRHadHigh01"
+  sys3:
+      type: "lnN"
+      name: "lnN_Ch7Ch8Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch7CRHadLow10"
+          - "Ch8CRHadHigh10"
+  sys4:
+      type: "lnN"
+      name: "lnN_Ch7Ch8Shape11"
+      init_val: 1.05 
+      bins:
+          - "Ch7CRHadLow11"
+          - "Ch8CRHadHigh11"
+  sys5:
+      type: "lnN"
+      name: "lnN_AnchorError"
+      init_val: 1.10
+      bins:
+          - "Ch7CRHadLow01"
+      
