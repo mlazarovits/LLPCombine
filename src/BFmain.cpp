@@ -65,7 +65,7 @@ int main(int argc, char* argv[]){
 	//	return -1;
 
 	std::string datacard_dir = "datacards";
-	for( long unsigned int i=0; i<1;i++){//signals.size(); i++){
+	for( long unsigned int i=0; i<signals.size();i++){
 		BuildFit BF(inconfig);
 		string fitname = BF.GetFitName();
 		std::cout << "fitname " << fitname << std::endl;
@@ -82,6 +82,7 @@ int main(int argc, char* argv[]){
 		BF.PrepFit(j, signals[i]);
 		//do fit - function won't do anything if their corresponding section in the config yaml isn't filled
 		BF.BuildShapeTransferFit();
+		BF.BuildABCDFit();
 		BF.SetObservations(); 
 		BF.DoSystematics();
 		//write datacard
