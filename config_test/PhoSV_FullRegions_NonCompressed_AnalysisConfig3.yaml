@@ -71,6 +71,12 @@ b01: &b01
 b11: &b11
   - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.2)"
 
+DelayedBin00: &DelayedBin00
+  - "(rjr_Ms[0] >= 700) && (rjr_Ms[0] < 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+DelayedBin10: &DelayedBin10
+  - "(rjr_Ms[0] >= 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
 
 bins:
   Ch1CRPhoPromptMedIso00:
@@ -140,7 +146,7 @@ bins:
       - *phoEarlyBH
       - *Cleaning
       - *kin
-      - *b00
+      - *DelayedBin00
   Ch3CRPhoEarlyBH10:
     cuts:
       - *baseline_cuts
@@ -148,23 +154,7 @@ bins:
       - *phoEarlyBH
       - *Cleaning
       - *kin
-      - *b10
-  Ch3CRPhoEarlyBH01:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyBH
-      - *Cleaning
-      - *kin
-      - *b01
-  Ch3CRPhoEarlyBH11:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyBH
-      - *Cleaning
-      - *kin
-      - *b11
+      - *DelayedBin10
 
   Ch4CRPhoLateBH00:
     cuts:
@@ -173,7 +163,7 @@ bins:
       - *phoLateBH
       - *Cleaning
       - *kin
-      - *b00
+      - *DelayedBin00
   Ch4CRPhoLateBH10:
     cuts:
       - *baseline_cuts
@@ -181,23 +171,7 @@ bins:
       - *phoLateBH
       - *Cleaning
       - *kin
-      - *b10
-  Ch4CRPhoLateBH01:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateBH
-      - *Cleaning
-      - *kin
-      - *b01
-  Ch4CRPhoLateBH11:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateBH
-      - *Cleaning
-      - *kin
-      - *b11
+      - *DelayedBin10
 
   Ch5CRPhoEarlyNotBH00:
     cuts:
@@ -206,7 +180,7 @@ bins:
       - *phoEarlyNotBH
       - *Cleaning
       - *kin
-      - *b00
+      - *DelayedBin00
   Ch5CRPhoEarlyNotBH10:
     cuts:
       - *baseline_cuts
@@ -214,23 +188,7 @@ bins:
       - *phoEarlyNotBH
       - *Cleaning
       - *kin
-      - *b10
-  Ch5CRPhoEarlyNotBH01:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyNotBH
-      - *Cleaning
-      - *kin
-      - *b01
-  Ch5CRPhoEarlyNotBH11:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyNotBH
-      - *Cleaning
-      - *kin
-      - *b11
+      - *DelayedBin10
 
   Ch6SRPhoLateNotBH00:
     cuts:
@@ -239,7 +197,7 @@ bins:
       - *phoLateNotBH
       - *Cleaning
       - *kin
-      - *b00
+      - *DelayedBin00
   Ch6SRPhoLateNotBH10:
     cuts:
       - *baseline_cuts
@@ -247,23 +205,7 @@ bins:
       - *phoLateNotBH
       - *Cleaning
       - *kin
-      - *b10
-  Ch6SRPhoLateNotBH01:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateNotBH
-      - *Cleaning
-      - *kin
-      - *b01
-  Ch6SRPhoLateNotBH11:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateNotBH
-      - *Cleaning
-      - *kin
-      - *b11
+      - *DelayedBin10
 
 
   Ch7CRSVHadLowDxy00:
