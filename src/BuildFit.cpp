@@ -146,6 +146,7 @@ void BuildFit::sumBkgs(){
 //channel name convention goes
 //Ch#IDBin where Bin = xy coord in MsRs plane
 void BuildFit::BuildShapeTransferFit(){
+	cout << "Building Shape Transfer Fit" << endl;
 	//take channel 1 as the anchor channel, enforce expectation onto other channels
 	//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
 	//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel
@@ -157,6 +158,7 @@ void BuildFit::BuildShapeTransferFit(){
 		vector<string> anchor_bins = _shape_bin_ass[anchor_ch];
 		//set yields in every bin of the anchor channel to their nominal value
 		for(int b = 0; b < (int)anchor_bins.size(); b++){
+			cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << endl;
 			double anchor_rate = _yields[anchor_bins[b]][proc][1].get<double>();
 			//set yield
 			ch::Process anchorproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[anchor_bins[b]],anchor_bins[b]), false, anchor_rate);
@@ -211,6 +213,7 @@ void BuildFit::BuildShapeTransferFit(){
 
 //BuildABCD - channel-to-channel ABCD
 void BuildFit::BuildABCDFit(){
+	cout << "Building ABCD Fit" << endl;
 	//check that channel association exists within ABCD fit config
 	if(_abcd_ch_ass.size() < 1){
 		cout << "No channel association specified for ABCD fit. This fit config will not be written. Returning." << endl;
