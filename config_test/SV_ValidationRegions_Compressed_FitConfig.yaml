@@ -1,26 +1,34 @@
 #test fit config
-fitname: "SV_Hadronic_Validation"
+fitname: "PhoSV_Hadronic_Compressed_Validation"
 asimov: True
 datadriven: True
 
 #main fit
 #naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
 shape_transfer_fit:
-  anchor_bin: "01"
+  anchor_bin: "00"
   bin_association:
-    Ch7CRHadLow:
-      - "Ch7CRHadLow00"
-      - "Ch7CRHadLow01"
-      - "Ch7CRHadLow10"
-      - "Ch7CRHadLow11"
-    Ch8CRHadHigh:
-      - "Ch8CRHadHigh00"
-      - "Ch8CRHadHigh01"
-      - "Ch8CRHadHigh10"
-      - "Ch8CRHadHigh11"
+    Ch1CRHadLow:
+      - "Ch1CRHadLow00"
+      - "Ch1CRHadLow10"
+      - "Ch1CRHadLow20"
+    Ch2CRHadHigh:
+      - "Ch2CRHadHigh00"
+      - "Ch2CRHadHigh10"
+      - "Ch2CRHadHigh20"
+    Ch3CRPhoIso1:
+      - "Ch3CRPhoIso100"
+      - "Ch3CRPhoIso110"
+      - "Ch3CRPhoIso120"
+    Ch4CRPhoIso2:
+      - "Ch4CRPhoIso200"
+      - "Ch4CRPhoIso210"
+      - "Ch4CRPhoISo220"
   channel_association:
-    Ch7CRHadLow: #anchor
-      - "Ch8CRHadHigh" #buoy
+    Ch1CRHadLow: #anchor
+      - "Ch2CRHadHigh" #buoy
+    Ch3CRPhoIso1:
+      - "Ch4CRPhoIso2"
 
 #main fit
 #ABCD - SR bin (A) maps to [B, C, D]
@@ -40,36 +48,59 @@ systematics:
   #pin CR channels
   sys1:
       type: "lnN"
-      name: "lnN_Ch7Ch8Shape00"
+      name: "lnN_Ch1Ch2Shape00"
       init_val: 1.05 
       bins:
-          - "Ch7CRHadLow00"
-          - "Ch8CRHadHigh00"
+          - "Ch1CRHadLow00"
+          - "Ch2CRHadHigh00"
   sys2:
       type: "lnN"
-      name: "lnN_Ch7Ch8Shape01"
+      name: "lnN_Ch1Ch2Shape10"
       init_val: 1.05 
       bins:
-          - "Ch7CRHadLow01"
-          - "Ch8CRHadHigh01"
+          - "Ch1CRHadLow10"
+          - "Ch2CRHadHigh10"
   sys3:
       type: "lnN"
-      name: "lnN_Ch7Ch8Shape10"
+      name: "lnN_Ch1Ch2Shape20"
       init_val: 1.05 
       bins:
-          - "Ch7CRHadLow10"
-          - "Ch8CRHadHigh10"
-  sys4:
-      type: "lnN"
-      name: "lnN_Ch7Ch8Shape11"
-      init_val: 1.05 
-      bins:
-          - "Ch7CRHadLow11"
-          - "Ch8CRHadHigh11"
+          - "Ch1CRHadLow20"
+          - "Ch2CRHadHigh20"
   sys5:
       type: "lnN"
       name: "lnN_AnchorError"
       init_val: 1.10
       bins:
-          - "Ch7CRHadLow01"
+          - "Ch1CRHadLow00"
+
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape00"
+      init_val: 1.05
+      bins:
+          - "Ch3CRPhoIso100"
+          - "Ch4CRPhoIso200"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape10"
+      init_val: 1.05
+      bins:
+          - "Ch3CRPhoIso110"
+          - "Ch4CRPhoIso210"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch3Ch4Shape20"
+      init_val: 1.05
+      bins:
+          - "Ch3CRPhoIso120"
+          - "Ch4CRPhoIso220"
+
+  sys9:
+      type: "lnN"
+      name: "lnN_AnchorError"
+      init_val: 1.10
+      bins:
+          - "Ch3CRPhoIso100"
+
       

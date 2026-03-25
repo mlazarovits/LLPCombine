@@ -1,9 +1,9 @@
 # Simple hadron to hadron validation bins
 
 analysis:
-  name: "SV_hadronic_compressed_validation"
+  name: "PhoSV_hadronic_compressed_validation"
   luminosity: 12
-  output_json: "SVHadronic_Compressed_validation_v49.json"
+  output_json: "PhoSVHadronic_Compressed_validation_v49.json"
 
 samples:
   #backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
@@ -24,6 +24,13 @@ nHad1: &nHad1
 
 #nPhoge1: &nPhoge1
 #  - "(SV_nHadronic == 0) && (SV_nLeptonic ==0) && ( (nblTightIsoPhotons==1) ||
+
+CRPho1Iso: &CRPho1Iso
+  - "((passNPhoGe1SelectionPromptLooseNotTightIso1CR == 1)||(passNPhoGe1SelectionPromptLooseNotTightIso2CR == 1)) && (baseLinePhoton_isoANNScore[0]>=0.4) && (baseLinePhoton_isoANNScore[0]<0.5) && (SV_nHadronic == 0)"
+CRPho2Iso: &CRPho2Iso
+- "((passNPhoGe1SelectionPromptLooseNotTightIso1CR == 1)||(passNPhoGe1SelectionPromptLooseNotTightIso2CR == 1)) && (baseLinePhoton_isoANNScore[0]>=0.5) && (baseLinePhoton_isoANNScore[0]<0.52) && (SV_nHadronic == 0)"
+
+
 
 
 Cleaning: &Cleaning
@@ -91,5 +98,48 @@ bins:
       - *kin
       - *b20
 
+  Ch3CRPhoIso100:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch3CRPhoIso110:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch3CRPhoIso120:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b20
+
+  Ch4CRPhoIso200:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch4CRPhoIso210:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch4CRPhoIso220:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b20
 
 
