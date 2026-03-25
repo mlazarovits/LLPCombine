@@ -1,8 +1,8 @@
-if [ -z "$1" ]
-then
-        echo "Please pass [datacard_dir] to make corresponding limits and significances"
-        return
-fi
+#if [ -z "$1" ]
+#then
+#        echo "Please pass [datacard_dir] to make corresponding limits and significances"
+#        return
+#fi
 #dcdir=datacards
 #dcdir=datacards_22j
 #dcdir=datacards_11j
@@ -97,9 +97,13 @@ pushd ../
 #combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
 #combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data6bin3chPhoNisoRun2 --there
 
-dcdir=datacards_SV9bin_run2
+#dcdir=datacards_SV9bin_run2
+#combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
+#combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chSVRun2 --ther
+
+dcdir=datacards_SV_Hadronic_Validation
 combineTool.py -M T2W -i ${dcdir}/*/*.txt -o ws.root
-combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .Data9bin3chSVRun2 --ther
+combineTool.py -M FitDiagnostics --saveShapes --saveWithUncertainties -d ${dcdir}/*/ws.root -n .SVHadronicValidation --there
 
 popd
 

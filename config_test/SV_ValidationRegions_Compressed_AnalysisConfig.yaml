@@ -1,0 +1,145 @@
+# Simple hadron to hadron validation bins
+
+analysis:
+  name: "PhoSV_hadronic_compressed_validation"
+  luminosity: 12
+  output_json: "PhoSVHadronic_Compressed_validation_v49.json"
+
+samples:
+  #backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET23"]
+
+baseline_cuts: &baseline_cuts
+  #- "(selMet > 150) && (nSelPhotons == 0)" 
+  - "(selCMet > 150)" 
+
+CRdxyHadLow: &CRdxyHadLow
+  - "( HadronicSV_dxySig[0] >= 100) && (HadronicSV_dxySig[0] < 600)"
+CRdxyHadHigh: &CRdxyHadHigh
+  - "( HadronicSV_dxySig[0] >= 600) && (HadronicSV_dxySig[0] < 1000)"
+
+nHad1: &nHad1
+  - "(SV_nHadronic == 1)"
+
+#nPhoge1: &nPhoge1
+#  - "(SV_nHadronic == 0) && (SV_nLeptonic ==0) && ( (nblTightIsoPhotons==1) ||
+
+CRPho1Iso: &CRPho1Iso
+  - "((passNPhoGe1SelectionPromptLooseNotTightIso1CR == 1)||(passNPhoGe1SelectionPromptLooseNotTightIso2CR == 1)) && (baseLinePhoton_isoANNScore[0]>=0.4) && (baseLinePhoton_isoANNScore[0]<0.5) && (SV_nHadronic == 0)"
+CRPho2Iso: &CRPho2Iso
+- "((passNPhoGe1SelectionPromptLooseNotTightIso1CR == 1)||(passNPhoGe1SelectionPromptLooseNotTightIso2CR == 1)) && (baseLinePhoton_isoANNScore[0]>=0.5) && (baseLinePhoton_isoANNScore[0]<0.52) && (SV_nHadronic == 0)"
+
+
+
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+
+kin: &kin
+  - "(rjrIsr_PtIsr >= 200) && (rjrIsr_RIsr >= 0.7)"
+
+b00: &b00
+  - "(rjrIsr_RIsr >=0.7) && (rjrIsr_RIsr <0.8)"
+b10: &b10
+  - "(rjrIsr_RIsr >=0.8) && (rjrIsr_RIsr <0.9)"
+b01: &b20
+  - "(rjrIsr_RIsr >= 0.9)"
+
+bins:
+  Ch1CRHadLow00:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch1CRHadLow10:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch1CRHadLow20:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadLow
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b20
+
+  Ch2CRHadHigh00:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b00
+
+  Ch2CRHadHigh10:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch2CRHadHigh20:
+    cuts:
+      - *baseline_cuts
+      - *CRdxyHadHigh
+      - *nHad1
+      - *Cleaning
+      - *kin
+      - *b20
+
+  Ch3CRPhoIso100:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch3CRPhoIso110:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch3CRPhoIso120:
+    cuts:
+      - *baseline_cuts
+      - *CRPho1Iso
+      - *Cleaning
+      - *kin
+      - *b20
+
+  Ch4CRPhoIso200:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b00
+  Ch4CRPhoIso210:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b10
+  Ch4CRPhoIso220:
+    cuts:
+      - *baseline_cuts
+      - *CRPho2Iso
+      - *Cleaning
+      - *kin
+      - *b20
+
+
