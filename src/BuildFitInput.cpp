@@ -388,7 +388,6 @@ void BuildFitInput::AddSigToBinObjects( countmap countResults, summap sumResults
 			if( binname != cutpairkey.second ) continue;
 			std::string binname2 = it2.first.second;
 			std::string procname = it2.first.first;
-		cout << "AddSigToBinObjects - procname " << procname << endl;	
 			Process* thisproc = new Process( procname, *countResults[cutpairkey], *sumResults[cutpairkey], errorResults[cutpairkey]);
 			analysisbins[binname]->signals.insert({procname, thisproc} );
 		}
