@@ -9,13 +9,13 @@ analysis:
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
   signals: ["gogoGZ"] 
-#  data: ["MET23"]
+  data: ["MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)" 
 
 nHad1: &nHad1
-  - "(SV_nHadronic == 1)  && (nblTightIsoPhotons == 0 )"
+  - "(SV_nHadronic == 1)  && (nBaseLinePhotons < 2 )"
 
 #dxy sideband
 CRLowdxyHad: &CRLowdxyHad
@@ -27,18 +27,23 @@ SRHighdxyHad: &SRHighdxyHad
 
 #to make orthogonal to SV regions (as much as possible for now...)
 nPhoge1: &nPhoge1
-  - "(SV_nHadronic == 0) && (nBaseLinePhotons > 0)"
+  - "(SV_nHadronic == 0) && (nBaseLinePhotons == 2 )"
 
 #exclusive with bh (require ==0 bh photons) and early/delayed CR/SRs bc lead ID'd photon is prompt
 #non iso sideband (med = loose not tight)
 #nbltightisophotons == 0  (could overlap with SV regions - SRs and CRs)
+#phoMedIso: &phoMedIso
+  # - "passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1" 
 phoMedIso: &phoMedIso
-  - "passNPhoGe1SelectionPromptLooseNotTightIsoCR == 1" 
+  - "((baseLinePhoton_isoANNScore[0]>=0.5) && (baseLinePhoton_isoANNScore[0]<0.9) && (baseLinePhoton_beamHaloCNNScore[0] <0.9) && (baseLinePhoton_WTimeSig[0]  < 2.5) && (baseLinePhoton_WTimeSig[0] > -2.5)) && ((baseLinePhoton_isoANNScore[1]>=0.5) && (baseLinePhoton_isoANNScore[1]<0.9) && (baseLinePhoton_beamHaloCNNScore[1] <0.9) && (baseLinePhoton_WTimeSig[1]  < 2.5) && (baseLinePhoton_WTimeSig[1] > -2.5))"
 
 #tight iso - prompt photon SR
 #> 0 tight iso photons
+#phoTightIso: &phoTightIso
+#  - "passNPhoGe1SelectionPromptTightIsoSR == 1" 
 phoTightIso: &phoTightIso
-  - "passNPhoGe1SelectionPromptTightIsoSR == 1" 
+  - "((baseLinePhoton_isoANNScore[0]>0.90) && (baseLinePhoton_beamHaloCNNScore[0] <0.9) && (baseLinePhoton_WTimeSig[0]  < 2.5) && (baseLinePhoton_WTimeSig[0] > -2.5)) && ((baseLinePhoton_isoANNScore[1]>0.90) && (baseLinePhoton_beamHaloCNNScore[1] <0.9) && (baseLinePhoton_WTimeSig[1]  < 2.5) && (baseLinePhoton_WTimeSig[1] > -2.5))"
+
 
 #delayed sideband - beam halo
 #> 0 bh photons
@@ -63,13 +68,13 @@ kin: &kin
   - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
 
 b00: &b00
-  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] < 0.2)"
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3)"
 b10: &b10
-  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] < 0.2)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] < 0.3)"
 b01: &b01
-  - "(rjr_Ms[0] >= 1000) && (rjr_Ms[0] < 1500) && (rjr_Rs[0] >= 0.2)"
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] >= 0.3)"
 b11: &b11
-  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.2)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.3)"
 
 DelayedBin00: &DelayedBin00
   - "(rjr_Ms[0] >= 700) && (rjr_Ms[0] < 1000)"
@@ -139,74 +144,74 @@ bins:
       - *kin
       - *b11
 
-  Ch3CRPhoEarlyBH00:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin00
-  Ch3CRPhoEarlyBH10:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin10
+#  Ch3CRPhoEarlyBH00:
+#    cuts:
+#      - *baseline_cuts
+#      - *nPhoge1
+#      - *phoEarlyBH
+#      - *Cleaning
+#      - *kin
+#      - *DelayedBin00
+#  Ch3CRPhoEarlyBH10:
+#    cuts:
+#      - *baseline_cuts
+#      - *nPhoge1
+#      - *phoEarlyBH
+#      - *Cleaning
+#      - *kin
+#      - *DelayedBin10
 
-  Ch4CRPhoLateBH00:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin00
-  Ch4CRPhoLateBH10:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin10
+        #  Ch4CRPhoLateBH00:
+        #    cuts:
+        #      - *baseline_cuts
+        #      - *nPhoge1
+        #      - *phoLateBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin00
+        #  Ch4CRPhoLateBH10:
+        #    cuts:
+      #      - *baseline_cuts
+        #  - *nPhoge1
+        #      - *phoLateBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin10
 
-  Ch5CRPhoEarlyNotBH00:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyNotBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin00
-  Ch5CRPhoEarlyNotBH10:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoEarlyNotBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin10
+        #  Ch5CRPhoEarlyNotBH00:
+    #    cuts:
+      #      - *baseline_cuts
+        #      - *nPhoge1
+        #      - *phoEarlyNotBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin00
+        #  Ch5CRPhoEarlyNotBH10:
+    #    cuts:
+      #      - *baseline_cuts
+        #      - *nPhoge1
+        #      - *phoEarlyNotBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin10
 
-  Ch6SRPhoLateNotBH00:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateNotBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin00
-  Ch6SRPhoLateNotBH10:
-    cuts:
-      - *baseline_cuts
-      - *nPhoge1
-      - *phoLateNotBH
-      - *Cleaning
-      - *kin
-      - *DelayedBin10
-
+        #  Ch6SRPhoLateNotBH00:
+    #    cuts:
+      #      - *baseline_cuts
+        #      - *nPhoge1
+        #      - *phoLateNotBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin00
+        #  Ch6SRPhoLateNotBH10:
+    #    cuts:
+      #      - *baseline_cuts
+        #      - *nPhoge1
+        #      - *phoLateNotBH
+        #      - *Cleaning
+        #      - *kin
+        #      - *DelayedBin10
+        #
 
   Ch7CRSVHadLowDxy00:
     cuts:
