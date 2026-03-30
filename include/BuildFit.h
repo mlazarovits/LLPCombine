@@ -61,6 +61,7 @@ class BuildFit{
 		void WriteDatacard(string datacard_dir, bool verbose = false);
 
 		ch::Categories BuildCats(JSONFactory* j);
+		void BuildCatsSubset(std::set<string> categories, ch::Categories& retcats); //returns subset of cats from overall _cats
 		std::map<std::string, float> BuildAsimovData(JSONFactory* j);
         	std::vector<std::string> GetBkgProcs(JSONFactory* j);
 		std::vector<std::string> GetDataProcs(JSONFactory* j);
@@ -98,6 +99,8 @@ class BuildFit{
 		std::vector<std::string> _signalDetails;
 		json _yields;
 		std::set<string> _bins_superset;
+		std::set<string> _bins_superset_abcd;
+		std::set<string> _bins_superset_shape;
 		string _fitname;
 		string _signalPoint;
 		string _shape_anchor_bin = "00";

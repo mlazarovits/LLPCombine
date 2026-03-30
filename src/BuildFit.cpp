@@ -43,10 +43,12 @@ BuildFit::BuildFit(string infile){
 	for(auto it = _shape_bin_ass.begin(); it != _shape_bin_ass.end(); it++){
 		vector<string> bins = it->second;
 		for(auto bin : bins) _bins_superset.insert(bin);
+		for(auto bin : bins) _bins_superset_shape.insert(bin);
 	}
 	for(auto it = _abcd_bin_ass.begin(); it != _abcd_bin_ass.end(); it++){
 		vector<string> bins = it->second;
 		for(auto bin : bins) _bins_superset.insert(bin);
+		for(auto bin : bins) _bins_superset_abcd.insert(bin);
 	}
 
 	if(base["asimov"].as<bool>())
@@ -66,6 +68,7 @@ BuildFit::BuildFit(string infile){
 //builds categories, makes asimov obs if specified, etc
 void BuildFit::PrepFit(JSONFactory* j, string signalPoint, vector<string> datakeys){
 	_yields = j->j;
+	//build cats per fit-type call
 	BuildCats(j);
 cout << "built cats" << endl;	
 	if(_asimov && !_datadriven){
@@ -147,6 +150,10 @@ void BuildFit::sumBkgs(){
 //Ch#IDBin where Bin = xy coord in MsRs plane
 void BuildFit::BuildShapeTransferFit(){
 	cout << "Building Shape Transfer Fit" << endl;
+	if(_shape_ch_ass.size() < 1){
+		cout << "No channel association specified for shape transfer fit. This fit config will not be written. Returning." << endl;
+		return;
+	}
 	//take channel 1 as the anchor channel, enforce expectation onto other channels
 	//for channel connected to anchor channel, set initial value to value of non-anchor channel bin to bin in anchor channel
 	//this way, the rate parameter connecting these channels is initialized to the ratio of the CR-like (signal depleted, high stats) bins across the anchor and non-anchor channel
@@ -158,8 +165,8 @@ void BuildFit::BuildShapeTransferFit(){
 		vector<string> anchor_bins = _shape_bin_ass[anchor_ch];
 		//set yields in every bin of the anchor channel to their nominal value
 		for(int b = 0; b < (int)anchor_bins.size(); b++){
-			cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << endl;
 			double anchor_rate = _yields[anchor_bins[b]][proc][1].get<double>();
+			cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << " rate " << anchor_rate << endl;
 			//set yield
 			ch::Process anchorproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[anchor_bins[b]],anchor_bins[b]), false, anchor_rate);
 			cb.InsertProcess(anchorproc);
@@ -177,7 +184,7 @@ void BuildFit::BuildShapeTransferFit(){
 				//match bin indices (assuming that bins have been defined identically)
 				string buoy_bin = buoy_chs[i]+bin;
 				//loop through bins in this channel
-				cout << "proc " << proc << " bin " << buoy_bin << " rate " << anchor_rate << endl;
+				cout << " buoy_bin " << buoy_bin << " proc " << proc << " rate " << anchor_rate << endl;
 				ch::Process buoyproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[buoy_bin],buoy_bin), false, anchor_rate);
 				cb.InsertProcess(buoyproc);
 			}
@@ -219,12 +226,17 @@ void BuildFit::BuildABCDFit(){
 		cout << "No channel association specified for ABCD fit. This fit config will not be written. Returning." << endl;
 		return;
 	}
-	//set observations based on which bins were specified in fit config	
-	cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {_bkg_proc}, _cats, false);
+	ch::Categories cats_abcd;
+	BuildCatsSubset(_bins_superset_abcd, cats_abcd);
+	//set observations based on which bins were specified in fit config for ABCD bins (shape transfer bins are set in that function)
+	cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {_bkg_proc}, cats_abcd, false);
 	//initialize rate of each process to 1 (bkg procs only rn) across all bins
 	//such that rate * rateParam = expectation in each bin
         cb.ForEachProc([&](ch::Process *x){
 		if(x->process() != _bkg_proc) return;
+		//only do for bins in ABCD region
+		if(find(_bins_superset_abcd.begin(), _bins_superset_abcd.end(), x->bin()) == _bins_superset_abcd.end()) return;
+		cout << "abcd setting rate for bin " << x->bin() << " proc " << x->process() << endl;
             x->set_rate(1.);
         });
 	//only applies ABCD treatment to background processes
@@ -370,6 +382,18 @@ void BuildFit::WriteDatacard(string datacard_dir, bool verbose){
 }
 
 
+void BuildFit::BuildCatsSubset(std::set<string> categories, ch::Categories& retcats){
+	//build on top of last call
+	retcats.clear();
+	for(auto cat : categories){
+		string binname = cat;
+		if(_invcats.find(binname) == _invcats.end()) continue;
+		int binNum = _invcats[binname];
+		retcats.push_back( {binNum, binname} );
+	}
+}
+
+//sets observation to sum of MC backgrounds (skips MC sig and data)
 ch::Categories BuildFit::BuildCats(JSONFactory* j){
 	_cats.clear(); //reset for each call
 	int binNum=0;
