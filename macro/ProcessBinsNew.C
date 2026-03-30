@@ -27,11 +27,12 @@ void FillDataBin( TH1D* combinedData,int num, std::string binN, TFile* f){
 void ProcessBinsNew(string f, string workdir = "./", string oname = "test"){
 
 	//std::string f = "fitDiagnosticsSVOnly4BinCR.root";
-	std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso", "Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
+	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso", "Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
 	//std::vector<string> chs = {"Ch1CRPho1PromptMedIso", "Ch2CRPho2PromptMedIso"};//, "Ch3CRSVHad", "Ch4CRSVHad"};
 	//std::vector<string> chs = {"Ch3CRSVHadLowDxy", "Ch4CRSVHadHighDxy"};
 
 	//std::vector<string> chs = {"Ch1CR1PhoBHEarly","Ch2CR1PhoBHLate","Ch3CR1PhonotBHEarly","Ch4SR1PhonotBHLate"};
+	std::vector<string> chs = {"Ch1CRPhoBHEarly","Ch2CRPhoBHLate","Ch3CRPhonotBHEarly","Ch4CRPhonotBHLate","Ch5CRPho1Iso","Ch6CRPho2Iso","Ch7CRHadLow","Ch8CRHadHigh"};
 
 	TFile* tf = TFile::Open(f.c_str());
 	
@@ -41,10 +42,17 @@ void ProcessBinsNew(string f, string workdir = "./", string oname = "test"){
 		bingrid = {"00","10","01","11"};
 	else
 		bingrid = {"00","10"};
+	
+	vector<string> chs2bin = {"Ch1","Ch2","Ch3","Ch4"};
+	vector<string> chs4bin = {"Ch5","Ch6","Ch7","Ch8"};
 
 	vector<TH1D*> hists;
 	for(auto ch : chs){
 		cout << "doing channel " << ch << endl;
+		if(find(chs4bin.begin(), chs4bin.end(), ch) != chs4bin.end())
+			bingrid = {"00","10","01","11"};
+		if(find(chs2bin.begin(), chs2bin.end(), ch) != chs2bin.end())
+			bingrid = {"00","10"};
 		TH1D* prefitch1= new TH1D(("hpre"+ch).c_str(), "prefit shape", bingrid.size(), -0.5,bingrid.size()+0.5);
 		TH1D* bpostfitch1= new TH1D(("hpostb"+ch).c_str(), "post-fit bonly",bingrid.size(),-0.5,bingrid.size()+0.5);
 		TH1D* hdatach1 = new TH1D(("hdata"+ch).c_str(), "data",bingrid.size(),-0.5,bingrid.size()+0.5);
