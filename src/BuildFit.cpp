@@ -22,8 +22,6 @@ BuildFit::BuildFit(string infile){
         		_shape_bin_ass = base["shape_transfer_fit"]["bin_association"].as<map<string,vector<string>>>();
 		if(base["shape_transfer_fit"]["channel_association"])
         		_shape_ch_ass =  base["shape_transfer_fit"]["channel_association"].as<map<string,vector<string>>>();
-		if(base["shape_transfer_fit"]["anchor_bin"])
-			_shape_anchor_bin = base["shape_transfer_fit"]["anchor_bin"].as<string>();
 	}
 	if(base["ABCD_fit"]){
 		if(base["ABCD_fit"]["bin_association"])
@@ -37,6 +35,31 @@ BuildFit::BuildFit(string infile){
 		for(auto it = systs.begin(); it != systs.end(); it++){
 			_systs.push_back(yamlSys(it->second));
 		}
+	}
+
+	//set anchor bins in all shape transfer channel mappings
+	for(auto it = _shape_ch_ass.begin(); it != _shape_ch_ass.end(); it++){
+		//loop through all bins of buoy channel - anchor bin is the one with CR in the name for both anchor and buoy channels
+		vector<string> buoy_chs = it->second;
+		string anchor_ch = it->first;
+		for(auto buoy_ch : buoy_chs){ 
+			vector<string> buoy_bins = _shape_bin_ass[buoy_ch];
+			for(auto buoy_bin : buoy_bins){
+				if(buoy_bin.find("CR") != string::npos){
+					string bin = getBinIdx(buoy_bin);
+					_shape_anchor_bins[buoy_ch] = bin;
+					_shape_anchor_bins[anchor_ch] = bin;
+					break;
+				}
+
+			}
+
+		}
+	}
+	for(auto it = _shape_anchor_bins.begin(); it != _shape_anchor_bins.end(); it++){
+		string ch = it->first;
+		string bin = it->second;
+		cout << "channel " << ch << " has anchor bin " << bin << endl;
 	}
 
 	//make set of all available bins
@@ -178,11 +201,18 @@ void BuildFit::BuildShapeTransferFit(){
 				//make sure bin configuration for anchor channel matches that for buoy channel
 				if(buoy_bins.size() != anchor_bins.size())
 					continue;
+				string buoy_bin;
+				if(bin == _shape_anchor_bins[buoy_chs[i]]){
+					cout << "is buoy ch " << buoy_chs[i] << " bin " << bin << endl;
+					buoy_bin = GetBuoyBin(buoy_chs[i]);
+				}
+				else{
+					buoy_bin = buoy_chs[i]+bin;
+				}
 				//make sure anchor channel bin exists in buoy channel
-				if(find(buoy_bins.begin(), buoy_bins.end(), buoy_chs[i]+bin) == buoy_bins.end())
+				if(find(buoy_bins.begin(), buoy_bins.end(), buoy_bin) == buoy_bins.end())
 					continue;
 				//match bin indices (assuming that bins have been defined identically)
-				string buoy_bin = buoy_chs[i]+bin;
 				//loop through bins in this channel
 				cout << " buoy_bin " << buoy_bin << " proc " << proc << " rate " << anchor_rate << endl;
 				ch::Process buoyproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[buoy_bin],buoy_bin), false, anchor_rate);
@@ -197,13 +227,15 @@ void BuildFit::BuildShapeTransferFit(){
 		string anchor_ch = chit->first;
 		vector<string> buoy_chs = chit->second;
 		vector<string> anchor_bins = _shape_bin_ass.at(anchor_ch);
-		//cout << "sys - anchor ch " << anchor_ch << " anchor bin " << anchor_bins[0] << endl;
-		double anchorch_anchorbin_tot_yield = getTotYield(anchor_ch+_shape_anchor_bin);
+		cout << "sys - anchor ch " << anchor_ch << " anchor bin " << _shape_anchor_bins[anchor_ch] << endl;
+		double anchorch_anchorbin_tot_yield = getTotYield(anchor_ch+_shape_anchor_bins[anchor_ch]);
 		for(auto buoy_ch : buoy_chs){
-			//cout << "sys - buoy ch anchor bin " << buoy_bins[0] << endl;
-			double buoych_anchorbin_tot_yield = getTotYield(buoy_ch+_shape_anchor_bin);
+			//get buoy bin for this buoy channel
+			string buoy_bin = GetBuoyBin(buoy_ch);
+			cout << "sys - buoy ch anchor bin " << buoy_bin << endl;
+			double buoych_anchorbin_tot_yield = getTotYield(buoy_bin);
 			double transfer_factor = buoych_anchorbin_tot_yield/anchorch_anchorbin_tot_yield;
-			//cout << "sys - anchor ch anchor bin yield " << anchorch_anchorbin_tot_yield << " buoy ch anchor bin yield " << buoych_anchorbin_tot_yield << " transfer_factor " << transfer_factor << endl;
+			cout << "sys - anchor ch anchor bin yield " << anchorch_anchorbin_tot_yield << " buoy ch anchor bin yield " << buoych_anchorbin_tot_yield << " transfer_factor " << transfer_factor << endl;
 			//tie anchor channel norm to buoy channels norm
 			//buoy channel bins (b_i) have rates set to their anchor counterparts (a_i)
 			//so we want to tie these bins together via a rate param initialized to the ratio N = A/B
@@ -211,6 +243,20 @@ void BuildFit::BuildShapeTransferFit(){
 			//such that the expectation of the rate in each buoy channel bin b_i is anchor channel bin a_i * N
 			vector<string> buoy_bins = _shape_bin_ass[buoy_ch];
 			cb.cp().process({proc}).bin(buoy_bins).AddSyst(cb,buoy_ch+"Norm","rateParam",SystMap<>::init(transfer_factor));
+			//loop through bins in buoy_ch to set observed rates
+			if(_datadriven && _asimov){ //if not asimov or not datadriven, 
+				vector<string> buoy_bins = _shape_bin_ass[buoy_ch];
+				for(auto buoy_bin : buoy_bins){
+					if(buoy_bin.find("CR") != string::npos)
+						continue;
+					string bin = getBinIdx(buoy_bin);
+					string anchorch_bin = anchor_ch+bin;
+					double anchor_rate = _yields[anchorch_bin][proc][1].get<double>();
+					cout << "setting obs in buoy bin " << buoy_bin << " from anchorch_bin " << anchorch_bin << " to " << transfer_factor * anchor_rate << endl;
+					_obs_rates[buoy_bin] = double(int(transfer_factor * anchor_rate));
+				}
+
+			}
 		}
 
 	}

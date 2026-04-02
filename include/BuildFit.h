@@ -103,16 +103,21 @@ class BuildFit{
 		std::set<string> _bins_superset_shape;
 		string _fitname;
 		string _signalPoint;
-		string _shape_anchor_bin = "00";
+		map<string, string> _shape_anchor_bins;
 		string _bkg_proc = "bkg";
 
 		//get total yield over all processes for a given bin
 		double getTotYield(string bin){
 			double bin_tot_yield = 0;
                         for(auto proc : _bkgprocs){
+				std::cout << "getTotYield - bin " << bin << " proc " << proc << std::endl;
                                 bin_tot_yield += _yields[bin][proc][1].get<double>();
                         }
 			return bin_tot_yield;
+		}
+
+		string GetBuoyBin(string buoych){
+			return buoych.replace(buoych.find("SR"),2,"CR")+_shape_anchor_bins[buoych];
 		}
 
 		//get bin indices - should be last two characters based on naming convention
