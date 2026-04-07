@@ -1,0 +1,421 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "PhoOnly_FullRegions_NonCompressed_AnalysisConfig_CutMaster"
+  luminosity: 165.27
+  output_json: "PhoOnly_FullRegions_NonCompressed_AnalysisConfig_CutMaster.json"
+
+samples:
+  #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"] 
+  data: ["MET16","MET17","MET18","MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)" 
+
+################################ SV VETO Strings ##################
+#exactly 1 hadronic SR SV
+noSV: &noSV
+  - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000) || SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
+
+noSVhad: &noSVhad
+  - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000)"
+
+noSVlep: &noSVlep
+  - "SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
+
+################################################################
+############################### Photon REGION Strings ##########################
+Ch1CRgeq1PhoBHEarly: &Ch1CRgeq1PhoBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # >= 1 BH photon early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+Ch1CReq1PhoBHEarly: &Ch1CReq1PhoBHEarly
+  - "(nBaseLinePhotons == 1)"
+  # == 1 BH photon early
+  - "(baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5)"
+
+Ch1CReq2PhoBHEarly: &Ch1CReq2PhoBHEarly
+  - "(nBaseLinePhotons == 2)"
+  # == 2 BH photon early
+  - "( ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] < -2.5)) )"
+
+
+Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
+  - "(nBaseLinePhotons > 0)"
+  # >= 1 BH photon late
+  - "(nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+Ch2CReq1PhoBHLate: &Ch2CReq1PhoBHLate
+  - "(nBaseLinePhotons == 1)"
+  # == 1 BH photon late
+  - "(nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5)"
+
+Ch2CReq2PhoBHLate: &Ch2CReq2PhoBHLate
+  - "(nBaseLinePhotons == 2)"
+  # == 2 BH photon late
+  - "( ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+
+# ==0 BH photons
+# >= 1 notBH photons
+# >= 1 nonprompt
+Ch3CRgeq1PhoNotBHEarly: &Ch3CRgeq1PhoNotBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # >=1 notBH photons early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+Ch3CReq1PhoNotBHEarly: &Ch3CReq1PhoNotBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 1 notBH photons early (lead photon is tagged notBH early OR (if ==2 bl photons and lead is !notBH) sublead is tagged notBH early 
+  - "( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ( baseLinePhoton_beamHaloCNNScore[0] >= 0.185) && (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] < -2.5)) )"
+
+Ch3CReq2PhoNotBHEarly: &Ch3CReq2PhoNotBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 2 notBH photons early
+  - "( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] < -2.5)) )"
+
+
+Ch4SRgeq1PhoNotBHLate: &Ch4SRgeq1PhoNotBHLate
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # >=1 notBH photons late
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
+
+Ch4SReq1PhoNotBHLate: &Ch4SReq1PhoNotBHLate
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 1 notBH photons late (lead photon is tagged notBH late OR (if ==2 bl photons and lead is !notBH) sublead is tagged notBH late 
+  - "( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ( baseLinePhoton_beamHaloCNNScore[0] >= 0.185) && (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+Ch4SReq2PhoNotBHLate: &Ch4SReq2PhoNotBHLate
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 2 notBH photons late
+  - "( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+
+# == 0 BH photons
+# == 0 nonprompt photons
+# == 0 tight iso photons
+Ch5CRgeq1PhoMedIsoPrompt: &Ch5CRgeq1PhoMedIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 0 nonprompt photons
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] < 0.9) && ( baseLinePhoton_isoANNScore[1] < 0.9)) )"
+
+Ch5CReq1PhoMedIsoPrompt: &Ch5CReq1PhoMedIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 0 nonprompt photons
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)))"
+
+Ch5CReq2PhoMedIsoPrompt: &Ch5CReq2PhoMedIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 0 nonprompt photons
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
+  - "( (nBaseLinePhotons == 2 && (baseLinePhoton_isoANNScore[0] < 0.9 && baseLinePhoton_isoANNScore[1] < 0.9)))"
+
+# == 0 BH photons
+# == 0 nonprompt photons
+# >= 1 tight iso photons
+Ch6SRgeq1PhoTightIsoPrompt: &Ch6SRgeq1PhoTightIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 0 nonprompt photons
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  # >= 1 tight iso photons 
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+
+# == 0 BH photons
+# == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt) 
+# == 1 tight iso photons
+Ch6SReq1PhoTightIsoPrompt: &Ch6SReq1PhoTightIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ))"
+  # == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt)
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5)))) ) )"
+  # == 1 tight iso photons 
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9 && baseLinePhoton_isoANNScore[1] < 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9 && baseLinePhoton_isoANNScore[0] < 0.9 )) )"
+
+Ch6SReq2PhoTightIsoPrompt: &Ch6SReq2PhoTightIsoPrompt
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # == 0 nonprompt photons
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  # == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt)
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5))))) )"
+  # == 2 tight iso photons 
+  - "( (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) && ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+##########################################################
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+    
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 2200) && (rjr_Ms[0] < 2500) && (rjr_Rs[0] < 0.3)"
+b10: &b10
+  - "(rjr_Ms[0] >= 2500) && (rjr_Rs[0] < 0.3)"
+b01: &b01
+  - "(rjr_Ms[0] >= 2200) && (rjr_Ms[0] < 2500) && (rjr_Rs[0] >= 0.3)"
+b11: &b11
+  - "(rjr_Ms[0] >= 2500) && (rjr_Rs[0] >= 0.3)"
+
+DelayedBin00: &DelayedBin00
+  - "(rjr_Ms[0] >= 1500)"
+  - "(rjr_Rs[0] >= 0.15)"
+#DelayedBin10: &DelayedBin10
+#  - "(rjr_Ms[0] >= 1500)"
+#  - "(rjr_Rs[0] >= 0.15)"
+
+bins:
+  #Ch1CRgeq1PhoBHEarlyBin00:
+  #  cuts:
+  #    - *baseline_cuts
+  #    - *Cleaning
+  #    - *noSV
+  #    - *Ch1CRgeq1PhoBHEarly
+  #    - *DelayedBin00
+  #      #Ch1CRgeq1PhoBHEarlyBin10:
+  #      #  cuts:
+  #      #    - *baseline_cuts
+  #      #    - *Cleaning
+  #      #    - *noSV
+  #      #    - *Ch1CRgeq1PhoBHEarly
+  #      #    - *DelayedBin10
+  #Ch2CRgeq1PhoBHLateBin00:
+  #  cuts:
+  #    - *baseline_cuts
+  #    - *Cleaning
+  #    - *noSV
+  #    - *Ch2CRgeq1PhoBHLate
+  #    - *DelayedBin00
+  #      #Ch2CRgeq1PhoBHLateBin10:
+  #      #  cuts:
+  #      #    - *baseline_cuts
+  #      #    - *Cleaning
+  #      #    - *noSV
+  #      #    - *Ch2CRgeq1PhoBHLate
+  #      #    - *DelayedBin10
+  #Ch3CRgeq1PhoNotBHEarlyBin00:
+  #  cuts:
+  #    - *baseline_cuts
+  #    - *Cleaning
+  #    - *noSV
+  #    - *Ch3CRgeq1PhoNotBHEarly
+  #    - *DelayedBin00
+  #      #Ch3CRgeq1PhoNotBHEarlyBin10:
+  #      #  cuts:
+  #      #    - *baseline_cuts
+  #      #    - *Cleaning
+  #      #    - *noSV
+  #      #    - *Ch3CRgeq1PhoNotBHEarly
+  #      #    - *DelayedBin10
+  #Ch4SRgeq1PhoNotBHLateBin00:
+  #  cuts:
+  #    - *baseline_cuts
+  #    - *Cleaning
+  #    - *noSV
+  #    - *Ch4SRgeq1PhoNotBHLate
+  #    - *DelayedBin00
+  #      #Ch4SRgeq1PhoNotBHLateBin10:
+  #      #  cuts:
+  #      #    - *baseline_cuts
+  #      #    - *Cleaning
+  #      #    - *noSV
+  #      #    - *Ch4SRgeq1PhoNotBHLate
+  #      #    - *DelayedBin10
+  Ch5CRgeq1PhoMedIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CRgeq1PhoMedIsoPrompt
+      - *b00
+  Ch5CRgeq1PhoMedIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CRgeq1PhoMedIsoPrompt
+      - *b10
+  Ch5CRgeq1PhoMedIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CRgeq1PhoMedIsoPrompt
+      - *b01
+  Ch5CRgeq1PhoMedIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CRgeq1PhoMedIsoPrompt
+      - *b11
+  Ch6CRgeq1PhoTightIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SRgeq1PhoTightIsoPrompt
+      - *b00
+  Ch6SRgeq1PhoTightIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SRgeq1PhoTightIsoPrompt
+      - *b10
+  Ch6SRgeq1PhoTightIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SRgeq1PhoTightIsoPrompt
+      - *b01
+  Ch6SRgeq1PhoTightIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SRgeq1PhoTightIsoPrompt
+      - *b11
+  Ch5CReq1PhoMedIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq1PhoMedIsoPrompt
+      - *b00
+  Ch5CReq1PhoMedIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq1PhoMedIsoPrompt
+      - *b10
+  Ch5CReq1PhoMedIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq1PhoMedIsoPrompt
+      - *b01
+  Ch5CReq1PhoMedIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq1PhoMedIsoPrompt
+      - *b11
+  Ch6CReq1PhoTightIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq1PhoTightIsoPrompt
+      - *b00
+  Ch6SReq1PhoTightIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq1PhoTightIsoPrompt
+      - *b10
+  Ch6SReq1PhoTightIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq1PhoTightIsoPrompt
+      - *b01
+  Ch6SReq1PhoTightIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq1PhoTightIsoPrompt
+      - *b11
+  Ch5CReq2PhoMedIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq2PhoMedIsoPrompt
+      - *b00
+  Ch5CReq2PhoMedIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq2PhoMedIsoPrompt
+      - *b10
+  Ch5CReq2PhoMedIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq2PhoMedIsoPrompt
+      - *b01
+  Ch5CReq2PhoMedIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch5CReq2PhoMedIsoPrompt
+      - *b11
+  Ch6CReq2PhoTightIsoPromptBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq2PhoTightIsoPrompt
+      - *b00
+  Ch6SReq2PhoTightIsoPromptBin10:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq2PhoTightIsoPrompt
+      - *b10
+  Ch6SReq2PhoTightIsoPromptBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq2PhoTightIsoPrompt
+      - *b01
+  Ch6SReq2PhoTightIsoPromptBin11:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch6SReq2PhoTightIsoPrompt
+      - *b11
