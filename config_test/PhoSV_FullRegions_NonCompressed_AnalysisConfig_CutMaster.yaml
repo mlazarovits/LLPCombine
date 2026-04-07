@@ -1,0 +1,95 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "PhoSV_FullRegions_noMix_NonCompressed_v49_MConly"
+  luminosity: 165.27
+  output_json: "PhoSV_FullRegions_NonCompressed_v49_Master.json"
+
+samples:
+  #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"] 
+  data: ["MET16","MET17","MET18","MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)" 
+
+################################ SV Strings ##################
+#exactly 1 hadronic SR SV
+SVhad1_SR:
+  - "SV_nHadronic == 1 && HadronicSV_dxySig[0] > 1000"
+
+#exactly 2 hadronic SV both SR (is both Sxy>1000 to tight)
+SVhad2_SR: 
+  - "SV_nHadronic == 2 && HadronicSV_dxySig[0] > 1000 && HadronicSV_dxySig[1] > 1000"
+
+SVlep1_SR:
+  - "SV_nLeptonic == 1 && LeptonicSV_dxySig[0] > 1000"
+
+SVlep2_SR:
+  - "SV_nLeptonic == 2 && LeptonicSV_dxySig[0] > 1000 && LeptonicSV_dxySig[0] > 1000"
+
+#looser version requiring only 1 to have high Sdxy
+SVhad2_SRb:
+  - "SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 ||  HadronicSV_dxySig[1] > 1000)"
+
+SVlep2_SRb:
+  - "SV_nLeptonic == 2 && (LeptonicSV_dxySig[0] > 1000 ||  LeptonicSV_dxySig[1] > 1000)"
+
+noSVhad1:
+  - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000)"
+noSVhad2:
+  - "SV_nHadronic==0 || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000)"
+
+noSVlep1:
+  - "SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000)"
+noSVlep2:
+  - "SV_nLeptonic==0 || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
+
+
+################################################################
+
+############################### Photon Strings ##########################
+
+noTightPrompt1: &noTightPrompt1
+  - "nBaseLinePhotons == 0 || (nBaseLinePhotons ==1 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)"
+
+noTightPrompt2: &notTightPrompt2
+  - "nBaseLinePhotons == 0 || (nBaseLinePhotons ==2 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_isoANNScore[1]< 0.9 && baseLinePhoton_WTimeSig[1]  < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)"
+
+
+noNotBHLate1: &noNotBHLate1:
+  - "nBaseLinePhotons == 0 || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5)"
+
+noNotBHLate2: &noNotBHLate2:
+  - "nBaseLinePhotons == 0 || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5)"
+##########################################################
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+    
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
+
+b00: &b00
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3)"
+b10: &b10
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] < 0.3)"
+b01: &b01
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] >= 0.3)"
+b11: &b11
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.3)"
+
+DelayedBin00: &DelayedBin00
+  - "(rjr_Ms[0] >= 700) && (rjr_Ms[0] < 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+DelayedBin10: &DelayedBin10
+  - "(rjr_Ms[0] >= 1000)"
+  - "(rjr_Rs[0] >= 0.15)"
+
+bins:
+  Ch1CRTempBin:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *b00
