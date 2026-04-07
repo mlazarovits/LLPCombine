@@ -30,20 +30,20 @@ SVlep2_SR:
   - "SV_nLeptonic == 2 && LeptonicSV_dxySig[0] > 1000 && LeptonicSV_dxySig[0] > 1000"
 
 #looser version requiring only 1 to have high Sdxy
-SVhad2_SRb:
+SVhad2_SRb: 
   - "SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 ||  HadronicSV_dxySig[1] > 1000)"
 
 SVlep2_SRb:
   - "SV_nLeptonic == 2 && (LeptonicSV_dxySig[0] > 1000 ||  LeptonicSV_dxySig[1] > 1000)"
 
-noSVhad1:
+noSVhad1: &noSVhad1
   - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000)"
-noSVhad2:
+noSVhad2: &noSVhad2
   - "SV_nHadronic==0 || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000)"
 
-noSVlep1:
+noSVlep1: &noSVlep1
   - "SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000)"
-noSVlep2:
+noSVlep2: &noSVlep2
   - "SV_nLeptonic==0 || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
 
 
@@ -58,10 +58,10 @@ noTightPrompt2: &noTightPrompt2
   - "nBaseLinePhotons == 0 || (nBaseLinePhotons ==2 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_isoANNScore[1]< 0.9 && baseLinePhoton_WTimeSig[1]  < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)"
 
 
-noNotBHLate1: &noNotBHLate1:
+noNotBHLate1: &noNotBHLate1
   - "nBaseLinePhotons == 0 || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5)"
 
-noNotBHLate2: &noNotBHLate2:
+noNotBHLate2: &noNotBHLate2
   - "nBaseLinePhotons == 0 || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5)"
 ##########################################################
 Cleaning: &Cleaning
