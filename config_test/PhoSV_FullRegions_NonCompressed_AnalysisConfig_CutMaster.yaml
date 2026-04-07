@@ -54,7 +54,7 @@ noSVlep2:
 noTightPrompt1: &noTightPrompt1
   - "nBaseLinePhotons == 0 || (nBaseLinePhotons ==1 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)"
 
-noTightPrompt2: &notTightPrompt2
+noTightPrompt2: &noTightPrompt2
   - "nBaseLinePhotons == 0 || (nBaseLinePhotons ==2 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_isoANNScore[1]< 0.9 && baseLinePhoton_WTimeSig[1]  < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)"
 
 
