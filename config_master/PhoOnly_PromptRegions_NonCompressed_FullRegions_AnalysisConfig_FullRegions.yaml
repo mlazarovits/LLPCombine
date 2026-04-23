@@ -1,8 +1,8 @@
 
 analysis:
-  name: "PhoOnly_PromptRegions_NonCompressed_AnalysisConfig_anchor10_PtDepIsoCut"
+  name: "PhoOnly_PromptRegions_NonCompressed_FullRegions_AnalysisConfig_PtDepIsoCut"
   luminosity: 165.27
-  output_json: "PhoOnly_PromptRegions_NonCompressed_AnalysisConfig_anchor10_PtDepIsoCut.json"
+  output_json: "PhoOnly_PromptRegions_NonCompressed_FullRegions_AnalysisConfig_PtDepIsoCut.json"
     
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
