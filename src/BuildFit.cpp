@@ -199,8 +199,10 @@ void BuildFit::BuildShapeTransferFit(){
 			for(int i = 0; i < (int)buoy_chs.size(); i++){
 				vector<string> buoy_bins = _shape_bin_ass[buoy_chs[i]];
 				//make sure bin configuration for anchor channel matches that for buoy channel
-				if(buoy_bins.size() != anchor_bins.size())
+				if(buoy_bins.size() != anchor_bins.size()){
+					cout << "Buoy channel " << buoy_chs[i] << " has " << buoy_bins.size() << " bins which does not map to anchor channel " << anchor_ch << " which has " << anchor_bins.size() << ". Skipping." << endl;
 					continue;
+				}
 				string buoy_bin;
 				if(bin == _shape_anchor_bins[buoy_chs[i]]){
 					cout << "is buoy ch " << buoy_chs[i] << " bin " << bin << endl;
