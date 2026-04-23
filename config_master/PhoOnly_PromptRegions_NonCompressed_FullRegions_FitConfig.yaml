@@ -1,0 +1,107 @@
+#test fit config
+fitname: "PhoOnly_PromptRegions_NonCompressed_FullRegions"
+asimov: True
+datadriven: True
+
+#main fit
+#naming convention: Ch#[CR/SR]IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch5CRgeq1PhoMedIsoPromptBin:
+      - "Ch5CRgeq1PhoMedIsoPromptBin00"
+      - "Ch5CRgeq1PhoMedIsoPromptBin01"
+      - "Ch5CRgeq1PhoMedIsoPromptBin10"
+      - "Ch5CRgeq1PhoMedIsoPromptBin11"
+      - "Ch5CRgeq1PhoMedIsoPromptBin22"
+    Ch6SReq1PhoTightIsoPromptBin:
+      - "Ch6SReq1PhoTightIsoPromptBin00"
+      - "Ch6SReq1PhoTightIsoPromptBin01"
+      - "Ch6CReq1PhoTightIsoPromptBin10"
+      - "Ch6SReq1PhoTightIsoPromptBin11"
+      - "Ch6SReq1PhoTightIsoPromptBin22"
+    Ch6SReq2PhoTightIsoPromptBin:
+      - "Ch6SReq2PhoTightIsoPromptBin00"
+      - "Ch6SReq2PhoTightIsoPromptBin01"
+      - "Ch6CReq2PhoTightIsoPromptBin10"
+      - "Ch6SReq2PhoTightIsoPromptBin11"
+      - "Ch6SReq2PhoTightIsoPromptBin22"
+  channel_association:
+    Ch5CRgeq1PhoMedIsoPromptBin:
+      - "Ch6SReq2PhoTightIsoPromptBin"
+      - "Ch6SReq1PhoTightIsoPromptBin"
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys1:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin00"
+          - "Ch6SReq1PhoTightIsoPromptBin00"
+  sys2:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin01"
+          - "Ch6SReq1PhoTightIsoPromptBin01"
+  sys3:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin10"
+          - "Ch6SReq1PhoTightIsoPromptBin10"
+  sys4:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape22"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin22"
+          - "Ch6SReq1PhoTightIsoPromptBin22"
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq2Shape00"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin00"
+          - "Ch6SReq2PhoTightIsoPromptBin00"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq2Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin01"
+          - "Ch6SReq2PhoTightIsoPromptBin01"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq2Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin10"
+          - "Ch6SReq2PhoTightIsoPromptBin10"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq2Shape11"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin11"
+          - "Ch6SReq2PhoTightIsoPromptBin11"
+  sys9:
+      type: "lnN"
+      name: "lnN_Ch5Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptBin10"
