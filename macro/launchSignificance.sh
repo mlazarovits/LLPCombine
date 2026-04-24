@@ -1,4 +1,8 @@
-
+if [ -z "$1" ]
+then
+        echo "Please pass [datacard-dir] to run significances"
+        return
+fi
 #dcdir=datacards_test1_MCStats
 #dcdir=datacards_2photon_prompt
 #dcdir=datacards_2photon_prompt4bin
