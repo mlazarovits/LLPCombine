@@ -1,0 +1,107 @@
+# Simple hadron to hadron validation bins
+
+analysis:
+  name: "Mixed_DelayedRegions_NonCompressed_Validation_AnalysisConfig"
+  luminosity: 165.27
+  output_json: "Mixed_DelayedRegions_NonCompressed_Validation.json"
+
+samples:
+  #backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"]
+  data: ["MET16","MET17","MET18","MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)" 
+
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+
+
+################################################################
+############################### SV Region Strings ##########################
+CRgeq1SVHadLowDxy: &CRgeq1SVHadLowDxy
+  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)))"
+
+CRgeq1SVHadHighDxy: &CRgeq1SVHadHighDxy
+  #- "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)))"
+  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)))"
+################################################################
+############################### SV Region Strings ##########################
+#BH region that works: [0.91, 0.999], [0.999, 0.9999]
+Ch1CRgeq1PhoBHEarly: &Ch1CRgeq1PhoBHEarly
+  # >= 1 BH photon early
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.995&& baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.995&& baseLinePhoton_beamHaloCNNScore[0] < 0.9999 ) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.995&&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
+  # >= 1 BH photon late
+  - "(nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.995&& baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.995&& baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.995&&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+
+# ==0 BH photons
+# >= 1 notBH photons
+# >= 1 nonprompt
+Ch3CRgeq1PhoNotBHEarly: &Ch3CRgeq1PhoNotBHEarly
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.995) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[1] < 0.995) ) )"
+  # >=1 notBH photons early
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.995&& baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+# ==0 BH photons
+# >= 1 notBH photons
+# >= 1 nonprompt
+Ch4CRgeq1PhoNotBHLate: &Ch4CRgeq1PhoNotBHLate
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.995)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.995) && (baseLinePhoton_beamHaloCNNScore[1] < 0.995)) ) )"
+  # >=1 notBH photons late
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.995&& baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
+
+nSVgeq1: &nSVgeq1
+  - "(SV_nHadronic >= 1 || SV_nLeptonic >= 1)"
+nPhoge1: &nPhoge1
+  - "(nBaseLinePhotons > 0)"
+
+DelayedBin00: &DelayedBin00
+  - "(rjr_Ms[0] >= 1000)"
+  - "(rjr_Rs[0] >= 0.35)"
+
+
+bins:
+  Ch1CRgeq1PhoBHEarlyDxyHadLow00:
+    description: "Ch1CRgeq1PhoBHEarlyDxyHadLow00"
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nSVgeq1
+      - *nPhoge1
+      - *Ch1CRgeq1PhoBHEarly
+      - *CRgeq1SVHadLowDxy
+      - *DelayedBin00
+  Ch2CRgeq1PhoBHLateDxyHadLow00:
+    description: "Ch2CRgeq1PhoBHLateDxyHadLow00"
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *Ch2CRgeq1PhoBHLate
+      - *CRgeq1SVHadLowDxy
+      - *DelayedBin00
+  Ch3CRgeq1PhonotBHEarlyDxyHadLow00:
+    description: "Ch3CRgeq1PhonotBHEarlyDxyHadLow00"
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *Ch3CRgeq1PhoNotBHEarly
+      - *CRgeq1SVHadLowDxy
+      - *DelayedBin00
+  Ch4CRgeq1PhonotBHLateDxyHadHigh00:
+    description: "Ch4CRgeq1PhonotBHLateDxyHadHigh00"
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *nPhoge1
+      - *CRgeq1SVHadHighDxy
+      - *Ch4CRgeq1PhoNotBHLate
+      - *DelayedBin00
+        
+        
