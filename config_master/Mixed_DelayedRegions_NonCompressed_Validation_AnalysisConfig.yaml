@@ -19,12 +19,10 @@ Cleaning: &Cleaning
 
 ################################################################
 ############################### SV Region Strings ##########################
-CRgeq1SVHadLowDxy: &CRgeq1SVHadLowDxy
-  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)))"
-
-CRgeq1SVHadHighDxy: &CRgeq1SVHadHighDxy
-  #- "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)))"
-  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)))"
+CRgeq1SVLowDxy: &CRgeq1SVLowDxy
+  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50)) || ((SV_nHadronic == 1) && (HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)) || ((SV_nHadronic == 2) && ((HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)) && ((HadronicSV_dxySig[1] < 300) && (HadronicSV_mass[1] > 15))))"
+CRgeq1SVHighDxy: &CRgeq1SVHighDxy
+  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] >= 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic == 1) && (HadronicSV_dxySig[0] >= 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)) || ((SV_nHadronic == 2) && ((HadronicSV_dxySig[0] >= 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)) || ((HadronicSV_dxySig[1] >= 300) && (HadronicSV_dxySig[1] < 800) && (HadronicSV_mass[1] > 15))))"
 ################################################################
 ############################### SV Region Strings ##########################
 #BH region that works: [0.91, 0.999], [0.999, 0.9999]
@@ -61,8 +59,8 @@ nPhoge1: &nPhoge1
   - "(nBaseLinePhotons > 0)"
 
 DelayedBin00: &DelayedBin00
-  - "(rjr_Ms[0] >= 1000)"
-  - "(rjr_Rs[0] >= 0.35)"
+  - "(rjr_Ms[0] >= 1200)"
+  - "(rjr_Rs[0] >= 0.3)"
 
 
 bins:
@@ -74,7 +72,7 @@ bins:
       - *nSVgeq1
       - *nPhoge1
       - *Ch1CRgeq1PhoBHEarly
-      - *CRgeq1SVHadLowDxy
+      - *CRgeq1SVLowDxy
       - *DelayedBin00
   Ch2CRgeq1PhoBHLateDxyHadLow00:
     description: "Ch2CRgeq1PhoBHLateDxyHadLow00"
@@ -83,7 +81,7 @@ bins:
       - *Cleaning
       - *nPhoge1
       - *Ch2CRgeq1PhoBHLate
-      - *CRgeq1SVHadLowDxy
+      - *CRgeq1SVLowDxy
       - *DelayedBin00
   Ch3CRgeq1PhonotBHEarlyDxyHadLow00:
     description: "Ch3CRgeq1PhonotBHEarlyDxyHadLow00"
@@ -92,7 +90,7 @@ bins:
       - *Cleaning
       - *nPhoge1
       - *Ch3CRgeq1PhoNotBHEarly
-      - *CRgeq1SVHadLowDxy
+      - *CRgeq1SVLowDxy
       - *DelayedBin00
   Ch4CRgeq1PhonotBHLateDxyHadHigh00:
     description: "Ch4CRgeq1PhonotBHLateDxyHadHigh00"
@@ -100,7 +98,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *nPhoge1
-      - *CRgeq1SVHadHighDxy
+      - *CRgeq1SVHighDxy
       - *Ch4CRgeq1PhoNotBHLate
       - *DelayedBin00
         
