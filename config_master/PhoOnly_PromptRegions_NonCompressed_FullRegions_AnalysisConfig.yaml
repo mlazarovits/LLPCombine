@@ -42,7 +42,6 @@ Ch6SReq1PhoTightIsoPrompt: &Ch6SReq1PhoTightIsoPrompt
 #[0.75,0.99]
 Ch5CReq1PhoMedIsoPrompt: &Ch5CReq1PhoMedIsoPrompt
   - "(nBaseLinePhotons == 1  && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.000198*baseLinePhoton_Pt[0] + 1.0188) && ( baseLinePhoton_isoANNScore[0] >= -0.000198*baseLinePhoton_Pt[0] + 0.7698)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.999) && (baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)))"
-  #- "(nBaseLinePhotons == 1  && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.000198*baseLinePhoton_Pt[0] + 0.9698)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.95)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)))"
 
 Ch6SReq2PhoTightIsoPrompt: &Ch6SReq2PhoTightIsoPrompt
   - "(nBaseLinePhotons == 2 && (((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.96)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] >= 0.95))) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)) && ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.96)) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] >= 0.95) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479)))"
