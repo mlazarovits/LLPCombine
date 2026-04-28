@@ -56,6 +56,8 @@ noTightPrompt: &noTightPrompt
 noNotBHLate: &noNotBHLate
   - "( nBaseLinePhotons == 0 || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5) || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5) )"
 
+
+
 noSigPhoton: &noSigPhoton
   - "( nBaseLinePhotons == 0 || (nBaseLinePhotons ==1 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) || (nBaseLinePhotons ==2 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_isoANNScore[1]< 0.9 && baseLinePhoton_WTimeSig[1]  < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5) || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5) || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5) )"
 
