@@ -1,4 +1,4 @@
-
+import argparse
 import os
 import ROOT as rt
 
@@ -22,6 +22,13 @@ def get_directories(path):
         print(f"An error occurred: {e}")
         
     return directories
+
+
+parser = argparse.ArgumentParser()
+parser.add_argument("--datacards","-d",help="directory of datacards",required=True)
+parser.add_argument("--output","-o",help="output txt file of collected signficances",default=None)
+args = parser.parse_args()
+
 #specify datacard dir
 
 #datacard_dir = "datacards"
@@ -31,13 +38,15 @@ def get_directories(path):
 #datacard_dir = "../datacards_eos"
 #datacard_dir = "../datacards_sq"
 #datacard_dir = "../datacards_2photon_prompt4bin"
-datacard_dir = "../datacards_PhoSV_2PhoPrompt_Hadronic_NonCompressed_Sensitivity"
+#datacard_dir = "../datacards_PhoSV_2PhoPrompt_Hadronic_NonCompressed_Sensitivity"
+datacard_dir = args.datacards#"../datacards_SV_1Hadronic_PureSV_NonCompressed_Sensitivity"
 datacard_subdir_list = get_directories(datacard_dir)
 
+ofile = args.output
+if ofile is None:
+    ofile = "sigs.txt"
 
-#print(datacard_subdir_list)
-
-with open("../output/Significance_2phoPrompt_SVHad_datadriven.txt", "w") as file:
+with open(ofile, "w") as file:
     sig=-1;
     for subdir in datacard_subdir_list:
         f = rt.TFile.Open(datacard_dir+"/"+subdir+"/higgsCombine.Test.Significance.mH120.root")
@@ -47,4 +56,4 @@ with open("../output/Significance_2phoPrompt_SVHad_datadriven.txt", "w") as file
         line = subdir +" "+ str(sig) +"\n"
         file.write(line)
     file.close()
-
+print("Wrote significances to",ofile)

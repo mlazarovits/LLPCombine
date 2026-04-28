@@ -1,0 +1,60 @@
+#test fit config
+fitname: "Mixed_DelayedRegions_NonCompressed_Validation"
+asimov: False
+datadriven: True
+
+#main fit
+#naming convention: Ch#[CR/SR]IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+  bin_association:
+    Ch1CRgeq1PhoBHEarlyDxyHadLow:
+      - "Ch1CRgeq1PhoBHEarlyDxyHadLow00"
+    Ch2CRgeq1PhoBHLateDxyHadLow:
+      - "Ch2CRgeq1PhoBHLateDxyHadLow00"
+    Ch3CRgeq1PhonotBHEarlyDxyHadLow:
+      - "Ch3CRgeq1PhonotBHEarlyDxyHadLow00"
+    Ch4CRgeq1PhonotBHLateDxyHadHigh:
+      - "Ch4CRgeq1PhonotBHLateDxyHadHigh00"
+  channel_association:
+    Ch4CRgeq1PhonotBHLateDxyHadHigh:
+      - "Ch2CRgeq1PhoBHLateDxyHadLow"
+      - "Ch1CRgeq1PhoBHEarlyDxyHadLow"
+      - "Ch3CRgeq1PhonotBHEarlyDxyHadLow"
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch1CRgeq1PhoBHEarly"
+      init_val: 1.2
+      bins:
+        - "Ch1CRgeq1PhoBHEarlyDxyHadLow00"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch2CRgeq1PhoBHLate"
+      init_val: 1.2
+      bins:
+        - "Ch2CRgeq1PhoBHLateDxyHadLow00"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch3CRgeq1PhoNotBHEarly"
+      init_val: 1.2
+      bins:
+        - "Ch3CRgeq1PhonotBHEarlyDxyHadLow00"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch4CRgeq1PhoNotBHLate"
+      init_val: 1.2
+      bins:
+        - "Ch4CRgeq1PhonotBHLateDxyHadHigh00"

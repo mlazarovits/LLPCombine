@@ -13,6 +13,7 @@ int main(int argc, char* argv[]){
 	string inconfig;
 	string input_json;
 	bool hprint = false;
+	bool crfit = false;
 	for(int i = 0; i < argc; i++){
 		if(strncmp(argv[i],"--help", 6) == 0){
                 	hprint = true;
@@ -36,6 +37,9 @@ int main(int argc, char* argv[]){
                 	i++;
                 	input_json = string(argv[i]);
                 }
+		if(strncmp(argv[i],"--CRFit", 7) == 0){
+			crfit = true;
+		}
 
 	}
 	if(hprint){
@@ -44,6 +48,7 @@ int main(int argc, char* argv[]){
                 cout << "   --help(-h)                           print options" << endl;
                 cout << "   --config(-c) [file]                  fit config" << endl;
                 cout << "   --BFI(-i) [file]                     build fit input (json file)" << endl;
+                cout << "   --CRFit                              run single signal for CR fit" << endl;
 		return 0;
 	}	
 
@@ -65,7 +70,10 @@ int main(int argc, char* argv[]){
 	//	return -1;
 
 	std::string datacard_dir = "datacards";
-	for( long unsigned int i=0; i<signals.size();i++){
+	long unsigned int nsig = signals.size();
+	if(crfit)
+		nsig = 1;
+	for( long unsigned int i=0; i<nsig;i++){
 		BuildFit BF(inconfig);
 		string fitname = BF.GetFitName();
 		std::cout << "fitname " << fitname << std::endl;
@@ -82,7 +90,7 @@ int main(int argc, char* argv[]){
 		BF.PrepFit(j, signals[i]);
 		//do fit - function won't do anything if their corresponding section in the config yaml isn't filled
 		BF.BuildShapeTransferFit();
-		//BF.BuildABCDFit();
+		BF.BuildABCDFit();
 		BF.SetObservations(); 
 		BF.DoSystematics();
 		//write datacard

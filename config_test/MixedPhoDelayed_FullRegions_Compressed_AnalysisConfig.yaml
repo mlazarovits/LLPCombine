@@ -2,9 +2,9 @@
 # validation fit: CR -> CR 
 
 analysis:
-  name: "Mixed_FullRegions_Compressed_v49"
+  name: "MixedPhoDelayed_FullRegions_Compressed_v49"
   luminosity: 165.27
-  output_json: "Mixed_FullRegions_Compressed_v49.json"
+  output_json: "MixedPhoDelayed_FullRegions_Compressed_v49.json"
 
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
@@ -56,8 +56,6 @@ noTightPrompt: &noTightPrompt
 noNotBHLate: &noNotBHLate
   - "( nBaseLinePhotons == 0 || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5) || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5) )"
 
-
-
 noSigPhoton: &noSigPhoton
   - "( nBaseLinePhotons == 0 || (nBaseLinePhotons ==1 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) || (nBaseLinePhotons ==2 && baseLinePhoton_isoANNScore[0]< 0.9 && baseLinePhoton_WTimeSig[0]  < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_isoANNScore[1]< 0.9 && baseLinePhoton_WTimeSig[1]  < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5) || (nBaseLinePhotons==1 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5) || (nBaseLinePhotons==2 && baseLinePhoton_beamHaloCNNScore[0]>0.185 && baseLinePhoton_WTimeSig[0]  >= 2.5 && baseLinePhoton_beamHaloCNNScore[1]>0.185 && baseLinePhoton_WTimeSig[1]  >= 2.5) )"
 
@@ -102,12 +100,13 @@ geq1Pho: &geq1Pho
 
 #all SVs lowdxy (hadronic for now)
 geq1SVLowDxy: &geq1SVLowDxy
-  - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] <= 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] <= 1000 && HadronicSV_dxySig[1] <= 1000 ) )"
+  - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] <= 1000 && HadronicSV_mass[0] > 20) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] <= 1000 && HadronicSV_mass[0] > 20 ) && (HadronicSV_dxySig[1] <= 1000 && HadronicSV_mass[1] > 20 ) ) )"
     #- "( (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] <= 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] <= 1000 && LeptonicSV_dxySig[1] <= 1000 ) )"
     
 #at least 1 high dxy SV (hadronic for now) 
 geq1SVHighDxy: &geq1SVHighDxy 
-    - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] > 1000) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 || HadronicSV_dxySig[1] > 1000) ) )"
+    - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] > 1000 && HadronicSV_mass[0] > 20) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 && HadronicSV_mass[0] > 20 ) || (HadronicSV_dxySig[1] > 1000 && HadronicSV_mass[1] > 20 ) ) )"
+    #- "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] > 1000) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 || HadronicSV_dxySig[1] > 1000) ) )"
   #- "( ((SV_nHadronic == 1 && SV_nLeptonic == 1) && (HadronicSV_dxySig[0] > 1000 || LeptonicSV_dxySig[0] > 1000)) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 || HadronicSV_dxySig[1] > 1000) ) || ( SV_nLeptonic == 2 && (LeptonicSV_dxySig[0] > 1000 || LeptonicSV_dxySig[1] > 1000) ) )"
 
 #for BH CRs and not BH CR/SRs
@@ -135,16 +134,15 @@ Cleaning: &Cleaning
   - "(Flag_MetFilters == 1)  && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
 
 kin: &kin
-  - "(rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.15)"
-    
+  - "rjrIsr_nSVisObjects > 1 && rjrIsr_PtIsr > 500"
+
 b00: &b00
-  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2400) && (rjr_Rs[0] < 0.2)"
-b10: &b10
-  - "(rjr_Ms[0] >= 2400) && (rjr_Rs[0] < 0.2)"
-b01: &b01
-  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2400) && (rjr_Rs[0] >= 0.2)"
-b11: &b11
-  - "(rjr_Ms[0] >= 2400) && (rjr_Rs[0] >= 0.2)"
+  - "(rjrIsr_RIsr >= 0.8)"
+    #- "(rjrIsr_RIsr >= 0.7) && (rjrIsr_RIsr < 0.8)"
+    #b10: &b10
+    #  - "(rjrIsr_RIsr >= 0.8) && (rjrIsr_RIsr < 0.9)"
+    #b21: &b20
+    #  - "(rjrIsr_RIsr >= 0.9)"
 
 bins:
   Ch1CRgeq1PhoBHEarlygeq1SVLowDxy00:
