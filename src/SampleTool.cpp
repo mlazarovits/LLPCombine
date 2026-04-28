@@ -52,6 +52,12 @@ SampleTool::SampleTool(){
                                 pathPrefix+"MET_R18_SVHPM100_MiniAOD_v34_MET_MINIAOD_Run2018C_rjrskim.root",
                                 pathPrefix+"MET_R18_SVHPM100_MiniAOD_v34_MET_MINIAOD_Run2018D_rjrskim.root"};
 	
+	MasterDict["MET22"] = { pathPrefix+"JetMET_R22_SVHPM100_MiniAOD_v34_JetMET_MINIAOD_Run2022C-19Dec2023-v1_rjrskim.root",
+				pathPrefix+"JetMET_R22_SVHPM100_MiniAOD_v34_JetMET_MINIAOD_Run2022D-19Dec2023-v1_rjrskim.root",
+				pathPrefix+"JetMET_R22_SVHPM100_MiniAOD_v34_JetMET_MINIAOD_Run2022E-19Dec2023-v1_rjrskim.root",
+				pathPrefix+"JetMET_R22_SVHPM100_MiniAOD_v34_JetMET_MINIAOD_Run2022F-19Dec2023-v2_rjrskim.root",
+				pathPrefix+"JetMET_R22_SVHPM100_MiniAOD_v34_JetMET_MINIAOD_Run2022G-19Dec2023-v1_rjrskim.root"};
+
 	MasterDict["MET23"] = { pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2023B-19Dec2023-v1_rjrskim.root",
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2023C-19Dec2023-v1_rjrskim.root",
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2023D-19Dec2023-v1_rjrskim.root",
