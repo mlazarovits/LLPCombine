@@ -179,17 +179,17 @@ bins:
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
       - *eq1b01
- Ch6SReq1PhoTightIsoPromptBin02:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *noSV
-      - *kin
-      - *noBHPhotons
-      - *balRJRJets
-      - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
-      - *eq1b02
+  Ch6SReq1PhoTightIsoPromptBin02:
+     cuts:
+       - *baseline_cuts
+       - *Cleaning
+       - *noSV
+       - *kin
+       - *noBHPhotons
+       - *balRJRJets
+       - *noNonPromptPhotons
+       - *Ch6SReq1PhoTightIsoPrompt
+       - *eq1b02
   Ch6SReq1PhoTightIsoPromptBin22:
     cuts:
       - *baseline_cuts
@@ -212,16 +212,16 @@ bins:
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
       - *eq1b11
- Ch5CReq2PhoMedIsoPromptBin00:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *noSV
-      - *kin
-      - *noBHPhotons
-      - *noNonPromptPhotons
-      - *Ch5CReq2PhoMedIsoPrompt
-      - *eq2b00
+  Ch5CReq2PhoMedIsoPromptBin00:
+     cuts:
+       - *baseline_cuts
+       - *Cleaning
+       - *noSV
+       - *kin
+       - *noBHPhotons
+       - *noNonPromptPhotons
+       - *Ch5CReq2PhoMedIsoPrompt
+       - *eq2b00
   Ch5CReq2PhoMedIsoPromptBin10:
     cuts:
       - *baseline_cuts
