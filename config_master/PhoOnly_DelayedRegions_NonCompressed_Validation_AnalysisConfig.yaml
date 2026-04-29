@@ -3,13 +3,13 @@
 
 analysis:
   name: "PhoOnly_DelayedRegions_NonCompressed_AnalysisConfig_Validation"
-  luminosity: 165.27
+  luminosity: 200
   output_json: "PhoOnly_DelayedRegions_NonCompressed_Validation.json"
 
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
   signals: ["gogoGZ"] 
-  data: ["MET16","MET17","MET18","MET23"]
+  data: ["MET16","MET17","MET18","MET22", "MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)" 
