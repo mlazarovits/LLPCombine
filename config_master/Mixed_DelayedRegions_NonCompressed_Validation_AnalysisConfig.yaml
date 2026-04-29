@@ -2,13 +2,13 @@
 
 analysis:
   name: "Mixed_DelayedRegions_NonCompressed_Validation_AnalysisConfig"
-  luminosity: 165.27
+  luminosity: 200
   output_json: "Mixed_DelayedRegions_NonCompressed_Validation.json"
 
 samples:
   #backgrounds: ["Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
   signals: ["gogoGZ"]
-  data: ["MET16","MET17","MET18","MET23"]
+  data: ["MET16","MET17","MET18","MET22","MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)" 
@@ -19,10 +19,12 @@ Cleaning: &Cleaning
 
 ################################################################
 ############################### SV Region Strings ##########################
-CRgeq1SVLowDxy: &CRgeq1SVLowDxy
-  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50)) || ((SV_nHadronic == 1) && (HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)) || ((SV_nHadronic == 2) && ((HadronicSV_dxySig[0] < 300) && (HadronicSV_mass[0] > 15)) && ((HadronicSV_dxySig[1] < 300) && (HadronicSV_mass[1] > 15))))"
-CRgeq1SVHighDxy: &CRgeq1SVHighDxy
-  - "(((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] >= 50) && (LeptonicSV_dxySig[0] < 200)) || ((SV_nHadronic == 1) && (HadronicSV_dxySig[0] >= 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)) || ((SV_nHadronic == 2) && ((HadronicSV_dxySig[0] >= 300) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)) || ((HadronicSV_dxySig[1] >= 300) && (HadronicSV_dxySig[1] < 800) && (HadronicSV_mass[1] > 15))))"
+CRgeq1SVHadLowDxy: &CRgeq1SVHadLowDxy
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15))"
+
+CRgeq1SVHadHighDxy: &CRgeq1SVHadHighDxy
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] >= 800) && (HadronicSV_mass[0] > 15))"
+    
 ################################################################
 ############################### SV Region Strings ##########################
 #BH region that works: [0.91, 0.999], [0.999, 0.9999]
@@ -53,15 +55,16 @@ Ch4CRgeq1PhoNotBHLate: &Ch4CRgeq1PhoNotBHLate
   # >=1 notBH photons late
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.995&& baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.995&& baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
 
+#no leptonic SVs
 nSVgeq1: &nSVgeq1
-  - "(SV_nHadronic >= 1 || SV_nLeptonic >= 1)"
+  - "(SV_nHadronic >= 1)"
+  - "(SV_nLeptonic == 0)"
 nPhoge1: &nPhoge1
   - "(nBaseLinePhotons > 0)"
 
 DelayedBin00: &DelayedBin00
-  - "(rjr_Ms[0] >= 1200)"
-  - "(rjr_Rs[0] >= 0.3)"
-
+  - "(rjr_Ms[0] >= 1500)"
+  - "(rjr_Rs[0] >= 0.2)"
 
 bins:
   Ch1CRgeq1PhoBHEarlyDxyHadLow00:
@@ -72,7 +75,7 @@ bins:
       - *nSVgeq1
       - *nPhoge1
       - *Ch1CRgeq1PhoBHEarly
-      - *CRgeq1SVLowDxy
+      - *CRgeq1SVHadLowDxy
       - *DelayedBin00
   Ch2CRgeq1PhoBHLateDxyHadLow00:
     description: "Ch2CRgeq1PhoBHLateDxyHadLow00"
@@ -81,7 +84,7 @@ bins:
       - *Cleaning
       - *nPhoge1
       - *Ch2CRgeq1PhoBHLate
-      - *CRgeq1SVLowDxy
+      - *CRgeq1SVHadLowDxy
       - *DelayedBin00
   Ch3CRgeq1PhonotBHEarlyDxyHadLow00:
     description: "Ch3CRgeq1PhonotBHEarlyDxyHadLow00"
@@ -90,7 +93,7 @@ bins:
       - *Cleaning
       - *nPhoge1
       - *Ch3CRgeq1PhoNotBHEarly
-      - *CRgeq1SVLowDxy
+      - *CRgeq1SVHadLowDxy
       - *DelayedBin00
   Ch4CRgeq1PhonotBHLateDxyHadHigh00:
     description: "Ch4CRgeq1PhonotBHLateDxyHadHigh00"
@@ -98,7 +101,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *nPhoge1
-      - *CRgeq1SVHighDxy
+      - *CRgeq1SVHadHighDxy
       - *Ch4CRgeq1PhoNotBHLate
       - *DelayedBin00
         
