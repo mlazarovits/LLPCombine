@@ -62,7 +62,7 @@ Ch5CRgeq1PhoMedIsoPrompt: &Ch5CRgeq1PhoMedIsoPrompt
 
 
 kin: &kin
-  - "((nBaseLinePhotons > 0) && (SV_nHadronic > 0))"
+  - "((nBaseLinePhotons > 0) && (SV_nHadronic > 0) && (SV_nLeptonic == 0))"
   - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
 
 eq2b00: &eq2b00
