@@ -1,13 +1,13 @@
 
 analysis:
   name: "PhoOnly_PromptRegions_NonCompressed_FullRegions_AnalysisConfig_PtDepIsoCut"
-  luminosity: 165.27
+  luminosity: 200
   output_json: "PhoOnly_PromptRegions_NonCompressed_FullRegions_AnalysisConfig_PtDepIsoCut.json"
     
 samples:
   #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
   signals: ["gogoGZ"] 
-  data: ["MET16","MET17","MET18","MET23"]
+  data: ["MET16","MET17","MET18","MET22","MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)" 
@@ -49,6 +49,9 @@ Ch6SReq2PhoTightIsoPrompt: &Ch6SReq2PhoTightIsoPrompt
 Ch5CReq2PhoMedIsoPrompt: &Ch5CReq2PhoMedIsoPrompt
   - "(nBaseLinePhotons == 2 && ((baseLinePhoton_Pt[0] > 100 && ( baseLinePhoton_isoANNScore[0] < -0.0001*baseLinePhoton_Pt[0] + 0.96 ) && (baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.76 )) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.95 && baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) || ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] < -0.0001*baseLinePhoton_Pt[1] + 0.96) && ( (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.76))) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] < 0.95 && baseLinePhoton_isoANNScore[1] >= 0.75) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )) )"
 
+balRJRJets: &balRJRJets
+  - "( ( rjrNJetsJa[0] >= 3 && rjrNJetsJb[0] >= 2 ) || ( rjrNJetsJa[0] >= 2 && rjrNJetsJb[0] >= 3 ) )" 
+
 kin: &kin
   - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
 
@@ -64,17 +67,17 @@ eq2b12: &eq2b12
   - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.4)"
 
 eq1b00: &eq1b00
-  - "(rjr_Ms[0] >= 2700) && (rjr_Ms[0] < 3000) && (rjr_Rs[0] < 0.3)"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.35)"
 eq1b10: &eq1b10
-  - "(rjr_Ms[0] >= 3000) && (rjr_Rs[0] < 0.3)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] < 0.35)"
 eq1b01: &eq1b01
-  - "(rjr_Ms[0] >= 2700) && (rjr_Ms[0] < 3000) && (rjr_Rs[0] >= 0.3) && (rjr_Rs[0] < 0.4)"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] >= 0.35) && (rjr_Rs[0] < 0.45)"
 eq1b11: &eq1b11
-  - "(rjr_Ms[0] >= 3000) && (rjr_Rs[0] >= 0.3) && (rjr_Rs[0] < 0.4)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.35) && (rjr_Rs[0] < 0.45)"
 eq1b02: &eq1b02
-  - "(rjr_Ms[0] >= 2700) && (rjr_Ms[0] < 3000) && (rjr_Rs[0] >= 0.4)"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] >= 0.45)"
 eq1b22: &eq1b22
-  - "(rjr_Ms[0] >= 3000) && (rjr_Rs[0] >= 0.4)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.45)"
 
 bins:
   Ch5CReq1PhoMedIsoPromptBin00:
@@ -82,6 +85,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
+      - *balRJRJets
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
@@ -92,6 +96,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
+      - *balRJRJets
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
@@ -103,6 +108,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq1PhoMedIsoPrompt
@@ -112,6 +118,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
+      - *balRJRJets
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
@@ -123,6 +130,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq1PhoMedIsoPrompt
@@ -133,6 +141,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq1PhoMedIsoPrompt
@@ -143,6 +152,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
@@ -153,6 +163,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
@@ -163,6 +174,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
@@ -174,6 +186,7 @@ bins:
       - *noSV
       - *kin
       - *noBHPhotons
+      - *balRJRJets
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
       - *eq1b02
@@ -183,6 +196,7 @@ bins:
       - *Cleaning
       - *noSV
       - *kin
+      - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq1PhoTightIsoPrompt
@@ -192,6 +206,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
+      - *balRJRJets
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
@@ -206,7 +221,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq2PhoMedIsoPrompt
-      - *eq1b00
+      - *eq2b00
   Ch5CReq2PhoMedIsoPromptBin10:
     cuts:
       - *baseline_cuts
@@ -216,7 +231,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq2PhoMedIsoPrompt
-      - *eq1b10
+      - *eq2b10
   Ch5CReq2PhoMedIsoPromptBin01:
     cuts:
       - *baseline_cuts
@@ -226,7 +241,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq2PhoMedIsoPrompt
-      - *eq1b01
+      - *eq2b01
   Ch5CReq2PhoMedIsoPromptBin11:
     cuts:
       - *baseline_cuts
@@ -236,7 +251,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch5CReq2PhoMedIsoPrompt
-      - *eq1b11
+      - *eq2b11
   Ch6CReq2PhoTightIsoPromptBin00:
     cuts:
       - *baseline_cuts
@@ -246,7 +261,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
-      - *eq1b00
+      - *eq2b00
   Ch6SReq2PhoTightIsoPromptBin10:
     cuts:
       - *baseline_cuts
@@ -256,7 +271,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
-      - *eq1b10
+      - *eq2b10
   Ch6SReq2PhoTightIsoPromptBin01:
     cuts:
       - *baseline_cuts
@@ -266,7 +281,7 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
-      - *eq1b01
+      - *eq2b01
   Ch6SReq2PhoTightIsoPromptBin11:
     cuts:
       - *baseline_cuts
@@ -276,4 +291,4 @@ bins:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
-      - *eq1b11
+      - *eq2b11

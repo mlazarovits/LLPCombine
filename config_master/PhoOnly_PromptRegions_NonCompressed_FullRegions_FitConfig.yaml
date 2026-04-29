@@ -12,6 +12,8 @@ shape_transfer_fit:
       - "Ch5CReq1PhoMedIsoPromptBin01"
       - "Ch5CReq1PhoMedIsoPromptBin10"
       - "Ch5CReq1PhoMedIsoPromptBin11"
+      - "Ch5CReq1PhoMedIsoPromptBin02"
+      - "Ch5CReq1PhoMedIsoPromptBin22"
     Ch5CReq2PhoMedIsoPromptBin:
       - "Ch5CReq2PhoMedIsoPromptBin00"
       - "Ch5CReq2PhoMedIsoPromptBin01"
@@ -22,6 +24,8 @@ shape_transfer_fit:
       - "Ch6SReq1PhoTightIsoPromptBin01"
       - "Ch6SReq1PhoTightIsoPromptBin10"
       - "Ch6SReq1PhoTightIsoPromptBin11"
+      - "Ch6SReq1PhoTightIsoPromptBin02"
+      - "Ch6SReq1PhoTightIsoPromptBin22"
     Ch6SReq2PhoTightIsoPromptBin:
       - "Ch6CReq2PhoTightIsoPromptBin00"
       - "Ch6SReq2PhoTightIsoPromptBin01"
@@ -61,6 +65,13 @@ systematics:
       bins:
           - "Ch5CReq1PhoMedIsoPromptBin01"
           - "Ch6SReq1PhoTightIsoPromptBin01"
+  sys1p2p1:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape02"
+      init_val: 1.1
+      bins:
+          - "Ch5CReq1PhoMedIsoPromptBin02"
+          - "Ch6SReq1PhoTightIsoPromptBin02"
   sys1p3:
       type: "lnN"
       name: "lnN_Ch5Ch6eq1Shape10"
@@ -75,6 +86,13 @@ systematics:
       bins:
           - "Ch5CReq1PhoMedIsoPromptBin11"
           - "Ch6SReq1PhoTightIsoPromptBin11"
+  sys1p4:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape22"
+      init_val: 1.15 
+      bins:
+          - "Ch5CReq1PhoMedIsoPromptBin22"
+          - "Ch6SReq1PhoTightIsoPromptBin22"
   sys4p1:
       type: "lnN"
       name: "lnN_Ch5eq1Shape00"
@@ -111,7 +129,7 @@ systematics:
           - "Ch6SReq2PhoTightIsoPromptBin11"
   sys9:
       type: "lnN"
-      name: "lnN_Ch5eq1Shape00"
+      name: "lnN_Ch5eq2Shape00"
       init_val: 1.1 
       bins:
           - "Ch5CReq2PhoMedIsoPromptBin00"
