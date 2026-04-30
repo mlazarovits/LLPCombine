@@ -136,6 +136,95 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 		
 	}
 }
+void BuildFitInput::BuildReweights(const AnalysisConfig& c){
+	//this will only ever be applied to signal models
+	//build decay reweight branch
+	double Z_old = c.sampleZrate;
+	double Z_new = c.targetZrate;
+	double G_old = c.sampleGrate;
+	double G_new = c.targetGrate;
+	for (const auto& dfkey :rdf_SigDict){
+		if (Z_old != -1){
+        	std::cout<<"building decay weight for key:"<< dfkey.first <<"\n";
+			//only initialize if the config nubmers are not default values
+			auto tempdf = rdf_SigDict[dfkey.first]->Define("decayWeight",
+    			[=](bool isZZ, bool isGZ, bool isGG) {
+			return ReweightTool::DecayReweight( isZZ, isGZ, isGG, Z_old, Z_new, G_old, G_new );
+    		},
+    		{"Evt_isZZ","Evt_isGZ","Evt_isGG"});
+		
+        rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+		}
+    }
+	
+	float tau_old = float(c.sampleLifetime);
+   	float tau_new = float(c.targetLifetime);
+	//build a reweight branch for each xa and xb lifetime, do it inefficiently by looping and replacing rdf for a then reloop and do b
+	for (const auto& dfkey :rdf_SigDict){
+		if (tau_old != -1 ){
+			std::cout<<"building Xa lifetime  weight for key:"<< dfkey.first <<"\n";
+            //only initialize if the config nubmers are not default values
+            auto tempdf = rdf_SigDict[dfkey.first]->Define("xawt",
+                [=](float ctau) {
+				return ReweightTool::LifetimeReweight(ctau, tau_old, tau_new);
+            },
+            {"Xa_ctau"});
+        
+        rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+		}
+    }
+	//doing b now
+	for (const auto& dfkey :rdf_SigDict){
+        if (tau_old != -1 ){
+            std::cout<<"building Xb lifetime  weight for key:"<< dfkey.first <<"\n";
+            //only initialize if the config nubmers are not default values
+            auto tempdf = rdf_SigDict[dfkey.first]->Define("xbwt",
+                [=](float ctau) {
+                return ReweightTool::LifetimeReweight(ctau, tau_old, tau_new);
+            },
+            {"Xb_ctau"});
+
+        rdf_SigDict[dfkey.first] = std::make_unique<RNode>(tempdf);
+        }
+    }
+
+	//based on the configuration available make new evtwt branch for signal (and evtwt2)
+	//evtwt already exists so ill make evtrwt and evtrwt2, if no reweighting is being done evtrwt is a copy of evtwt
+	if(tau_old == -1 && Z_old == -1){//do no reweighting
+ 		std::cout<<"Building signal weights with no reweighting\n";
+		for (const auto& dfkey :rdf_SigDict){
+			auto temp1 = rdf_SigDict[dfkey.first]->Define("evtrwt", "evtwt");	
+			auto temp2 = temp1.Define("evtrwt2","evtwt2");
+			rdf_SigDict[dfkey.first] = std::make_unique<RNode>(temp2);
+		}
+	}
+	if( tau_old == -1 && Z_old != -1){ //do only the decay reweighting
+			std::cout<<"Building signal weights with only decay reweighting\n";
+			for (const auto& dfkey :rdf_SigDict){
+			auto temp1 = rdf_SigDict[dfkey.first]->Define("evtrwt", "evtwt*decayWeight");
+            auto temp2 = temp1.Define("evtrwt2","evtrwt*evtrwt");
+            rdf_SigDict[dfkey.first] = std::make_unique<RNode>(temp2);
+			}
+	}
+	if( tau_old != -1 && Z_old == -1){ //onlly do lifetime reweigting
+			 std::cout<<"Building signal weights with only lifetime reweighting\n";
+			 for (const auto& dfkey :rdf_SigDict){
+			auto temp1 = rdf_SigDict[dfkey.first]->Define("evtrwt", "evtwt*xawt*xbwt");
+            auto temp2 = temp1.Define("evtrwt2","evtrwt*evtrwt");
+            rdf_SigDict[dfkey.first] = std::make_unique<RNode>(temp2);
+			 }
+	}
+	if( tau_old != -1 && Z_old != -1 ){// reweight both lifetime and decay
+			std::cout<<"Building signal weights with both liftetime and decay reweighting \n";
+			for (const auto& dfkey :rdf_SigDict){
+			auto temp1 = rdf_SigDict[dfkey.first]->Define("evtrwt", "evtwt*xawt*xbwt*decayWeight");
+            auto temp2 = temp1.Define("evtrwt2","evtrwt*evtrwt");
+            rdf_SigDict[dfkey.first] = std::make_unique<RNode>(temp2);
+			}
+	}
+		
+	
+}
 void BuildFitInput::BuildRVBranch(){
 	
 	for (const auto& dfkey :rdf_BkgDict){

@@ -279,6 +279,12 @@ void ConfigParser::SetDefaults() {
     config_.verbosity = 1;
     config_.parallel = false;
     config_.dry_run = false;
+	config_.sampleLifetime = -1;
+	config_.targetLifetime = -1;
+	config_.sampleZrate = -1;
+	config_.sampleGrate = -1;
+	config_.targetZrate = -1;
+	config_.targetGrate = -1;
 }
 
 bool ConfigParser::LoadConfig(const std::string& config_file) {
@@ -305,9 +311,26 @@ bool ConfigParser::LoadYAML(const std::string& config_file) {
     if (parser.values.count("analysis.output_dir")) {
         config_.output_dir = parser.values["analysis.output_dir"];
     }
-    
-    
-    
+   
+	// Get reweighting options
+    if ( parser.values.count("lifetimeWeights.sampleLifetime")){
+		config_.sampleLifetime = std::stod(parser.values["lifetimeWeights.sampleLifetime"]);
+	}
+	if ( parser.values.count("lifetimeWeights.targetLifetime")){
+        config_.targetLifetime = std::stod(parser.values["lifetimeWeights.targetLifetime"]);
+    }
+	if ( parser.values.count("decayWeights.sampleZrate")){
+        config_.sampleZrate = std::stod(parser.values["decayWeights.sampleZrate"]);
+    }
+	if ( parser.values.count("decayWeights.sampleGrate")){
+        config_.sampleGrate = std::stod(parser.values["decayWeights.sampleGrate"]);
+    }
+	if ( parser.values.count("decayWeights.targetZrate")){
+        config_.targetZrate = std::stod(parser.values["decayWeights.targetZrate"]);
+    }
+	if ( parser.values.count("decayWeights.targetGrate")){
+        config_.targetGrate = std::stod(parser.values["decayWeights.targetGrate"]);
+    }    
     
     // Parse samples
     if (parser.lists.count("samples.backgrounds")) {
@@ -392,7 +415,9 @@ void ConfigParser::PrintConfig() const {
     std::cout << "Luminosity: " << config_.luminosity << " fb^-1" << std::endl;
     std::cout << "Output JSON: " << config_.output_json << std::endl;
     std::cout << "Output Directory: " << config_.output_dir << std::endl;
-    
+   	std::cout << "Lifetime Settings-- " << "Sample:"<<config_.sampleLifetime<< " Target:" << config_.targetLifetime << "\n";
+	std::cout << "Decay Settings-- " << " Zsample:"<<config_.sampleZrate<< " Gsample:"<<config_.sampleGrate<< " Ztarget:"<<config_.targetZrate<<" Gtarget:"<<config_.targetGrate<<"\n";
+
     std::cout << "\nBackgrounds: ";
     for (const auto& bg : config_.backgrounds) {
         std::cout << bg << " ";
