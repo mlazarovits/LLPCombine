@@ -1,7 +1,7 @@
 analysis:
-  name: "BigGuy_NonCompressed_FullRegions"
+  name: "BigGuy_NonCompressed_Validation"
   luminosity: 200
-  output_json: "BigGuy_NonCompressed_FullRegions.json"
+  output_json: "BigGuy_NonCompressed_Validation.json"
 
 samples:
   signals: ["gogoGZ"]
@@ -17,6 +17,8 @@ kin: &kin
   - "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.15))"
 
 
+balRJRJets: &balRJRJets
+  - "( ( rjrNJetsJa[0] >= 3 && rjrNJetsJb[0] >= 2 ) || ( rjrNJetsJa[0] >= 2 && rjrNJetsJb[0] >= 3 ) )"
 
 ################################################################################################################################################################################################################################################################################################
 ############### SV REGIONS ###############
@@ -25,22 +27,20 @@ kin: &kin
 
 #highest priority - leptonic SV
 SVgeLep1_SR: &SVgeLep1_SR
-  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 200))"
+  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200) && (LeptonicSV_dxySig[0] < 50))"
 
 SVgeLep1_CR: &SVgeLep1_CR
-  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200))"
+  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50))"
 
 
 #second priority - hadronic SV
 SVgeHad1_SR: &SVgeHad1_SR
   - "(SV_nLeptonic == 0)"
-    #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800) && (HadronicSV_mass[0] > 15))"
-  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800))"
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_dxySig[0] < 200))"
 
 SVgeHad1_CR: &SVgeHad1_CR
   - "(SV_nLeptonic == 0)"
-    #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15))"
-  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800))"
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 200))"
 
 
 ################################ Ge1Lep Kinematic Bins (2 Ms x 2 Rs = 4 bins) ################################
@@ -72,7 +72,7 @@ DelayedBin00: &DelayedBin00
   - "(rjr_Rs[0] >= 0.3)"
 
 eq2b00: &eq2b00
-  - "((rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3))"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3)"
 eq2b10: &eq2b10
   - "((rjr_Ms[0] >= 2700) && (rjr_Rs[0] < 0.3))"
 eq2b01: &eq2b01
@@ -100,57 +100,61 @@ eq1b12: &eq1b12
 noSV: &noSV
   - "((SV_nHadronic==0) && (SV_nLeptonic==0))"
 
-Ch1CRgeq1PhoBHEarly: &Ch1CRgeq1PhoBHEarly
+Ch5CRgeq1PhoBHEarly: &Ch5CRgeq1PhoBHEarly
   - "(nBaseLinePhotons > 0)"
   # >= 1 BH photon early
-  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999 ) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.99 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
 
-Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
+
+Ch6CRgeq1PhoBHLate: &Ch6CRgeq1PhoBHLate
   - "(nBaseLinePhotons > 0)"
   # >= 1 BH photon late
-  - "(nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+  - "(nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.99 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
 
 # ==0 BH photons
 # >= 1 notBH photons
 # >= 1 nonprompt
-Ch3CRgeq1PhoNotBHEarly: &Ch3CRgeq1PhoNotBHEarly
+Ch7CRgeq1PhoNotBHEarly: &Ch7CRgeq1PhoNotBHEarly
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
-  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.99) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] < 0.99) ) )"
   # >=1 notBH photons early
-  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
 
-Ch4SRgeq1PhoNotBHLate: &Ch4SRgeq1PhoNotBHLate
+Ch8CRgeq1PhoNotBHLate: &Ch8CRgeq1PhoNotBHLate
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
-  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99)) ) )"
   # >=1 notBH photons late
-  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
-
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
 
 noBHPhotons: &noBHPhotons
-  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99)) ) )"
 
 noNonPromptPhotons: &noNonPromptPhotons
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
 
+#[0.75,0.99]
+Ch9CReq1PhoMedIsoPrompt: &Ch9CReq1PhoMedIsoPrompt
+  - "(nBaseLinePhotons == 1  && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.000198*baseLinePhoton_Pt[0] + 1.0098) && ( baseLinePhoton_isoANNScore[0] >= -0.000198*baseLinePhoton_Pt[0] + 0.7698)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.99) && (baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)))"
 
-Ch6SReq1PhoTightIsoPrompt: &Ch6SReq1PhoTightIsoPrompt
+#[0.99,0.999]
+Ch10SReq1PhoTightIsoPrompt: &Ch10SReq1PhoTightIsoPrompt
   #below true SR line, but above intermediate line in pt-iso score plane
-  - "(nBaseLinePhotons == 1 && (baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] >= -0.000198*baseLinePhoton_Pt[0] + 1.0188)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] >= 0.999)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479))"
+  - "(nBaseLinePhotons == 1 && (baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.000198*baseLinePhoton_Pt[0] + 1.0188) && ( baseLinePhoton_isoANNScore[0] >= -0.000198*baseLinePhoton_Pt[0] + 1.0098)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.999 && baseLinePhoton_isoANNScore[0] >= 0.99)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479))"
 
-Ch5CReq1PhoMedIsoPrompt: &Ch5CReq1PhoMedIsoPrompt
-  - "(nBaseLinePhotons == 1  && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.000198*baseLinePhoton_Pt[0] + 1.0188) && ( baseLinePhoton_isoANNScore[0] >= -0.000198*baseLinePhoton_Pt[0] + 0.7698)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.999) && (baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)))"
+#[0.75, 0.85]
+#prompt-prompt, >=1 med iso
+Ch11CReq2PhoMedIsoPrompt: &Ch11CReq2PhoMedIsoPrompt
+  - "(nBaseLinePhotons == 2 && ((baseLinePhoton_Pt[0] > 100 && ( baseLinePhoton_isoANNScore[0] < -0.0001*baseLinePhoton_Pt[0] + 0.86 ) && (baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.76 )) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.85 && baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) || ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] < -0.0001*baseLinePhoton_Pt[1] + 0.86) && ( (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.76))) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] < 0.85 && baseLinePhoton_isoANNScore[1] >= 0.75) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )) )"
 
-Ch6SReq2PhoTightIsoPrompt: &Ch6SReq2PhoTightIsoPrompt
-  - "(nBaseLinePhotons == 2 && (((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.96)) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] >= 0.95))) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)) && ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.96)) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] >= 0.95) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479)))"
+#[0.85, 0.95]
+#prompt-prompt, tight-tight
+Ch12SReq2PhoTightIsoPrompt: &Ch12SReq2PhoTightIsoPrompt
+  - "(nBaseLinePhotons == 2 && (((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_isoANNScore[0] < -0.0001*baseLinePhoton_Pt[0] + 0.96) && ( baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.86  ) ) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.95 && baseLinePhoton_isoANNScore[0] >= 0.85))) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) && ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] < -0.0001*baseLinePhoton_Pt[1] + 0.96) && (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.86)) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] < 0.95 && baseLinePhoton_isoANNScore[1] >= 0.85) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479)))"
 
-Ch5CReq2PhoMedIsoPrompt: &Ch5CReq2PhoMedIsoPrompt
-  - "(nBaseLinePhotons == 2 && ((baseLinePhoton_Pt[0] > 100 && ( baseLinePhoton_isoANNScore[0] < -0.0001*baseLinePhoton_Pt[0] + 0.96 ) && (baseLinePhoton_isoANNScore[0] >= -0.0001*baseLinePhoton_Pt[0] + 0.76 )) || (baseLinePhoton_Pt[0] <= 100 && (baseLinePhoton_isoANNScore[0] < 0.95 && baseLinePhoton_isoANNScore[0] >= 0.75)) && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) || ((baseLinePhoton_Pt[1] > 100 && (baseLinePhoton_isoANNScore[1] < -0.0001*baseLinePhoton_Pt[1] + 0.96) && ( (baseLinePhoton_isoANNScore[1] >= -0.0001*baseLinePhoton_Pt[1] + 0.76))) || (baseLinePhoton_Pt[1] <= 100 && baseLinePhoton_isoANNScore[1] < 0.95 && baseLinePhoton_isoANNScore[1] >= 0.75) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )) )"
 
 
-balRJRJets: &balRJRJets
-  - "( ( rjrNJetsJa[0] >= 3 && rjrNJetsJb[0] >= 2 ) || ( rjrNJetsJa[0] >= 2 && rjrNJetsJb[0] >= 3 ) )"
 
 
 
@@ -294,7 +298,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
-      - *Ch1CRgeq1PhoBHEarly
+      - *Ch5CRgeq1PhoBHEarly
       - *DelayedBin00
   # ==== Ch6: Ge1 Photon Late BH CR ====
   Ch6CRgeq1PhoBHLateBin00:
@@ -302,7 +306,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
-      - *Ch2CRgeq1PhoBHLate
+      - *Ch6CRgeq1PhoBHLate
       - *DelayedBin00
   # ==== Ch7: Ge1 Photon Early !BH CR ====
   Ch7CRgeq1PhoNotBHEarlyBin00:
@@ -310,16 +314,18 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *noSV
-      - *Ch3CRgeq1PhoNotBHEarly
+      - *Ch7CRgeq1PhoNotBHEarly
       - *DelayedBin00
   # ==== Ch8: Ge1 Photon Late !BH SR ====
-  Ch8SRgeq1PhoNotBHLateBin00:
+  # this is a validation region and can be called 'CR' to get the actual observed yield in this bin for closure tests
+  Ch8CRgeq1PhoNotBHLateBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
       - *noSV
-      - *Ch4SRgeq1PhoNotBHLate
+      - *Ch8CRgeq1PhoNotBHLate
       - *DelayedBin00
+  # ==== Ch9: Eq1 Photon Medium Iso CR (noBH, noNonPrompt) ====
   Ch9CReq1PhoMedIsoPromptBin00:
     cuts:
       - *baseline_cuts
@@ -329,7 +335,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b00
   Ch9CReq1PhoMedIsoPromptBin10:
     cuts:
@@ -340,7 +346,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b10
   Ch9CReq1PhoMedIsoPromptBin01:
     cuts:
@@ -351,7 +357,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b01
   Ch9CReq1PhoMedIsoPromptBin02:
     cuts:
@@ -362,7 +368,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b02
   Ch9CReq1PhoMedIsoPromptBin11:
     cuts:
@@ -373,7 +379,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b11
   Ch9CReq1PhoMedIsoPromptBin12:
     cuts:
@@ -384,8 +390,9 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq1PhoMedIsoPrompt
+      - *Ch9CReq1PhoMedIsoPrompt
       - *eq1b12
+  # ==== Ch10: Eq1 Photon Tight Iso SR (noBH, noNonPrompt, noMedIso) ====
   Ch10CReq1PhoTightIsoPromptBin00:
     cuts:
       - *baseline_cuts
@@ -395,7 +402,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
+      - *Ch10SReq1PhoTightIsoPrompt
       - *eq1b00
   Ch10SReq1PhoTightIsoPromptBin10:
     cuts:
@@ -406,7 +413,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
+      - *Ch10SReq1PhoTightIsoPrompt
       - *eq1b10
   Ch10SReq1PhoTightIsoPromptBin01:
     cuts:
@@ -417,7 +424,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
+      - *Ch10SReq1PhoTightIsoPrompt
       - *eq1b01
   Ch10SReq1PhoTightIsoPromptBin02:
      cuts:
@@ -428,7 +435,7 @@ bins:
        - *noBHPhotons
        - *balRJRJets
        - *noNonPromptPhotons
-       - *Ch6SReq1PhoTightIsoPrompt
+       - *Ch10SReq1PhoTightIsoPrompt
        - *eq1b02
   Ch10SReq1PhoTightIsoPromptBin12:
     cuts:
@@ -439,7 +446,7 @@ bins:
       - *balRJRJets
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
+      - *Ch10SReq1PhoTightIsoPrompt
       - *eq1b12
   Ch10SReq1PhoTightIsoPromptBin11:
     cuts:
@@ -450,8 +457,9 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq1PhoTightIsoPrompt
+      - *Ch10SReq1PhoTightIsoPrompt
       - *eq1b11
+  # ==== Ch11: Eq2 Photon Medium Iso CR (noBH, noNonPrompt) ====
   Ch11CReq2PhoMedIsoPromptBin00:
      cuts:
        - *baseline_cuts
@@ -460,7 +468,7 @@ bins:
        - *kin
        - *noBHPhotons
        - *noNonPromptPhotons
-       - *Ch5CReq2PhoMedIsoPrompt
+       - *Ch11CReq2PhoMedIsoPrompt
        - *eq2b00
   Ch11CReq2PhoMedIsoPromptBin10:
     cuts:
@@ -470,7 +478,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq2PhoMedIsoPrompt
+      - *Ch11CReq2PhoMedIsoPrompt
       - *eq2b10
   Ch11CReq2PhoMedIsoPromptBin01:
     cuts:
@@ -480,7 +488,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq2PhoMedIsoPrompt
+      - *Ch11CReq2PhoMedIsoPrompt
       - *eq2b01
   Ch11CReq2PhoMedIsoPromptBin11:
     cuts:
@@ -490,8 +498,9 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch5CReq2PhoMedIsoPrompt
+      - *Ch11CReq2PhoMedIsoPrompt
       - *eq2b11
+  # ==== Ch12: Eq2 Photon Tight Iso CR (noBH, noNonPrompt, noMedIso) ====
   Ch12CReq2PhoTightIsoPromptBin00:
     cuts:
       - *baseline_cuts
@@ -500,7 +509,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq2PhoTightIsoPrompt
+      - *Ch12SReq2PhoTightIsoPrompt
       - *eq2b00
   Ch12SReq2PhoTightIsoPromptBin10:
     cuts:
@@ -510,7 +519,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq2PhoTightIsoPrompt
+      - *Ch12SReq2PhoTightIsoPrompt
       - *eq2b10
   Ch12SReq2PhoTightIsoPromptBin01:
     cuts:
@@ -520,7 +529,7 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq2PhoTightIsoPrompt
+      - *Ch12SReq2PhoTightIsoPrompt
       - *eq2b01
   Ch12SReq2PhoTightIsoPromptBin11:
     cuts:
@@ -530,5 +539,5 @@ bins:
       - *kin
       - *noBHPhotons
       - *noNonPromptPhotons
-      - *Ch6SReq2PhoTightIsoPrompt
+      - *Ch12SReq2PhoTightIsoPrompt
       - *eq2b11
