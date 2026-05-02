@@ -133,3 +133,9 @@ systematics:
       init_val: 1.1 
       bins:
           - "Ch5CReq2PhoMedIsoPromptBin00"
+  sys10:
+      type: "lnN"
+      name: "lnN_SignalSyst"
+      init_val: 1.1
+      procs:
+          - "sig" 
