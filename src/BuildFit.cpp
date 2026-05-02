@@ -414,11 +414,17 @@ void BuildFit::BuildABCDFitSingleBin(){
 //DoSystematics
 void BuildFit::DoSystematics(){
 	for(auto syst : _systs){
-		vector<string> procs;
-		if(syst._procs == "bkg")
-			procs = {_bkg_proc};
-		else
-			procs = {"*"};
+		vector<string> procs = {};
+		for(auto proc : syst._procs){
+			if(proc == "bkg")
+				procs.push_back(_bkg_proc);
+			else if(proc == "sig")
+				procs.push_back(_signalPoint);
+		}
+		if(syst._bins.size() == 0){
+			for(auto bin : _bins_superset)
+				syst._bins.push_back(bin);
+		}
 		cb.cp().process(procs).bin(syst._bins).AddSyst(cb, syst._name, syst._type, SystMap<>::init(syst._init_val));
 	}
 }

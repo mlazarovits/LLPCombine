@@ -33,15 +33,20 @@ struct yamlSys{
                         _type = syst["type"].as<string>();
                         _name = syst["name"].as<string>();
                         _init_val = syst["init_val"].as<double>();
-                        _bins = syst["bins"].as<vector<string>>();
+			if(!syst["bins"])
+				_bins = {};
+			else
+                        	_bins = syst["bins"].as<vector<string>>();
 			if(!syst["procs"])
-				_procs = "bkg";
+				_procs = {"bkg"};
+			else
+				_procs = syst["procs"].as<vector<string>>();
                 };
                 string _type;
 		string _name;
                 double _init_val;
                 vector<string> _bins;
-		string _procs;
+		vector<string> _procs;
 };
 
 
