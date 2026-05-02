@@ -18,7 +18,8 @@ Cleaning: &Cleaning
 ################################ SV VETO Strings ##################
 #exactly 1 hadronic SR SV
 noSV: &noSV
-  - "(SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000) || SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000))"
+  # - "(SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000) || SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000))"
+  - "(SV_nHadronic==0 && SV_nLeptonic==0)"
 
 ################ Delayed photon VETO strings #########################
 noBHPhotons: &noBHPhotons
@@ -292,3 +293,42 @@ bins:
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
       - *eq2b11
+
+
+
+
+regions:
+  Ch5CReq1PhoMedIsoPrompt:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *balRJRJets
+      - *kin
+      - *noBHPhotons
+      - *noNonPromptPhotons
+      - *Ch5CReq1PhoMedIsoPrompt
+  Ch6SReq1PhoTightIsoPrompt:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *kin
+      - *balRJRJets
+      - *noBHPhotons
+      - *noNonPromptPhotons
+      - *Ch6SReq1PhoTightIsoPrompt
+  Ch5CReq2PhoMedIsoPrompt:
+       - *baseline_cuts
+       - *Cleaning
+       - *noSV
+       - *kin
+       - *noBHPhotons
+       - *noNonPromptPhotons
+       - *Ch5CReq2PhoMedIsoPrompt
+  Ch6SReq2PhoTightIsoPrompt:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *kin
+      - *noBHPhotons
+      - *noNonPromptPhotons
+      - *Ch6SReq2PhoTightIsoPrompt

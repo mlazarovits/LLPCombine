@@ -1,0 +1,252 @@
+# Two-channel non-compressed SV analysis: Ge1Lep + Ge1Had
+# Each channel has its own anchor (CR = inverted dxySig)
+#
+# Ch1 (anchor) / Ch2 (SR) — Ge1Lep:
+#   >= 1 leptonic SV, dxySig < / > 200
+#   4 bins: 2 Ms x 2 Rs, no photon veto
+#   Ms: [2000,2600) | [2600,inf)
+#   Rs: [0.15,0.3)  | [0.3,inf)
+#
+# Ch3 (anchor) / Ch4 (SR) — Ge1Had:
+#   >= 1 hadronic SV, dxySig < / > 800, mass > 15 GeV, photon veto
+#   5 bins: 2 at low Rs [0.15,0.35) + 3 at high Rs [0.35,inf)
+#   High-Rs Ms: [2000,2600) | [2600,3000) | [3000,inf)
+#   Low-Rs  Ms: [2000,2600) | [2600,inf)
+
+analysis:
+  name: "SV_Ge1Lep_Ge1Had_NonCompressed_v49"
+  luminosity: 200
+  output_json: "SV_Ge1Lep_Ge1Had_NonCompressed_v49.json"
+
+samples:
+  signals: ["gogoGZ"]
+  data: ["MET16","MET17","MET18","MET22", "MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)"
+
+Cleaning: &Cleaning
+  - "((Flag_MetFilters == 1) && (rjrPTS[0] < 150) && ((Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60)))"
+
+kin: &kin
+  - "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.15))"
+
+#######SV related hierarchy#######
+# if there any leptonic SVs: goes into leptonic SV category
+# else if there are any hadronic SVs: goes into hadronic SV category
+# -> photons need to require == 0 hadronic SVs and == 0 leptonic SVs
+# else if any beam halo photons: beam halo category
+#   else if any nonprompt photons
+# prompt photons
+#
+# mixed regions
+
+
+################################ SV Selections ################################
+#highest priority - leptonic SV
+SVgeLep1_SR: &SVgeLep1_SR
+  - "(SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 200)"
+
+SVgeLep1_CR: &SVgeLep1_CR
+  - "(SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200)"
+
+
+#second priority - hadronic SV
+SVgeHad1_SR: &SVgeHad1_SR
+  - "(SV_nLeptonic == 0)"
+    #- "(SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800) && (HadronicSV_mass[0] > 15)"
+  - "(SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800)"
+
+SVgeHad1_CR: &SVgeHad1_CR
+  - "(SV_nLeptonic == 0)"
+    #- "(SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15)"
+  - "(SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800)"
+
+
+
+
+
+################################ Ge1Lep Kinematic Bins (2 Ms x 2 Rs = 4 bins) ################################
+
+bLep00: &bLep00
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3)"
+bLep10: &bLep10
+  - "(rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3)"
+bLep01: &bLep01
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.3)"
+bLep11: &bLep11
+  - "(rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.3)"
+
+################################ Ge1Had Kinematic Bins (2 low-Rs + 3 high-Rs = 5 bins) ################################
+
+bHadL0: &bHadL0
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35)"
+bHadL1: &bHadL1
+  - "(rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35)"
+bHadH0: &bHadH0
+  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.35)"
+bHadH1: &bHadH1
+  - "(rjr_Ms[0] >= 2600) && (rjr_Ms[0] < 3000) && (rjr_Rs[0] >= 0.35)"
+bHadH2: &bHadH2
+  - "(rjr_Ms[0] >= 3000) && (rjr_Rs[0] >= 0.35)"
+
+bins:
+
+  # ==== Ch1: Ge1Lep anchor (CR, dxySig < 200) ====
+  Ch1CRGeLep100:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_CR
+      - *bLep00
+  Ch1CRGeLep110:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_CR
+      - *bLep10
+  Ch1CRGeLep101:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_CR
+      - *bLep01
+  Ch1CRGeLep111:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_CR
+      - *bLep11
+
+  # ==== Ch2: Ge1Lep SR (dxySig > 200) ====
+  # Ch2CRGeLep100 is the normalization anchor bin (lowest sensitivity, same SR selection)
+  Ch2CRGeLep100:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_SR
+      - *bLep00
+  Ch2SRGeLep110:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_SR
+      - *bLep10
+  Ch2SRGeLep101:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_SR
+      - *bLep01
+  Ch2SRGeLep111:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeLep1_SR
+      - *bLep11
+
+  # ==== Ch3: Ge1Had anchor (CR, dxySig < 800) ====
+  Ch3CRGeHad1L0:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_CR
+      - *noSigPhoton
+      - *bHadL0
+  Ch3CRGeHad1L1:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_CR
+      - *noSigPhoton
+      - *bHadL1
+  Ch3CRGeHad1H0:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_CR
+      - *noSigPhoton
+      - *bHadH0
+  Ch3CRGeHad1H1:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_CR
+      - *noSigPhoton
+      - *bHadH1
+  Ch3CRGeHad1H2:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_CR
+      - *noSigPhoton
+      - *bHadH2
+
+  # ==== Ch4: Ge1Had SR (dxySig > 800) ====
+  # Ch4CRGeHad1L0 is the normalization anchor bin (lowest sensitivity, same SR selection)
+  Ch4CRGeHad1L0:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_SR
+      - *bHadL0
+  Ch4SRGeHad1L1:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_SR
+      - *bHadL1
+  Ch4SRGeHad1H0:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_SR
+      - *bHadH0
+  Ch4SRGeHad1H1:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_SR
+      - *bHadH1
+  Ch4SRGeHad1H2:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeHad1_SR
+      - *bHadH2
+
+regions:
+  Ch1CRSVGeLep1:
+      - *baseline_cuts
+      - *Cleaning
+      - *SVgeLep1_CR
+  Ch2SRSVGeLep1:
+      - *baseline_cuts
+      - *Cleaning
+      - *SVgeLep1_SR
+  Ch3CRSVGeHad1:
+      - *baseline_cuts
+      - *Cleaning
+      - *SVgeHad1_CR
+  Ch4SRSVGeHad1:
+      - *baseline_cuts
+      - *Cleaning
+      - *SVgeHad1_SR

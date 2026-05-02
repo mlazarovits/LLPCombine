@@ -23,7 +23,7 @@ Cleaning: &Cleaning
 CRgeq1SVHadLowDxy: &CRgeq1SVHadLowDxy
   - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15))"
 
-CRgeq1SVHadHighDxy: &CRgeq1SVHadHighDxy
+SRgeq1SVHadHighDxy: &SRgeq1SVHadHighDxy
   - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] >= 800) && (HadronicSV_mass[0] > 15))"
 ################################################################
 ############################### SV Region Strings ##########################
@@ -101,8 +101,38 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *nPhoge1
-      - *CRgeq1SVHadHighDxy
+      - *SRgeq1SVHadHighDxy
       - *Ch4SRgeq1PhoNotBHLate
       - *DelayedBin00
         
-        
+regions:        
+  Ch1CRgeq1PhoBHEarlyDxyHadLow:
+      - *baseline_cuts
+      - *Cleaning
+      - *nSVgeq1
+      - *nPhoge1
+      - *Ch1CRgeq1PhoBHEarly
+      - *CRgeq1SVHadLowDxy
+  Ch2CRgeq1PhoBHLateDxyHadLow:
+      - *baseline_cuts
+      - *Cleaning
+      - *nSVgeq1
+      - *nPhoge1
+      - *Ch2CRgeq1PhoBHLate
+      - *CRgeq1SVHadLowDxy
+  Ch3CRgeq1PhonotBHEarlyDxyHadLow:
+      - *baseline_cuts
+      - *Cleaning
+      - *nSVgeq1
+      - *nPhoge1
+      - *Ch3CRgeq1PhoNotBHEarly
+      - *CRgeq1SVHadLowDxy
+      - *DelayedBin00
+  Ch4SRgeq1PhonotBHLateDxyHadHigh:
+      - *baseline_cuts
+      - *Cleaning
+      - *nSVgeq1
+      - *nPhoge1
+      - *SRgeq1SVHadHighDxy
+      - *Ch4SRgeq1PhoNotBHLate
+      - *DelayedBin00

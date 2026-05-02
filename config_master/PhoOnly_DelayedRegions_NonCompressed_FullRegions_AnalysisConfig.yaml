@@ -17,13 +17,9 @@ baseline_cuts: &baseline_cuts
 ################################ SV VETO Strings ##################
 #exactly 1 hadronic SR SV
 noSV: &noSV
-  - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000) || SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
+  #- "(SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000) || SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000))"
+  - "(SV_nHadronic==0 && SV_nLeptonic==0)"
 
-noSVhad: &noSVhad
-  - "SV_nHadronic==0 || (SV_nHadronic == 1 && HadronicSV_dxySig[0] < 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] < 1000 && HadronicSV_dxySig[1] < 1000)"
-
-noSVlep: &noSVlep
-  - "SV_nLeptonic==0 || (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] < 1000) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] < 1000 && LeptonicSV_dxySig[1] < 1000)"
 
 ################################################################
 ############################### Photon REGION Strings ##########################
@@ -141,3 +137,25 @@ bins:
       - *noSV
       - *Ch4SRgeq1PhoNotBHLate
       - *DelayedBin00
+
+regions:
+  Ch1CRgeq1PhoBHEarly:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch1CRgeq1PhoBHEarly
+  Ch2CRgeq1PhoBHLate:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch2CRgeq1PhoBHLate
+  Ch3CRgeq1PhoNotBHEarly:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch3CRgeq1PhoNotBHEarly
+  Ch4SRgeq1PhoNotBHLate:
+      - *baseline_cuts
+      - *Cleaning
+      - *noSV
+      - *Ch4SRgeq1PhoNotBHLate
