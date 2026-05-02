@@ -149,6 +149,7 @@ void BuildFitInput::BuildReweights(const AnalysisConfig& c){
 			//only initialize if the config nubmers are not default values
 			auto tempdf = rdf_SigDict[dfkey.first]->Define("decayWeight",
     			[=](bool isZZ, bool isGZ, bool isGG) {
+				//std::cout<<"WEIGHT got:"<<ReweightTool::DecayReweight( isZZ, isGZ, isGG, Z_old, Z_new, G_old, G_new )<<"\n";
 			return ReweightTool::DecayReweight( isZZ, isGZ, isGG, Z_old, Z_new, G_old, G_new );
     		},
     		{"Evt_isZZ","Evt_isGZ","Evt_isGG"});
