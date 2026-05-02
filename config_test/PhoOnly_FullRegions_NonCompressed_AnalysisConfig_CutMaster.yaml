@@ -116,8 +116,10 @@ Ch5CRgeq1PhoMedIsoPrompt: &Ch5CRgeq1PhoMedIsoPrompt
   # == 0 nonprompt photons
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
   # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] < 0.9) && ( baseLinePhoton_isoANNScore[1] < 0.9)) )"
-
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] < 0.9) && ( baseLinePhoton_isoANNScore[1] < 0.9)) )"
+  #- "( (nBaseLinePhotons == 1 && ((baseLinePhoton_Pt[0] > 70 && baseLinePhoton_isoANNScore[0] < 0.8 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )))) ||(nBaseLinePhotons == 2 && ((baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 ) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )) && ( baseLinePhoton_isoANNScore[0] < 0.8 || baseLinePhoton_isoANNScore[1] < 0.9 ) ) )"
+  - "(nBaseLinePhotons == 1 && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) && baseLinePhoton_isoANNScore[0] < 0.6 ) || (nBaseLinePhotons == 2 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 ) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 ) && !(baseLinePhoton_isoANNScore[0] > 0.6 && baseLinePhoton_isoANNScore[1] > 0.7) && baseLinePhoton_Pt[0] > 100 && baseLinePhoton_Pt[1] > 70) )"
+    
 Ch5CReq1PhoMedIsoPrompt: &Ch5CReq1PhoMedIsoPrompt
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
@@ -125,7 +127,8 @@ Ch5CReq1PhoMedIsoPrompt: &Ch5CReq1PhoMedIsoPrompt
   # == 0 nonprompt photons
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
   # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)))"
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] < 0.9)))"
+  - "(nBaseLinePhotons == 1 && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 )) && baseLinePhoton_isoANNScore[0] < 0.6 ) || (nBaseLinePhotons == 2 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 ) && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 ) && ((baseLinePhoton_isoANNScore[0] > 0.6 && baseLinePhoton_isoANNScore[1] < 0.7) || (baseLinePhoton_isoANNScore[0] < 0.6 && baseLinePhoton_isoANNScore[1] > 0.7)) && (baseLinePhoton_Pt[0] > 100 && baseLinePhoton_Pt[1] > 70) ) )"
 
 Ch5CReq2PhoMedIsoPrompt: &Ch5CReq2PhoMedIsoPrompt
   - "(nBaseLinePhotons > 0)"
@@ -134,7 +137,7 @@ Ch5CReq2PhoMedIsoPrompt: &Ch5CReq2PhoMedIsoPrompt
   # == 0 nonprompt photons
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
   # == 0 tight iso photons (same as >= 1 med (loose-not-tight) for same WP) 
-  - "( (nBaseLinePhotons == 2 && (baseLinePhoton_isoANNScore[0] < 0.9 && baseLinePhoton_isoANNScore[1] < 0.9)))"
+  - "( (nBaseLinePhotons == 2 && ((baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479 ) && baseLinePhoton_isoANNScore[0] < 0.6)  && (baseLinePhoton_Pt[1] > 70 && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 ) && baseLinePhoton_isoANNScore[1] < 0.7) )))"
 
 # == 0 BH photons
 # == 0 nonprompt photons
@@ -145,8 +148,9 @@ Ch6SRgeq1PhoTightIsoPrompt: &Ch6SRgeq1PhoTightIsoPrompt
   - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
   # == 0 nonprompt photons
   - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
-  # >= 1 tight iso photons 
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+  # == 1 || == 2 tight iso photons 
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+  - "( (nBaseLinePhotons == 1 && ( baseLinePhoton_Pt[0] > 100 && baseLinePhoton_isoANNScore[0] > 0.6 &&  (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479) ))  || ( (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] > 0.6 && baseLinePhoton_Pt[0] > 100 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)  ) && (baseLinePhoton_Pt[1] > 70 && baseLinePhoton_isoANNScore[1] > 0.7 && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )  ))  ) )"
 
 # == 0 BH photons
 # == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt) 
@@ -156,21 +160,24 @@ Ch6SReq1PhoTightIsoPrompt: &Ch6SReq1PhoTightIsoPrompt
   # == 0 BH photons
   - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ))"
   # == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt)
-  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5)))) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5)))) ) )"
   # == 1 tight iso photons 
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9 && baseLinePhoton_isoANNScore[1] < 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9 && baseLinePhoton_isoANNScore[0] < 0.9 )) )"
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_isoANNScore[0] >= 0.9)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9 && baseLinePhoton_isoANNScore[1] < 0.9) || ( baseLinePhoton_isoANNScore[1] >= 0.9 && baseLinePhoton_isoANNScore[0] < 0.9 )) )"
+  - "(nBaseLinePhotons == 1 && ( baseLinePhoton_Pt[0] > 100 && baseLinePhoton_isoANNScore[0] >= 0.6 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479) ))"
 
 Ch6SReq2PhoTightIsoPrompt: &Ch6SReq2PhoTightIsoPrompt
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
   - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
   # == 0 nonprompt photons
-  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
   # == 0 nonprompt photons OR (>=1 notBH && == 0 BH && notBHlead prompt)
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5))))) )"
+  #- "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5))  || ((nBaseLinePhotons == 1 &&  baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 )) || ( nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252 && ( (baseLinePhoton_beamHaloCNNScore[0] < 0.185 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] >= -2.5 ) ) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && (baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] >= -2.5))))) )"
   # == 2 tight iso photons 
-  - "( (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) && ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+  #- "( (nBaseLinePhotons == 2 && ( baseLinePhoton_isoANNScore[0] >= 0.9) && ( baseLinePhoton_isoANNScore[1] >= 0.9)) )"
+  # == 2 tight iso barrel photons 
+  - "( (nBaseLinePhotons == 2 && ( baseLinePhoton_Pt[0] > 100 && baseLinePhoton_isoANNScore[0] >= 0.6 && (baseLinePhoton_Eta[0] < 1.479 && baseLinePhoton_Eta[0] > -1.479)  ) && (baseLinePhoton_Pt[1] > 70 && baseLinePhoton_isoANNScore[1] >= 0.7 && (baseLinePhoton_Eta[1] < 1.479 && baseLinePhoton_Eta[1] > -1.479 )  )) )"
 ##########################################################
 Cleaning: &Cleaning
   - "(Flag_MetFilters == 1) && ( rjrPTS[0] < 150) && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
@@ -179,13 +186,13 @@ kin: &kin
   - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.15)"
 
 b00: &b00
-  - "(rjr_Ms[0] >= 2200) && (rjr_Ms[0] < 2500) && (rjr_Rs[0] < 0.3)"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3)"
 b10: &b10
-  - "(rjr_Ms[0] >= 2500) && (rjr_Rs[0] < 0.3)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] < 0.3)"
 b01: &b01
-  - "(rjr_Ms[0] >= 2200) && (rjr_Ms[0] < 2500) && (rjr_Rs[0] >= 0.3)"
+  - "(rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] >= 0.3)"
 b11: &b11
-  - "(rjr_Ms[0] >= 2500) && (rjr_Rs[0] >= 0.3)"
+  - "(rjr_Ms[0] >= 2700) && (rjr_Rs[0] >= 0.3)"
 
 DelayedBin00: &DelayedBin00
   - "(rjr_Ms[0] >= 1500)"

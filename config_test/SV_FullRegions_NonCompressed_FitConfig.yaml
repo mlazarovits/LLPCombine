@@ -6,7 +6,6 @@ datadriven: True
 #main fit
 #naming convention: Ch#IDBin where Bin = xy coord in MsRs plane
 shape_transfer_fit:
-  anchor_bin: "00"
   bin_association:
     Ch7CRSVHadLowDxy:
       - "Ch7CRSVHadLowDxy00"
@@ -14,14 +13,13 @@ shape_transfer_fit:
       - "Ch7CRSVHadLowDxy10"
       - "Ch7CRSVHadLowDxy11"
     Ch8SRSVHadHighDxy:
-      - "Ch8SRSVHadHighDxy00"
+      - "Ch8CRSVHadHighDxy00"
       - "Ch8SRSVHadHighDxy01"
       - "Ch8SRSVHadHighDxy10"
       - "Ch8SRSVHadHighDxy11"
   channel_association:
     Ch7CRSVHadLowDxy:
       - "Ch8SRSVHadHighDxy"
-
 #main fit
 #ABCD - SR bin (A) maps to [B, C, D]
 #grid convention
