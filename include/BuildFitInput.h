@@ -9,6 +9,7 @@
 #include "TFile.h"
 #include "TTree.h"
 #include "BuildFitTools.h"//Bin and process sourcej
+#include "ConfigParser.h"
 
 using namespace std;
 using ROOT::RDF::RNode;
@@ -54,6 +55,7 @@ class BuildFitInput{
 	BuildFitInput();
 	void BuildRVBranch();//old skims dont have rv, need to build - this needs fixed upstream
 	void BuildScaledEvtWt(double Lumi);
+	void BuildReweights(const AnalysisConfig& c);
 
 
 	//load helpers

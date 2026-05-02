@@ -24,6 +24,13 @@ struct AnalysisConfig {
     double luminosity;
     std::string output_json;
     std::string output_dir;
+
+	double sampleLifetime;
+	double targetLifetime;
+	double sampleZrate;
+	double sampleGrate;
+	double targetZrate;
+	double targetGrate;
     
     std::vector<std::string> backgrounds;
     std::vector<std::string> signals;
