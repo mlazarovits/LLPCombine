@@ -9,6 +9,10 @@
 #include <iostream>
 #include <algorithm> // For std::all_of
 #include <cctype>    // For std::isdigit
+#include <cmath>
+#include "Math/ProbFunc.h"
+#include "Math/PdfFuncMathCore.h"
+
 
 class Process{
 	
@@ -130,4 +134,54 @@ inline bool BFTool::ContainsAnySubstring(const std::string& mainString, const st
     // No substring found
     return false; 
 }
+class ReweightTool{
+
+    public:
+    static float LifetimeReweight(float ctau, float tau_old, float tau_new);
+	static double DecayReweight( bool isZZ, bool isGZ, bool isGG, double Z_old, double Z_new, double G_old, double G_new );    
+};
+inline float ReweightTool::LifetimeReweight(float ctau, float tau_old, float tau_new){
+
+    double inv_old = 1.0 / tau_old;
+    double inv_new = 1.0 / tau_new;
+    return float( (tau_old / tau_new) * std::exp(ctau * (inv_old - inv_new)) );
+}
+inline double ReweightTool::DecayReweight( bool isZZ, bool isGZ, bool isGG, double Z_old, double Z_new, double G_old, double G_new ){
+
+        //compute original probabilities
+		//old and new should never be 0 or 1 other wise we cant reweight! so we dont need -nan protection
+        double pZZ0 = ROOT::Math::binomial_pdf(2, Z_old, 2);	
+        double pGG0 = ROOT::Math::binomial_pdf(2, G_old, 2);
+        double pGZ0 = 1. - (pZZ0+pGG0);
+
+
+        //compute new probs
+		double pZZ1 = -1;
+		if(Z_new == 0 || Z_new == 1){
+       		pZZ1 = Z_new;
+		}else{
+			pZZ1 = ROOT::Math::binomial_pdf(2, Z_new, 2);
+		}
+		double pGG1 = -1;
+		if(G_new == 0 || G_new == 1){
+			pGG1 = G_new;
+		}else{	
+			pGG1 = ROOT::Math::binomial_pdf(2, G_new, 2);
+		}
+        double pGZ1 = 1. - (pZZ1+pGG1);
+
+        double decaywt=0.;
+        //get the event weight
+        if(isZZ){
+               	decaywt = pZZ1/pZZ0;
+        }
+        if(isGZ){
+                decaywt = pGZ1/pGZ0;
+        }
+        if(isGG){
+                decaywt = pGG1/pGG0;
+        }
+        return decaywt;
+}
+
 #endif

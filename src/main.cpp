@@ -82,7 +82,9 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	BFI->LoadBkg_byMap(ST->BkgDict, luminosity);
 	BFI->LoadSig_byMap(ST->SigDict, luminosity);
 	//BFI->BuildScaledEvtWt(luminosity);
-	
+
+	//Load new weights for reweighting scenarios
+    BFI->BuildReweights( config );	
 
 		
 	// Create analysis bins from configuration
@@ -98,14 +100,15 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 		BFI->FilterRegions(bin.name, combined_cuts);
 		BFI->CreateBin(bin.name);
 	}
-	
+
+
 	// Book operations
 	countmap countResults = BFI->CountRegions(BFI->bkg_filtered_dataframes);
 	countmap countResults_S = BFI->CountRegions(BFI->sig_filtered_dataframes);
 	countmap countResults_obs = BFI->CountRegions(BFI->data_filtered_dataframes);
 
 	summap sumResults = BFI->SumRegions("evtwt", BFI->bkg_filtered_dataframes);
-	summap sumResults_S = BFI->SumRegions("evtwt", BFI->sig_filtered_dataframes);
+	summap sumResults_S = BFI->SumRegions("evtrwt", BFI->sig_filtered_dataframes);
 	summap sumResults_obs = BFI->SumRegions("evtwt", BFI->data_filtered_dataframes);
 	//summap sumResults = BFI->SumRegions("LumiEvtWt", BFI->bkg_filtered_dataframes);
         //summap sumResults_S = BFI->SumRegions("evtFillWgt", BFI->sig_filtered_dataframes);
@@ -113,7 +116,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 
 	//new evtwt error calculation
 	summap errorsumResults = BFI->SumRegions("evtwt2", BFI->bkg_filtered_dataframes);
-    summap errorsumResults_S = BFI->SumRegions("evtwt2", BFI->sig_filtered_dataframes);
+    summap errorsumResults_S = BFI->SumRegions("evtrwt2", BFI->sig_filtered_dataframes);
 
 
 	//book error sums	
