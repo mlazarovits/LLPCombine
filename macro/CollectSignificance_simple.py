@@ -51,6 +51,8 @@ with open(ofile, "w") as file:
     for subdir in datacard_subdir_list:
         f = rt.TFile.Open(datacard_dir+"/"+subdir+"/higgsCombine.Test.Significance.mH120.root")
         tree = f.Get("limit")
+        if tree is None:
+            continue
         for entry in tree:
             sig = entry.limit
         line = subdir +" "+ str(sig) +"\n"
