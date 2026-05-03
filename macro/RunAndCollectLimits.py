@@ -12,14 +12,16 @@ args = argparser.parse_args()
 
 cmd = "combineTool.py -M AsymptoticLimits -t -1 --there --parallel 4"
 dirs = Path(args.directory).iterdir()
-outname = args.signal+"_limits"
 
 #run asymptotic limits
 for idx, d in enumerate(dirs):
     if args.signal not in d.name:
         continue
-    print("Running limits for",d.name)
     mass = d.name[d.name.find("_")+1:]
+    if Path(f"{args.directory}{d.name}/higgsCombine_{mass}.AsymptoticLimits.mH120.root").exists():
+        print("Skipping. AsymptoticLimits file already exists")
+        continue
+    print("Running limits for",d.name)
     d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/*.txt"
     subprocess.run(d_cmd.split(" "))
 
@@ -27,6 +29,7 @@ for idx, d in enumerate(dirs):
 dirs = Path(args.directory).iterdir()
 #collect limits in json
 js_out = {}
+outname = args.signal+"_limits"
 for idx, d in enumerate(dirs):
     if args.signal not in d.name:
         continue
@@ -60,12 +63,12 @@ for idx, d in enumerate(dirs):
             js_out[mh]["exp+1"] = evt.limit
         elif abs(evt.quantileExpected - 0.975) < 1e-4:
             js_out[mh]["exp+2"] = evt.limit
-    # print js_out
-    jsondata = json.dumps(js_out, sort_keys=True, indent=2, separators=(",", ": "))
-    # print jsondata
-    if args.extra is not None:
-        outname += f"_{args.extra}"
-    outname += ".json"
-        with open(outname, "w") as out_file:
-            out_file.write(jsondata)
+# print js_out
+jsondata = json.dumps(js_out, sort_keys=True, indent=2, separators=(",", ": "))
+# print jsondata
+if args.extra is not None:
+    outname += f"_{args.extra}"
+outname += ".json"
+with open(outname, "w") as out_file:
+    out_file.write(jsondata)
 print("Wrote limits to",outname)
