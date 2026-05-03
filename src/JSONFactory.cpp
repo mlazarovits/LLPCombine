@@ -1,6 +1,37 @@
 #include "JSONFactory.h"
 
 
+JSONFactory::JSONFactory(std::map<std::string, Bin*> analysisbins, const AnalysisConfig& c){
+	//loop and add bins 
+	for(const auto& it: analysisbins ){
+		std::string binname = it.first;
+		//std::map<std::string, Process* > bkgprocs = it.second->bkgProcs;
+		std::map<std::string, Process* > combinedprocs = it.second->combinedProcs;
+		std::map<std::string, Process* > signals = it.second->signals;
+		std::pair<std::string, Process* > data = it.second->data;
+		for(const auto& it2: combinedprocs ){
+			std::string procname = it2.first;
+			j[binname][procname] = { it2.second->nevents, it2.second->wnevents, it2.second->staterror };
+		}
+		for(const auto& it2: signals){
+			std::string procname = it2.first;
+			//do reweighting renaming
+			if(float(c.sampleLifetime) != -1){
+				std::string repl = "_"+std::to_string(c.sampleLifetime);
+				repl = BFTool::RoundNumber(repl);	
+				std::string new_str = "_"+std::to_string(c.targetLifetime);
+				new_str = BFTool::RoundNumber(new_str);	
+				procname.replace(procname.rfind(repl), repl.size(), new_str);
+			}
+			j[binname][procname] = { it2.second->nevents, it2.second->wnevents, it2.second->staterror };
+		}
+		//data - if specified
+		if(data.second != nullptr){
+			std::string procname = data.first;
+			j[binname][procname] = { data.second->nevents, data.second->wnevents, data.second->staterror };
+		}
+	}
+}
 JSONFactory::JSONFactory(std::map<std::string, Bin*> analysisbins){
 	//loop and add bins 
 	for(const auto& it: analysisbins ){

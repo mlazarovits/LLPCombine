@@ -3,6 +3,7 @@
 #define JSONFACT_H
 #include "nlohmann/json.hpp" // JSON lib
 #include "BuildFitTools.h"
+#include "ConfigParser.h"
 #include <vector>
 #include <map>
 #include <iostream>
@@ -14,6 +15,7 @@ class JSONFactory{
 
 	public:
 	JSONFactory(std::map<std::string, Bin*> analysisbins);
+	JSONFactory(std::map<std::string, Bin*> analysisbins, const AnalysisConfig& c);
 	JSONFactory(std::string filename);
 	json j{};
 	std::vector<std::string> GetSigProcs();

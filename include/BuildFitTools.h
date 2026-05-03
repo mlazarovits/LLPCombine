@@ -52,7 +52,17 @@ class BFTool{
 	static std::vector<std::string> SplitString(const std::string& str,const std::string& delimiter);
 	static std::string GetSignalTokens(std::string& input);
 	static bool  ContainsAnySubstring(const std::string& mainString, const std::vector<std::string>& substrings);
+	static std::string RoundNumber(const std::string& str, int ndigits);
 };
+inline std::string BFTool::RoundNumber(const std::string& str, int ndigits = 1){
+	std::string ret;
+	if(str[str.find(".")+1] == '0')
+		ret = str.substr(0,str.find("."));
+	else{
+		ret = str.substr(0,str.find(".")+1+ndigits);
+	}
+	return ret;
+}
 
 inline std::vector<std::string> BFTool::SplitString(const std::string& str,const std::string& delimiter) {
     std::vector<std::string> tokens;

@@ -1,5 +1,3 @@
-
-
 #include "SampleTool.h"
 #include "BuildFitInput.h"
 #include "JSONFactory.h"
@@ -145,7 +143,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	
 	// Write output JSON
 	std::string output_path = output_dir + "/" + config.output_json;
-	JSONFactory* json = new JSONFactory(BFI->analysisbins);
+	JSONFactory* json = new JSONFactory(BFI->analysisbins, config);
 	json->WriteJSON(output_path);
 	
 	if (verbosity > 0) {
