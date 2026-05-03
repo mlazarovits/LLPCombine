@@ -12,6 +12,7 @@ using std::endl;
 int main(int argc, char* argv[]){
 	string inconfig;
 	string input_json;
+	string extra_name;
 	bool hprint = false;
 	bool crfit = false;
 	for(int i = 0; i < argc; i++){
@@ -40,6 +41,14 @@ int main(int argc, char* argv[]){
 		if(strncmp(argv[i],"--CRFit", 7) == 0){
 			crfit = true;
 		}
+		if(strncmp(argv[i],"-e", 2) == 0){
+                	i++;
+                	extra_name = string(argv[i]);
+                }
+		if(strncmp(argv[i],"--extra", 7) == 0){
+                	i++;
+                	extra_name = string(argv[i]);
+                }
 
 	}
 	if(hprint){
@@ -49,6 +58,7 @@ int main(int argc, char* argv[]){
                 cout << "   --config(-c) [file]                  fit config" << endl;
                 cout << "   --BFI(-i) [file]                     build fit input (json file)" << endl;
                 cout << "   --CRFit                              run single signal for CR fit" << endl;
+                cout << "   --extra(-e)                          additional name for datacard dir" << endl;
 		return 0;
 	}	
 
@@ -79,6 +89,8 @@ int main(int argc, char* argv[]){
 		std::cout << "fitname " << fitname << std::endl;
 		if(fitname.size() > 1)
 			datacard_dir += "_"+fitname;
+		if(extra_name.size() > 1)
+			datacard_dir += "_"+extra_name;
 		datacard_dir += "/"+signals[i];
 		cout << "Datacard dir " << datacard_dir << endl;
 		std::filesystem::path dir_path = datacard_dir;
