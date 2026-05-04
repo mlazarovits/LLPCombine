@@ -42,6 +42,14 @@ dirs = Path(args.directory).iterdir()
 #collect limits in json
 js_out = {}
 outname = args.signal+"_limits"
+if args.mS is not None:
+    outname += f"_mGl-{args.mS}"
+if args.mN2 is not None:
+    outname += f"_mN2-{args.mN2}"
+if args.mN1 is not None:
+    outname += f"_mN1-{args.mN1}"
+if args.ctau is not None:
+    outname += f"_ctau-{args.ctau}"
 for idx, d in enumerate(dirs):
     if args.signal not in d.name:
         continue
