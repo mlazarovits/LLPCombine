@@ -41,7 +41,8 @@ for idx, d in enumerate(dirs):
 dirs = Path(args.directory).iterdir()
 #collect limits in json
 js_out = {}
-outname = args.signal+"_limits"
+dirname = args.directory[args.directory.find("datacards_")+10:].strip("/")
+outname = dirname+"_"+args.signal+"_limits"
 if args.mS is not None:
     outname += f"_mGl-{args.mS}"
 if args.mN2 is not None:
