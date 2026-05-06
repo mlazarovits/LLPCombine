@@ -23,6 +23,8 @@ COLORS = {
         "Ch10" : "navy",
         "Ch11" : "darkorange",
         "Ch12" : "darkorange",
+        "base" : "fuschia",
+        "preselection" : "hotpink",
 }
 
 
@@ -66,7 +68,7 @@ for reg_name, region in data.items():
         new_err = np.sqrt(cur_evts[1]**2 + wt_err**2) #add errors in quadrature, add weighted events
         ch_evts[ch_key] = [cur_evts[0] + wt_evt, new_err]
 
-#TODO - correct error with binomial error, sigma_e = sqrt(e(1-e)/n_eff) for n_eff = (sum w_i)**2 / sum (w_i**2) over all events in denom i
+#binomial error, sigma_e = sqrt(e(1-e)/n_eff) for n_eff = (sum w_i)**2 / sum (w_i**2) over all events in denom i
 #n_eff = (sum w_i)**2 / sum (w_i**2) = n_wt^2 / sigma_stat^2 where sigma_stat = sqrt(sum_i sigma_stat,i^2) over bins i
 
 denom_name = "preselection"
@@ -95,6 +97,8 @@ for ch, evts in ch_evts.items():
     bin_err = np.sqrt(eff*(1 - eff)/neff)
     
     label = ch#ch_names[ch]
+
+    color = ch in COLORS.keys() ? COLORS[ch] : 'k' 
 
     ax.errorbar(xidx,eff,xerr=xbin_size,yerr = bin_err, marker='s', markersize=7, color = 'k')
     xaxislabels.append(ch)
