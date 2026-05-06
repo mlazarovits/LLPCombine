@@ -6,26 +6,25 @@ import awkward as ak
 from tools import EfficiencyParser
 import argparse
 import re
+import numpy as np
 
 COLORS = {
         "CRGeLep1": ROOT.kBlue, 
         "CRGeHad1": ROOT.kCyan+4,
-        "CRgeq1PhoBHEarlyDxyHadLow": ROOT.kOrange+7, 
-        "CRgeq1PhoBHLateDxyHadLow":ROOT.kOrange,
-        "CRgeq1PhonotBHEarlyDxyHadLow":ROOT.kOrange+10,
-        "CRgeq1PhoMedIsoPromptSVLowDxy": ROOT.kYellow+1,
+        "CRgeq1SVgeq1PhoBHEarly": ROOT.kOrange+7, 
+        "CRgeq1SVgeq1PhoBHLate":ROOT.kOrange,
+        "CRgeq1SVgeq1PhoNotBHEarly":ROOT.kOrange+10,
         "CRgeq1PhoBHEarly": ROOT.kSpring-5, 
         "CRgeq1PhoBHLate": ROOT.kGreen,
         "CRgeq1PhoNotBHEarly": ROOT.kCyan, 
         "CReq1PhoMedIsoPrompt":  ROOT.kTeal-1, 
         "CReq2PhoMedIsoPrompt": ROOT.kTeal-7, 
-        "SRgeq1PhonotBHLateDxyHadHigh": ROOT.kViolet-3,
-        "SRgeq1PhoTightIsoPromptSVHighDxy": ROOT.kViolet+1, 
-        "SReq2PhoTightIsoPrompt": ROOT.kMagenta, 
-        "SReq1PhoTightIsoPrompt": ROOT.kPink+1, 
-        "SRgeq1PhoNotBHLate": ROOT.kMagenta-9,
-        "SRGeLep1": ROOT.kBlue-1,
-        "SRGeHad1": ROOT.kAzure+1,
+        "SRgeq1SVgeq1PhoNotBHLate": ROOT.kViolet-3, 
+        "SReq2PhoTightIsoPrompt": ROOT.kPink+1, 
+        "SReq1PhoTightIsoPrompt": ROOT.kPink+4, 
+        "SRgeq1PhoNotBHLate": ROOT.kMagenta, 
+        "SRGeLep1": ROOT.kAzure+2, 
+        "SRGeHad1": ROOT.kAzure+10,
 }
 
 
@@ -46,7 +45,7 @@ effparser = EfficiencyParser()
 sigs = fileprocessor.GetFiles("SMS_gogoGZ")
 
 def main(args):
-    yaml_path = '../config_master/BigGuy_NonCompressed_FullRegions_AnalysisConfig.yaml'
+    yaml_path = '../config_master/BigGuy_NonCompressed_FullRegions_AnalysisConfig_SplitSVDelayedPhoton_4BinDelayedPhoton.yaml'
     yaml_regions = {}
     
     #assuming baseline and cleaning are the same across yamls
@@ -57,6 +56,7 @@ def main(args):
         data = yaml.safe_load(f)
     baseline = data['baseline_cuts'][0]
     cleaning = data['Cleaning'][0]
+    kin = data['kin'][0]
     if 'regions' not in data.keys():
         print("Regions not defined in yaml",yaml_path,"Please define in yaml and rerun")
         exit()
@@ -89,7 +89,23 @@ def main(args):
             print("final state",final_state)
             #apply preselection
             presel_name = f'presel_and_{final_state}'
-            rdf0 = rdf.Filter(f'{baseline} && {cleaning} && {final_state}',presel_name)
+            presel_sel = f'{baseline} && {cleaning} && {kin} && {final_state}'
+            #make denom total of SRs
+            if args.SRsonly:
+                SRs = [key for key, val in yaml_regions.items() if "SR" in key]
+                SRsel = ""
+                for idx, SR in enumerate(SRs):
+                    reg_def = yaml_regions[SR]
+                    flat_reg_def = []
+                    for iidx, i in enumerate(reg_def):
+                        for j in i:
+                            flat_reg_def.append(j)
+
+                    flat_reg_def = " && ".join(flat_reg_def)
+                    SRsel += f"({flat_reg_def}) ||"
+                SRsel = SRsel[:-2]
+                presel_sel = f"({SRsel})"
+            rdf0 = rdf.Filter(presel_sel,presel_name)
             filtered_rdfs = {}
             rdfs = []
             wt_all = rdf0.Sum("evtFillWgt")
