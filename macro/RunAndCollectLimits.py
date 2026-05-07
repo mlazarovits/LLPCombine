@@ -6,7 +6,7 @@ import json
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("-d","--directory",help="datacard directory",required=True)
-argparser.add_argument("-s","--signal",help="which signal to run over",choices=["gogoGZ","sqsqG"])
+argparser.add_argument("-s","--signal",help="which signal to run over",choices=["gogoGZ","sqsqG"],default="gogoGZ")
 argparser.add_argument("--mS",help="run over only this parent sparticle mass",default=None)
 argparser.add_argument("--mN2",help="run over only this N2 sparticle mass",default=None)
 argparser.add_argument("--mN1",help="run over only this N1 sparticle mass",default=None)
