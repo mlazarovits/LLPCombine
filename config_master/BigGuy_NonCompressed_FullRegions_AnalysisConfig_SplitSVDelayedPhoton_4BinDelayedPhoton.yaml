@@ -5,7 +5,7 @@ analysis:
 
 samples:
   signals: ["gogoGZ"]
-  data: ["MET16","MET17","MET18","MET22", "MET23","MET24"]
+  data: ["MET16","MET17","MET18","MET22", "MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)"

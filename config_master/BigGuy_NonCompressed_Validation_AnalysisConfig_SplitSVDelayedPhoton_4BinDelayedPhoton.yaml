@@ -5,7 +5,7 @@ analysis:
 
 samples:
   signals: ["gogoGZ"]
-  data: ["MET16","MET17","MET18","MET22", "MET23","MET24"]
+  data: ["MET16","MET17","MET18","MET22", "MET23"]
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)"
@@ -117,12 +117,12 @@ noSV: &noSV
 Ch1CRgeq1PhoBHEarly: &Ch1CRgeq1PhoBHEarly
   - "(nBaseLinePhotons > 0)"
   # >= 1 BH photon early
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999 ) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.99 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.93 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.93 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999 ) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.93 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
 
 Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
   - "(nBaseLinePhotons > 0)"
   # >= 1 BH photon late
-  - "(nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.99 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.99 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+  - "(nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.93 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] >= 0.93 && baseLinePhoton_beamHaloCNNScore[0] < 0.9999) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] >= 0.93 &&  baseLinePhoton_beamHaloCNNScore[1] < 0.9999) && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
 
 # ==0 BH photons
 # >= 1 notBH photons
@@ -130,20 +130,20 @@ Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
 Ch3CRgeq1PhoNotBHEarly: &Ch3CRgeq1PhoNotBHEarly
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
-  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.99) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] < 0.99) ) )"
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.93) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.93 && baseLinePhoton_beamHaloCNNScore[1] < 0.93) ) )"
   # >=1 notBH photons early
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.93 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] < -2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.93 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
 
 Ch4SRgeq1PhoNotBHLate: &Ch4SRgeq1PhoNotBHLate
   - "(nBaseLinePhotons > 0)"
   # == 0 BH photons
-  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99)) ) )"
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93) && (baseLinePhoton_beamHaloCNNScore[1] < 0.93)) ) )"
   # >=1 notBH photons late
-  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.99 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.99 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && (((baseLinePhoton_beamHaloCNNScore[0] < 0.93 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252) && baseLinePhoton_WTimeSig[0] >= 2.5) || ((baseLinePhoton_beamHaloCNNScore[1] < 0.93 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252) && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
 
 
 noBHPhotons: &noBHPhotons
- - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.99) && (baseLinePhoton_beamHaloCNNScore[1] < 0.99)) ) )"
+ - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93)) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] < 0.93) && (baseLinePhoton_beamHaloCNNScore[1] < 0.93)) ) )"
 
 noNonPromptPhotons: &noNonPromptPhotons
   - "((nBaseLinePhotons == 0) || (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
