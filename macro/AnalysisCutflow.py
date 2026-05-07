@@ -23,6 +23,10 @@ COLORS = {
         "Ch10" : "navy",
         "Ch11" : "darkorange",
         "Ch12" : "darkorange",
+        "Ch13" : "darkturquoise",
+        "Ch14" : "deepskyblue",
+        "Ch15" : "teal",
+        "Ch16" : "aqua",
         "base" : "fuchsia",
         "preselection" : "palevioletred",
 }
@@ -38,7 +42,7 @@ argparser.add_argument("-e","--extra",help="extra output file label",default=Non
 args = argparser.parse_args()
 
 
-BFIfile = "../json/BigGuy_NonCompressed_FullRegions_Cutflow.json"
+BFIfile = "../json/BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton_Cutflow.json"
 signal = f'gogoGZ_{args.mGl}_{args.mN2}_{args.mN1}_{args.ctau}'
 lumi = 200
 signals = [signal,f'gogoGZ_{args.mGl}_{args.mN2}_{args.mN1}_50','gogoGZ_2500_1200_500_10','gogoGZ_2500_1200_500_50']
@@ -177,13 +181,13 @@ xmin = -0.6
 plt.xlim(xmin,npresel+2*nsigs+0.1)
 plt.ylabel("Efficiency")
 #plt.title(f"Efficiency Cutflow: {signal}",size=20)
-plt.ylim(-0.1,1.25)
+plt.ylim(-0.1,1.5)
 
 #plot_signal_label = signal.split("_")
 #plot_signal_label = "$m_{\\tilde{g}}=$"+plot_signal_label[1]+" GeV, $m_{\chi^0_2}=$" + plot_signal_label[2] + " GeV\n$m_{\chi^0_1}=$"+plot_signal_label[3]+" GeV, $c\\tau=$"+plot_signal_label[4]+" cm"
 #plt.text(xmin+0.3,1.05, plot_signal_label, fontsize=15)
 
-ax.legend(ncol=2,fontsize=15)
+ax.legend(ncol=3,fontsize=15)
 ofilename = f"cutflow_{'_'.join(signals)}.pdf"
 plt.savefig(ofilename)
 print("Wrote cutflow to",ofilename)

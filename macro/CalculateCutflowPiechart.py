@@ -19,12 +19,18 @@ COLORS = {
         "CRgeq1PhoNotBHEarly": ROOT.kCyan, 
         "CReq1PhoMedIsoPrompt":  ROOT.kTeal-1, 
         "CReq2PhoMedIsoPrompt": ROOT.kTeal-7, 
-        "SRgeq1SVgeq1PhoNotBHLate": ROOT.kViolet-3, 
-        "SReq2PhoTightIsoPrompt": ROOT.kPink+1, 
-        "SReq1PhoTightIsoPrompt": ROOT.kPink+4, 
-        "SRgeq1PhoNotBHLate": ROOT.kMagenta, 
-        "SRGeLep1": ROOT.kAzure+2, 
-        "SRGeHad1": ROOT.kAzure+10,
+        #"SRgeq1SVgeq1PhoNotBHLate": ROOT.kViolet-3, 
+        #"SReq2PhoTightIsoPrompt": ROOT.kPink+1, 
+        #"SReq1PhoTightIsoPrompt": ROOT.kPink+4, 
+        #"SRgeq1PhoNotBHLate": ROOT.kMagenta, 
+        #"SRGeLep1": ROOT.kAzure+2, 
+        #"SRGeHad1": ROOT.kAzure+10,
+        "SRgeq1SVgeq1PhoNotBHLate": ROOT.kPink-4, 
+        "SReq2PhoTightIsoPrompt": ROOT.kGreen+3, 
+        "SReq1PhoTightIsoPrompt": ROOT.kGreen-7, 
+        "SRgeq1PhoNotBHLate": ROOT.kTeal-4, 
+        "SRGeLep1": ROOT.kViolet-3, 
+        "SRGeHad1": ROOT.kViolet+9,
 }
 
 
@@ -104,7 +110,7 @@ def main(args):
                     flat_reg_def = " && ".join(flat_reg_def)
                     SRsel += f"({flat_reg_def}) ||"
                 SRsel = SRsel[:-2]
-                presel_sel = f"({SRsel})"
+                presel_sel = f"({SRsel}) && ({final_state})"
             rdf0 = rdf.Filter(presel_sel,presel_name)
             filtered_rdfs = {}
             rdfs = []
@@ -126,6 +132,7 @@ def main(args):
             for line in lines:
                 parsed_eff = effparser.parse_eff_line(line, denom_info)
                 parsed_effs.append(parsed_eff)
+                print(parsed_eff)
             parsed_effs.sort(key=lambda x:x[2])
             
             ellipse_slices = []
@@ -146,12 +153,12 @@ def main(args):
                 ell_color = COLORS[reg_name]
                 ell = ROOT.TEllipse(0.5, 0, r, r, phimin, phimax)
                 if(reg_eff >= 0):
-                    ell.SetFillStyle(3003)
+                    ell.SetFillStyle(1001)
                     ell.SetFillColor(ell_color)
                 ell.SetLineColor(ell_color)
                 leg_name = f"{reg_name}: {reg_eff:.2f}%"
                 #print(leg_name)
-                leg.AddEntry(ell,leg_name,"l")
+                leg.AddEntry(ell,leg_name,"f")
                 ellipse_slices.append(ell)
                 start_angle += angle_slice
                 color_idx += 1
