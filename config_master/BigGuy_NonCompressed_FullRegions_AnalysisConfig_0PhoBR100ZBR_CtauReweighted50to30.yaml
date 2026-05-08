@@ -1,7 +1,7 @@
 analysis:
-  name: "BigGuy_NonCompressed_FullRegions_0PhoBR100ZBR"
+  name: "BigGuy_NonCompressed_FullRegions_0PhoBR100ZBR_CtauReweight50to30"
   luminosity: 200
-  output_json: "BigGuy_NonCompressed_FullRegions_0PhoBR100ZBR.json"
+  output_json: "BigGuy_NonCompressed_FullRegions_0PhoBR100ZBR_CtauReweight50to30.json"
 
 samples:
   signals: ["gogoGZ50"]

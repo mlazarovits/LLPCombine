@@ -25,7 +25,7 @@ kin: &kin
 
 #highest priority - leptonic SV
 SVgeLep1_SR: &SVgeLep1_SR
-  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200) && (LeptonicSV_dxySig[0] < 50))"
+  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200) && (LeptonicSV_dxySig[0] >= 50))"
 
 SVgeLep1_CR: &SVgeLep1_CR
   - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 50))"
@@ -35,7 +35,7 @@ SVgeq1Had: &SVgeq1Had
 #second priority - hadronic SV
 SVgeHad1_SR: &SVgeHad1_SR
   - "(SV_nLeptonic == 0)"
-  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_dxySig[0] < 200))"
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_dxySig[0] >= 200))"
     #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800) && (HadronicSV_mass[0] > 15))"
 
 SVgeHad1_CR: &SVgeHad1_CR
