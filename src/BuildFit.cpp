@@ -1,8 +1,44 @@
 #include "BuildFit.h"
 #include <iostream>
 #include <filesystem>
+#include <sstream>
 using std::cout;
 using std::endl;
+
+double BuildFit::GetYieldValue(const string& bin, const string& proc, int index, const string& context) const{
+	if(!_yields.is_object()){
+		throw std::runtime_error("BF JSON error in " + context + ": top-level JSON is " + string(_yields.type_name()) + ", expected object keyed by bin");
+	}
+	if(!_yields.contains(bin)){
+		throw std::runtime_error("BF JSON error in " + context + ": missing bin '" + bin + "'");
+	}
+	const json& bin_json = _yields.at(bin);
+	if(!bin_json.is_object()){
+		throw std::runtime_error("BF JSON error in " + context + ": bin '" + bin + "' is " + string(bin_json.type_name()) + ", expected object keyed by process");
+	}
+	if(!bin_json.contains(proc)){
+		throw std::runtime_error("BF JSON error in " + context + ": missing process '" + proc + "' in bin '" + bin + "'");
+	}
+	const json& proc_json = bin_json.at(proc);
+	if(!proc_json.is_array()){
+		throw std::runtime_error("BF JSON error in " + context + ": bin '" + bin + "', process '" + proc + "' is " + string(proc_json.type_name()) + ", expected [unweighted, weighted, staterr]");
+	}
+	if(index < 0 || index >= static_cast<int>(proc_json.size())){
+		std::ostringstream msg;
+		msg << "BF JSON error in " << context << ": bin '" << bin << "', process '" << proc << "' has "
+		    << proc_json.size() << " yield entries, cannot read index " << index;
+		throw std::runtime_error(msg.str());
+	}
+	const json& value = proc_json.at(index);
+	if(!value.is_number()){
+		std::ostringstream msg;
+		msg << "BF JSON error in " << context << ": bin '" << bin << "', process '" << proc
+		    << "', yield index " << index << " is " << value.type_name()
+		    << " with value " << value.dump() << ", expected number";
+		throw std::runtime_error(msg.str());
+	}
+	return value.get<double>();
+}
 
 //takes input fit config and JSONFactor as inputs
 BuildFit::BuildFit(string infile){
@@ -142,7 +178,7 @@ void BuildFit::SetSignalRates(){
 	//set signal rates
 	cb.ForEachProc([&](ch::Process *x){
 		if(x->process() == _signalPoint){
-			double yield = _yields[x->bin()][x->process()][1].get<double>();
+			double yield = GetYieldValue(x->bin(), x->process(), 1, "SetSignalRates");
 			if(yield == 0)
 				yield = 1e-8;
 			x->set_rate(yield);
@@ -159,9 +195,9 @@ void BuildFit::sumBkgs(){
 		double unwt_yield = 0;
 		double sq_err = 0;
 		for(auto proc : _bkgprocs){
-			wt_yield += _yields[bin][proc][1].get<double>();
-			unwt_yield += _yields[bin][proc][0].get<double>();
-			double err = _yields[bin][proc][2].get<double>();
+			wt_yield += GetYieldValue(bin, proc, 1, "sumBkgs");
+			unwt_yield += GetYieldValue(bin, proc, 0, "sumBkgs");
+			double err = GetYieldValue(bin, proc, 2, "sumBkgs");
 			sq_err += err*err;
 		}
 		//add to json array
@@ -188,7 +224,7 @@ void BuildFit::BuildShapeTransferFit(){
 		vector<string> anchor_bins = _shape_bin_ass[anchor_ch];
 		//set yields in every bin of the anchor channel to their nominal value
 		for(int b = 0; b < (int)anchor_bins.size(); b++){
-			double anchor_rate = _yields[anchor_bins[b]][proc][1].get<double>();
+			double anchor_rate = GetYieldValue(anchor_bins[b], proc, 1, "BuildShapeTransferFit anchor rate");
 			cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << " rate " << anchor_rate << endl;
 			//set yield
 			ch::Process anchorproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[anchor_bins[b]],anchor_bins[b]), false, anchor_rate);
@@ -253,7 +289,7 @@ void BuildFit::BuildShapeTransferFit(){
 						continue;
 					string bin = getBinIdx(buoy_bin);
 					string anchorch_bin = anchor_ch+bin;
-					double anchor_rate = _yields[anchorch_bin][proc][1].get<double>();
+					double anchor_rate = GetYieldValue(anchorch_bin, proc, 1, "BuildShapeTransferFit datadriven asimov observation");
 					cout << "setting obs in buoy bin " << buoy_bin << " from anchorch_bin " << anchorch_bin << " to " << transfer_factor * anchor_rate << endl;
 					_obs_rates[buoy_bin] = double(int(transfer_factor * anchor_rate));
 				}
@@ -307,7 +343,7 @@ void BuildFit::BuildABCDFit(){
 					if(getBinIdx(cr_bin) != binidx)
 						continue;
 					cr_bins_matchidx.push_back(cr_bin);
-					double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
+					double bkgrate_cr = GetYieldValue(cr_bin, _bkg_proc, 1, "BuildABCDFit CR rate");
 					cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
 				}
 
@@ -365,7 +401,7 @@ void BuildFit::BuildABCDFitSingleBin(){
 		/*
 		//set rates of non-sr (cr) bins to be their nominal expected yield
 		for(auto cr_bin : cr_bins){
-			double bkgrate_cr = _yields[cr_bin][_bkg_proc][1].get<double>();
+			double bkgrate_cr = GetYieldValue(cr_bin, _bkg_proc, 1, "BuildABCDFitSingleBin CR rate");
 			ch::Process crbin_proc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],_bkg_proc,make_pair(_invcats[cr_bin],cr_bin), false, bkgrate_cr);
 			cb.InsertProcess(crbin_proc);
 		}
@@ -465,6 +501,7 @@ ch::Categories BuildFit::BuildCats(JSONFactory* j){
 }
 //sets observation to sum of MC backgrounds (skips MC sig and data)
 std::map<std::string, float> BuildFit::BuildAsimovData(JSONFactory* j){
+	_yields = j->j;
 	_obs_rates.clear();
 	//outer loop bin iterator
 	for (json::iterator it = j->j.begin(); it != j->j.end(); ++it){
@@ -485,10 +522,9 @@ std::map<std::string, float> BuildFit::BuildAsimovData(JSONFactory* j){
 			if(it2.key() == "data") continue;
 			else{
 				//get the wnevents, index 1 of array
-				json json_array = it2.value();
 				//cout << "binname " << binname << " proc " << it2.key() << " yield " << json_array[1].get<float>() << endl;
 				//std::cout<< it2.key()<<" "<<json_array[1].get<float>()<<" "<<"\n";
-				totalBkg+= json_array[1].get<float>();
+				totalBkg+= GetYieldValue(binname, it2.key(), 1, "BuildAsimovData");
 			}
 		}
 		_obs_rates[binname] = float(int(totalBkg));
@@ -564,6 +600,7 @@ std::vector<std::string> BuildFit::GetBinSet( JSONFactory* j){
 
 }
 std::map<std::string, float> BuildFit::LoadDataProcesses(JSONFactory* j, std::vector<std::string> dataKeys){
+	_yields = j->j;
 	_obs_rates.clear();	
 	float obs_rate=0.;
 	cout << "LoadDataProcesses - start" << endl;
@@ -573,8 +610,7 @@ std::map<std::string, float> BuildFit::LoadDataProcesses(JSONFactory* j, std::ve
                 std::string binname = it.key();
                 //assign yield to obs bin map
 		for(int i=0; i<(int) dataKeys.size(); i++){
-                	json json_array = j->j[binname][dataKeys[i]];
-               		obs_rate += json_array[1].get<float>();
+               		obs_rate += GetYieldValue(binname, dataKeys[i], 1, "LoadDataProcesses");
        		}
 		_obs_rates[binname] = obs_rate;
 		if(_obs_rates[binname] == 0)
@@ -585,28 +621,29 @@ std::map<std::string, float> BuildFit::LoadDataProcesses(JSONFactory* j, std::ve
 	return _obs_rates;
 }
 std::map<std::string, float> BuildFit::LoadObservations(JSONFactory* j){
+	_yields = j->j;
 	_obs_rates.clear();
 	for (json::iterator it = j->j.begin(); it != j->j.end(); ++it){
                 //inner loop process iterator
                 std::string binname = it.key();
                 //assign yield to obs bin map
-		json json_array = j->j[binname]["data"];
-            	_obs_rates[binname] = json_array[1].get<float>();
+            	_obs_rates[binname] = GetYieldValue(binname, "data", 1, "LoadObservations");
 		if(_obs_rates[binname] == 0)
 			_obs_rates[binname] = 1e-8; //avoiding fit issues
         }
 	return _obs_rates;	
 }
 double BuildFit::GetStatFracError(JSONFactory* j, std::string binName, std::vector<std::string> bkgprocs ){
+	_yields = j->j;
 	double fracError=0;
 	double statError=0;
 	double bkgYield=0;
 
                 //assign yield to obs bin map
 	for(int i=0; i<(int)bkgprocs.size(); i++){
-        	json json_array = j->j[binName][bkgprocs[i]];
-               	bkgYield += json_array[1].get<float>();
-		statError += json_array[2].get<float>()*json_array[2].get<float>();
+               	bkgYield += GetYieldValue(binName, bkgprocs[i], 1, "GetStatFracError yield");
+		double procStatError = GetYieldValue(binName, bkgprocs[i], 2, "GetStatFracError stat error");
+		statError += procStatError*procStatError;
 	}
 	if(bkgYield>0){
 		fracError = std::sqrt(statError)/bkgYield;
@@ -1080,4 +1117,3 @@ void StatUncertaintyTesting(){
         cb.WriteDatacard("datacards_test1_MCStats/shape_template_test/datacard-2-template-analysis_bbbstat.txt","datacards_test1_MCStats/shape_template_test/testShapesOutput_bbb.root");
 
 }
-

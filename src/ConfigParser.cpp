@@ -136,10 +136,12 @@ private:
             if (line.empty()) continue;
             
             
-            // Look for anchor definitions
+            // Look for anchor definitions (pattern: "key: &anchor_name", not list items)
             size_t anchor_pos = line.find('&');
-            if (anchor_pos != std::string::npos && line.find(':') != std::string::npos) {
-                // This line contains both : and &, it's an anchor definition
+            size_t colon_pos = line.find(':');
+            if (anchor_pos != std::string::npos && colon_pos != std::string::npos
+                && line.front() != '-' && colon_pos < anchor_pos) {
+                // key: &anchor_name pattern — colon precedes ampersand and not a list item
                 current_anchor = line.substr(anchor_pos + 1);
                 current_anchor.erase(0, current_anchor.find_first_not_of(" \t"));
                 current_anchor.erase(current_anchor.find_last_not_of(" \t") + 1);
