@@ -34,12 +34,12 @@ SVgeq1Had: &SVgeq1Had
   - "((SV_nLeptonic == 0) && (SV_nHadronic >= 1))"
 
 #second priority - hadronic SV
-SVHadge1_SR: &SVHadge1_SR
+SVgeHad1_SR: &SVgeHad1_SR
   - "(SV_nLeptonic == 0)"
     #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800) && (HadronicSV_mass[0] > 15))"
   - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800))"
 
-SVHad1_CR: &SVgad1_CR
+SVgeHad1_CR: &SVgeHad1_CR
   - "(SV_nLeptonic == 0)"
     #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15))"
   - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800))"
@@ -699,7 +699,7 @@ bins:
       - *Ch2CRgeq1PhoBHLate
       - *SVDelayedBin01
   # ==== Ch15: Ge1 SV had Ge1 Photon Early !BH CR ====
-  Ch15CRgeq1PhoNotBHEarlyBin00:
+  Ch15CRgeq1SVgeq1PhoNotBHEarlyBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
@@ -708,7 +708,7 @@ bins:
       - *geq1NonPromptPhotons
       - *Ch3CRgeq1PhoNotBHEarly
       - *SVDelayedBin00
-  Ch15CRgeq1PhoNotBHEarlyBin01:
+  Ch15CRgeq1SVgeq1PhoNotBHEarlyBin01:
     cuts:
       - *baseline_cuts
       - *Cleaning
@@ -718,7 +718,7 @@ bins:
       - *Ch3CRgeq1PhoNotBHEarly
       - *SVDelayedBin01
   # ==== Ch16: Ge1 SV had Ge1 Photon Late !BH SR ====
-  Ch16SRgeq1PhoNotBHLateBin00:
+  Ch16SRgeq1SVgeq1PhoNotBHLateBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
@@ -727,7 +727,7 @@ bins:
       - *geq1NonPromptPhotons
       - *Ch4SRgeq1PhoNotBHLate
       - *SVDelayedBin00
-  Ch16SRgeq1PhoNotBHLateBin01:
+  Ch16SRgeq1SVgeq1PhoNotBHLateBin01:
     cuts:
       - *baseline_cuts
       - *Cleaning
