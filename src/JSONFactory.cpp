@@ -1,5 +1,5 @@
 #include "JSONFactory.h"
-
+#include <set>
 
 JSONFactory::JSONFactory(std::map<std::string, Bin*> analysisbins, const AnalysisConfig& c){
 	//loop and add bins 
@@ -61,19 +61,20 @@ JSONFactory::JSONFactory(std::string filename){
 
 }
 std::vector<std::string> JSONFactory::GetSigProcs(){
-        std::vector<std::string> sigprocs{};
+        std::set<std::string> sigprocs{};
 
         for (json::iterator it = j.begin(); it != j.end(); ++it){
                 //inner loop process iterator
                 std::string binname = it.key();
                 for (json::iterator it2 = it.value().begin(); it2 != it.value().end(); ++it2){
-                //      std::cout<< it2.key()<<"\n";
+                      //std::cout<<it2.key()<<"\n";
                         if( BFTool::ContainsAnySubstring( it2.key(), sigkeys)){
-                                sigprocs.push_back(it2.key());
+                                sigprocs.insert(it2.key());
                         }
                 }
         }
-        return sigprocs;
+	std::vector<std::string> ret_procs(sigprocs.begin(), sigprocs.end());
+        return ret_procs;
 }
 
 void JSONFactory::WriteJSON(std::string filename){

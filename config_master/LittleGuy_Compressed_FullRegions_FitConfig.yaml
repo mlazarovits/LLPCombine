@@ -1,0 +1,290 @@
+# Fit config for Compressed_FullRegions_2RISRBins_AnalysisConfig
+#
+# Ch 1 (SVonly):      shape_transfer  — anchor SVonly_AnchorCR predicts SVonly_SR
+# Ch 2 (DelPho):      ABCD_fit        — 4-cell timing x BH-score, 2-bin RISR [0.6, 0.75) and >= 0.75
+# Ch 3 (Eq2Pho):      shape_transfer  — Eq2Pho_MedIsoCR predicts Eq2Pho_TightIsoSR
+# Ch 4 (MixDel):      ABCD_fit        — 4-cell timing x BH-score + incl. SV dxySig, 2-bin RISR [0.6, 0.75) and >= 0.75
+# Ch 5 (MixPrompt):   shape_transfer  — MixPrompt_CR predicts MixPromptSV_SR
+#
+# ABCD grid convention (Ch 2 and Ch 4):
+#   notBH    D (early) | A (late) = SR
+#            -------------------------
+#   BH       C (early) | B (late)
+#   such that A = B*C/D
+
+fitname: "Compressed_v5"
+asimov: True
+datadriven: True
+
+# ── Shape transfer: Ch 1, Ch 3, Ch 5 ────────────────────────────────────────
+
+shape_transfer_fit:
+  anchor_bin: "00"
+  bin_association:
+
+    # Ch 1 — anchor CR
+    SVonly_AnchorCR:
+      - "SVonly_AnchorCR00"
+      - "SVonly_AnchorCR10"
+      - "SVonly_AnchorCR20"
+    # Ch 1 — SR (CR00 is the buoy anchor bin)
+    SVonly_SR:
+      - "SVonly_CR00"
+      - "SVonly_SR10"
+      - "SVonly_SR20"
+
+    # Ch 3 — CR (medium iso)
+    Eq2Pho_MedIsoCR:
+      - "Eq2Pho_MedIsoCR00"
+      - "Eq2Pho_MedIsoCR10"
+      - "Eq2Pho_MedIsoCR20"
+      - "Eq2Pho_MedIsoCR30"
+    # Ch 3 — SR (CR00 is the buoy anchor bin)
+    Eq2Pho_TightIsoSR:
+      - "Eq2Pho_TightIsoCR00"
+      - "Eq2Pho_TightIsoSR10"
+      - "Eq2Pho_TightIsoSR20"
+      - "Eq2Pho_TightIsoSR30"
+
+    # Ch 5 — CR
+    MixPrompt_AnchorCR:
+      - "MixPrompt_AnchorCR00"
+      - "MixPrompt_AnchorCR10"
+      - "MixPrompt_AnchorCR20"
+    # Ch 5 — SR (CR00 is the buoy anchor bin)
+    MixPrompt_SR:
+      - "MixPrompt_CR00"
+      - "MixPrompt_SR10"
+      - "MixPrompt_SR20"
+
+  channel_association:
+    SVonly_AnchorCR:
+      - "SVonly_SR"
+    Eq2Pho_MedIsoCR:
+      - "Eq2Pho_TightIsoSR"
+    MixPrompt_AnchorCR:
+      - "MixPrompt_SR"
+
+# ── ABCD: Ch 2 and Ch 4 ──────────────────────────────────────────────────────
+
+ABCD_fit:
+  bin_association:
+
+    # Ch 2 — delayed photon (2 RISR bins per cell)
+    DelPho_BHEarly:
+      - "DelPho_BHEarlyCR00"
+      - "DelPho_BHEarlyCR10"
+    DelPho_BHLate:
+      - "DelPho_BHLateCR00"
+      - "DelPho_BHLateCR10"
+    DelPho_NotBHEarly:
+      - "DelPho_NotBHEarlyCR00"
+      - "DelPho_NotBHEarlyCR10"
+    DelPho_NotBHLate:
+      - "DelPho_NotBHLateSR00"
+      - "DelPho_NotBHLateSR10"
+
+    # Ch 4 — mixed delayed photon + incl. SV (2 RISR bins per cell)
+    MixDel_BHEarly:
+      - "MixDel_BHEarlyCR00"
+      - "MixDel_BHEarlyCR10"
+    MixDel_BHLate:
+      - "MixDel_BHLateCR00"
+      - "MixDel_BHLateCR10"
+    MixDel_NotBHEarly:
+      - "MixDel_NotBHEarlyCR00"
+      - "MixDel_NotBHEarlyCR10"
+    MixDel_NotBHLate:
+      - "MixDel_NotBHLateSR00"
+      - "MixDel_NotBHLateSR10"
+
+  channel_association:
+    # A = B*C/D: SR (notBH late) predicted by [BH late, BH early, notBH early]
+    DelPho_NotBHLate:
+      - "DelPho_BHLate"
+      - "DelPho_BHEarly"
+      - "DelPho_NotBHEarly"
+    MixDel_NotBHLate:
+      - "MixDel_BHLate"
+      - "MixDel_BHEarly"
+      - "MixDel_NotBHEarly"
+
+# ── Systematics ──────────────────────────────────────────────────────────────
+
+systematics:
+
+  # Ch 1: per-RISR-bin shape uncertainty between anchor and SR
+  sys_SVonly_Shape00:
+    type: "lnN"
+    name: "lnN_SVonly_Shape00"
+    init_val: 1.10
+    bins:
+      - "SVonly_AnchorCR00"
+      - "SVonly_CR00"
+  sys_SVonly_Shape10:
+    type: "lnN"
+    name: "lnN_SVonly_Shape10"
+    init_val: 1.10
+    bins:
+      - "SVonly_AnchorCR10"
+      - "SVonly_SR10"
+  sys_SVonly_Shape20:
+    type: "lnN"
+    name: "lnN_SVonly_Shape20"
+    init_val: 1.10
+    bins:
+      - "SVonly_AnchorCR20"
+      - "SVonly_SR20"
+
+  # Ch 2: per-cell per-RISR-bin systematics for delayed photon ABCD
+  sys_DelPho_BHEarly00:
+    type: "lnN"
+    name: "lnN_DelPho_BHEarly00"
+    init_val: 1.05
+    bins:
+      - "DelPho_BHEarlyCR00"
+  sys_DelPho_BHEarly10:
+    type: "lnN"
+    name: "lnN_DelPho_BHEarly10"
+    init_val: 1.05
+    bins:
+      - "DelPho_BHEarlyCR10"
+  sys_DelPho_BHLate00:
+    type: "lnN"
+    name: "lnN_DelPho_BHLate00"
+    init_val: 1.10
+    bins:
+      - "DelPho_BHLateCR00"
+  sys_DelPho_BHLate10:
+    type: "lnN"
+    name: "lnN_DelPho_BHLate10"
+    init_val: 1.10
+    bins:
+      - "DelPho_BHLateCR10"
+  sys_DelPho_NotBHEarly00:
+    type: "lnN"
+    name: "lnN_DelPho_NotBHEarly00"
+    init_val: 1.05
+    bins:
+      - "DelPho_NotBHEarlyCR00"
+  sys_DelPho_NotBHEarly10:
+    type: "lnN"
+    name: "lnN_DelPho_NotBHEarly10"
+    init_val: 1.05
+    bins:
+      - "DelPho_NotBHEarlyCR10"
+  sys_DelPho_NotBHLate00:
+    type: "lnN"
+    name: "lnN_DelPho_NotBHLate00"
+    init_val: 1.30
+    bins:
+      - "DelPho_NotBHLateSR00"
+  sys_DelPho_NotBHLate10:
+    type: "lnN"
+    name: "lnN_DelPho_NotBHLate10"
+    init_val: 1.30
+    bins:
+      - "DelPho_NotBHLateSR10"
+
+  # Ch 3: per-RISR-bin shape uncertainty between CR and SR
+  sys_Eq2Pho_Shape00:
+    type: "lnN"
+    name: "lnN_Eq2Pho_Shape00"
+    init_val: 1.10
+    bins:
+      - "Eq2Pho_MedIsoCR00"
+      - "Eq2Pho_TightIsoCR00"
+  sys_Eq2Pho_Shape10:
+    type: "lnN"
+    name: "lnN_Eq2Pho_Shape10"
+    init_val: 1.10
+    bins:
+      - "Eq2Pho_MedIsoCR10"
+      - "Eq2Pho_TightIsoSR10"
+  sys_Eq2Pho_Shape20:
+    type: "lnN"
+    name: "lnN_Eq2Pho_Shape20"
+    init_val: 1.10
+    bins:
+      - "Eq2Pho_MedIsoCR20"
+      - "Eq2Pho_TightIsoSR20"
+  sys_Eq2Pho_Shape30:
+    type: "lnN"
+    name: "lnN_Eq2Pho_Shape30"
+    init_val: 1.10
+    bins:
+      - "Eq2Pho_MedIsoCR30"
+      - "Eq2Pho_TightIsoSR30"
+
+  # Ch 4: per-cell per-RISR-bin systematics for mixed delayed ABCD
+  sys_MixDel_BHEarly00:
+    type: "lnN"
+    name: "lnN_MixDel_BHEarly00"
+    init_val: 1.05
+    bins:
+      - "MixDel_BHEarlyCR00"
+  sys_MixDel_BHEarly10:
+    type: "lnN"
+    name: "lnN_MixDel_BHEarly10"
+    init_val: 1.05
+    bins:
+      - "MixDel_BHEarlyCR10"
+  sys_MixDel_BHLate00:
+    type: "lnN"
+    name: "lnN_MixDel_BHLate00"
+    init_val: 1.10
+    bins:
+      - "MixDel_BHLateCR00"
+  sys_MixDel_BHLate10:
+    type: "lnN"
+    name: "lnN_MixDel_BHLate10"
+    init_val: 1.10
+    bins:
+      - "MixDel_BHLateCR10"
+  sys_MixDel_NotBHEarly00:
+    type: "lnN"
+    name: "lnN_MixDel_NotBHEarly00"
+    init_val: 1.05
+    bins:
+      - "MixDel_NotBHEarlyCR00"
+  sys_MixDel_NotBHEarly10:
+    type: "lnN"
+    name: "lnN_MixDel_NotBHEarly10"
+    init_val: 1.05
+    bins:
+      - "MixDel_NotBHEarlyCR10"
+  sys_MixDel_NotBHLate00:
+    type: "lnN"
+    name: "lnN_MixDel_NotBHLate00"
+    init_val: 1.30
+    bins:
+      - "MixDel_NotBHLateSR00"
+  sys_MixDel_NotBHLate10:
+    type: "lnN"
+    name: "lnN_MixDel_NotBHLate10"
+    init_val: 1.30
+    bins:
+      - "MixDel_NotBHLateSR10"
+
+  # Ch 5: per-RISR-bin shape uncertainty between CR and SR
+  sys_MixPrompt_Shape00:
+    type: "lnN"
+    name: "lnN_MixPrompt_Shape00"
+    init_val: 1.10
+    bins:
+      - "MixPrompt_AnchorCR00"
+      - "MixPrompt_CR00"
+  sys_MixPrompt_Shape10:
+    type: "lnN"
+    name: "lnN_MixPrompt_Shape10"
+    init_val: 1.10
+    bins:
+      - "MixPrompt_AnchorCR10"
+      - "MixPrompt_SR10"
+  sys_MixPrompt_Shape20:
+    type: "lnN"
+    name: "lnN_MixPrompt_Shape20"
+    init_val: 1.10
+    bins:
+      - "MixPrompt_AnchorCR20"
+      - "MixPrompt_SR20"

@@ -2,11 +2,26 @@ import json
 from pathlib import Path
 
 gluino_xsec = {
-        2300 : 4.134e-4,
-        2500 : 1
+        1800 : 4.524E-03,
+        1900 : 2.745E-03,
+        2000 : 1.684E-03,
+        2100 : 1.044e-03,
+        2300 : 4.130e-4,
+        2500 : 1.687e-4,
+        2550 : 1.355e-4,
+        2600 : 1.089e-4,
+        2650 : 8.772e-5,
+        2700 : 7.075e-5
+    }
+squark_xsec = {
+        1800 : 7.357E-04,
+        1900 : 4.396E-04,
+        2000 : 2.654E-04,
+        2100 : 1.618E-04,
+        2200 : 9.949E-05,
     }
 
-br_colors = ['green', 'blue', 'pink']
+br_colors = ['pink', 'green', 'purple']
 
 def GetMasses( signalString ):
     splitSignal = signalString.split("_")
@@ -34,7 +49,8 @@ def ReadLimitsBRs(inputfiles):
     br_dict = {}
     for file in inputfiles:
         br_key = Path(file).stem 
-        br_key = br_key.split("_")[-1]
+        br_key = br_key.split("_")[3]
+        print("file",file,"br_key",br_key)
         limit_dict, sig_label = ReadLimits(file)
         br_dict[br_key] = limit_dict
     return br_dict, sig_label

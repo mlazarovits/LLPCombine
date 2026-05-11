@@ -6,20 +6,32 @@ import json
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("-d","--directory",help="datacard directory",required=True)
-argparser.add_argument("-s","--signal",help="which signal to run over",choices=["gogoGZ","sqsqG"])
+argparser.add_argument("-s","--signal",help="which signal to run over",choices=["gogoGZ","sqsqG"],default="gogoGZ")
+argparser.add_argument("--mS",help="run over only this parent sparticle mass",default=None)
+argparser.add_argument("--mN2",help="run over only this N2 sparticle mass",default=None)
+argparser.add_argument("--mN1",help="run over only this N1 sparticle mass",default=None)
+argparser.add_argument("--ctau",help="run over only this ctau",default=None)
 argparser.add_argument("-e","--extra",help="extra output file label",default=None)
 args = argparser.parse_args()
 
-cmd = "combineTool.py -M AsymptoticLimits -t -1 --there --parallel 4"
+cmd = "combineTool.py -M AsymptoticLimits --there --parallel 4"
 dirs = Path(args.directory).iterdir()
 
 #run asymptotic limits
 for idx, d in enumerate(dirs):
     if args.signal not in d.name:
         continue
+    if args.mS is not None and args.mS not in d.name:
+        continue
+    if args.mN2 is not None and args.mN2 not in d.name:
+        continue
+    if args.mN1 is not None and args.mN1 not in d.name:
+        continue
+    if args.ctau is not None and args.ctau not in d.name:
+        continue
     mass = d.name[d.name.find("_")+1:]
     if Path(f"{args.directory}{d.name}/higgsCombine_{mass}.AsymptoticLimits.mH120.root").exists():
-        print("Skipping. AsymptoticLimits file already exists")
+        print(f"Skipping {d.name}/{mass}. AsymptoticLimits file already exists")
         continue
     print("Running limits for",d.name)
     d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/*.txt"
@@ -29,9 +41,26 @@ for idx, d in enumerate(dirs):
 dirs = Path(args.directory).iterdir()
 #collect limits in json
 js_out = {}
-outname = args.signal+"_limits"
+dirname = args.directory[args.directory.find("datacards_")+10:].strip("/")
+outname = dirname+"_"+args.signal+"_limits"
+if args.mS is not None:
+    outname += f"_mGl-{args.mS}"
+if args.mN2 is not None:
+    outname += f"_mN2-{args.mN2}"
+if args.mN1 is not None:
+    outname += f"_mN1-{args.mN1}"
+if args.ctau is not None:
+    outname += f"_ctau-{args.ctau}"
 for idx, d in enumerate(dirs):
     if args.signal not in d.name:
+        continue
+    if args.mS is not None and args.mS not in d.name:
+        continue
+    if args.mN2 is not None and args.mN2 not in d.name:
+        continue
+    if args.mN1 is not None and args.mN1 not in d.name:
+        continue
+    if args.ctau is not None and args.ctau not in d.name:
         continue
     #assume only 1 asymptotic limit file in each directory
     print("Collecting limits for",d.name)
