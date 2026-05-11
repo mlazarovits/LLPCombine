@@ -7,7 +7,6 @@
 #include <vector>
 #include <map>
 #include <string>
-#include <stdexcept>
 #include <yaml-cpp/yaml.h>
 #include <utility>
 
@@ -117,7 +116,7 @@ class BuildFit{
 			double bin_tot_yield = 0;
                         for(auto proc : _bkgprocs){
 				std::cout << "getTotYield - bin " << bin << " proc " << proc << std::endl;
-                                bin_tot_yield += GetYieldValue(bin, proc, 1, "getTotYield");
+                                bin_tot_yield += _yields[bin][proc][1].get<double>();
                         }
 			return bin_tot_yield;
 		}
@@ -132,7 +131,6 @@ class BuildFit{
 		}
 
 		void sumBkgs();
-		double GetYieldValue(const string& bin, const string& proc, int index, const string& context) const;
 
 		ch::Process create_proc(string mass, string analysis, string era, string channel, string proc, pair<int, string> bininfo, bool signal, double rate){
 			ch::Process newproc;
