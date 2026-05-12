@@ -24,9 +24,10 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 	//create histogram for b-only distribution of events
 	string bkghistname = "bkgOnly_events_lambda"+dbl2str(lambda_sig,1);
 	string sighistname = "sPlusb_events_lambda"+dbl2str(lambda_sig,1);
-	bkgOnly_events = TH1D(bkghistname.c_str(), bkghistname.c_str(),50,0,nbkg + 20*sigma_nbkg);
+	int nbins = int(nbkg + 50*sigma_nbkg);
+	bkgOnly_events = TH1D(bkghistname.c_str(), bkghistname.c_str(),nbins,0,nbins);
 	//create histogram for s+b distribution of events
-	sPlusb_events = TH1D(sighistname.c_str(),sighistname.c_str(),50,0,nbkg + 20*sigma_nbkg);
+	sPlusb_events = TH1D(sighistname.c_str(),sighistname.c_str(),nbins,0,nbins);
 	for(int i = 0; i < ntoys; i++){
 		//cout << "itoy " << i << endl;
 		//sample poisson rate from log-normal parameterized by post-fit values
@@ -69,6 +70,8 @@ cout << "CLsb " << CLsb << " CLb " << CLb << " CLs " << CLsb / CLb << endl;
 }
 
 
+//TODO - make cmd line args where inputs are infile and srbin (ie Ch12)
+//make dictionary of ChXX to SR bin
 void ModelIndLimits(){
 	int ntoys = 1000;
 
@@ -98,11 +101,12 @@ void ModelIndLimits(){
 	for(double lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
 		cout << " lambda_sig " << lsig << endl;
 		bool ul_found = DoCLsProcedure(nbkg, sigma_nbkg, srbin, ntoys, lsig, obs, bkgOnly_events, sPlusb_events);
-		ofile->cd();
-		sPlusb_events.Write();
 		cout << endl;
-		if(ul_found)
+		if(ul_found){
+			ofile->cd();
+			sPlusb_events.Write();
 			break;
+		}
 	}
 	TLine* obsline = new TLine(obs, 0, obs, 1.);
 	ofile->cd();
