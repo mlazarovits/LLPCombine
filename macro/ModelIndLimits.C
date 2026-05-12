@@ -95,7 +95,7 @@ void ModelIndLimits(){
 	int nsteps = 50;
 	double max_lsig = min_lsig + nsteps*d_lsig;
 
-	string ofilename = "testCLs.root";
+	string ofilename = srbin+"_CLs.root";
 	TFile* ofile = TFile::Open(ofilename.c_str(),"RECREATE");
 	TH1D bkgOnly_events, sPlusb_events;
 	for(double lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
