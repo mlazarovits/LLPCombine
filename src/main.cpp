@@ -135,7 +135,12 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	// Aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects(countResults, sumResults, errorResults);
 	BFI->AddSigToBinObjects(countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
-	BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
+	if(config.mc_closure){
+		BFI->AddMCClosureDataToBinObjects(BFI->analysisbins);
+	}
+	else{
+		BFI->AddDataToBinObjects( countResults_obs, sumResults_obs, errorResults_obs, BFI->analysisbins);
+	}
 
 	if (verbosity > 0 && !options.batch_mode) {
 		BFI->PrintBins(verbosity > 1 ? 1 : 0);
@@ -143,7 +148,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	
 	// Write output JSON
 	std::string output_path = output_dir + "/" + config.output_json;
-	JSONFactory* json = new JSONFactory(BFI->analysisbins, config);
+	JSONFactory* json = new JSONFactory(BFI->analysisbins, config, config.mc_closure, config.mc_closure_background_mode);
 	json->WriteJSON(output_path);
 	
 	if (verbosity > 0) {

@@ -35,6 +35,9 @@ struct AnalysisConfig {
     std::vector<std::string> backgrounds;
     std::vector<std::string> signals;
     std::vector<std::string> data;
+
+    bool mc_closure;
+    std::string mc_closure_background_mode;
     
     std::vector<BinConfig> bins;
     std::vector<SystematicConfig> systematics;

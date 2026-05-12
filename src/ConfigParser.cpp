@@ -4,6 +4,16 @@
 #include <sstream>
 #include <algorithm>
 #include <cstring>
+#include <cctype>
+
+namespace {
+bool ParseBool(const std::string& value) {
+    std::string lowered = value;
+    std::transform(lowered.begin(), lowered.end(), lowered.begin(),
+                   [](unsigned char c){ return std::tolower(c); });
+    return lowered == "true" || lowered == "1" || lowered == "yes";
+}
+}
 
 // Simple YAML parser implementation
 // For production use, consider yaml-cpp library
@@ -287,6 +297,8 @@ void ConfigParser::SetDefaults() {
 	config_.sampleGrate = -1;
 	config_.targetZrate = -1;
 	config_.targetGrate = -1;
+    config_.mc_closure = false;
+    config_.mc_closure_background_mode = "combined";
 }
 
 bool ConfigParser::LoadConfig(const std::string& config_file) {
@@ -344,6 +356,16 @@ bool ConfigParser::LoadYAML(const std::string& config_file) {
     if (parser.lists.count("samples.data")) {
 	config_.data = parser.lists["samples.data"];
     }
+
+    if (parser.values.count("mc_closure.enabled")) {
+        config_.mc_closure = ParseBool(parser.values["mc_closure.enabled"]);
+    }
+    if (parser.values.count("mc_closure.background_mode")) {
+        config_.mc_closure_background_mode = parser.values["mc_closure.background_mode"];
+        std::transform(config_.mc_closure_background_mode.begin(), config_.mc_closure_background_mode.end(),
+                       config_.mc_closure_background_mode.begin(),
+                       [](unsigned char c){ return std::tolower(c); });
+    }
     
     // Parse bins
     for (const auto& pair : parser.lists) {
@@ -387,10 +409,10 @@ bool ConfigParser::LoadYAML(const std::string& config_file) {
         config_.verbosity = std::stoi(parser.values["options.verbosity"]);
     }
     if (parser.values.count("options.parallel")) {
-        config_.parallel = (parser.values["options.parallel"] == "true");
+        config_.parallel = ParseBool(parser.values["options.parallel"]);
     }
     if (parser.values.count("options.dry_run")) {
-        config_.dry_run = (parser.values["options.dry_run"] == "true");
+        config_.dry_run = ParseBool(parser.values["options.dry_run"]);
     }
     
     return ValidateConfig();
@@ -436,6 +458,12 @@ void ConfigParser::PrintConfig() const {
     for (const auto& dat : config_.data) {
 	std::cout << dat << " ";
     }
+    std::cout << std::endl;
+    std::cout << "MC closure: " << (config_.mc_closure ? "true" : "false");
+    if (config_.mc_closure) {
+        std::cout << " (" << config_.mc_closure_background_mode << " backgrounds)";
+    }
+    std::cout << std::endl;
 
     std::cout << "\nAnalysis Bins:" << std::endl;
     for (const auto& bin : config_.bins) {
@@ -457,6 +485,18 @@ bool ConfigParser::ValidateConfig() const {
     
     if (config_.backgrounds.empty()) {
         std::cerr << "Warning: No background samples specified" << std::endl;
+    }
+
+    if (config_.mc_closure) {
+        if (config_.backgrounds.empty()) {
+            std::cerr << "Error: MC closure requires at least one background sample" << std::endl;
+            return false;
+        }
+        if (config_.mc_closure_background_mode != "combined" &&
+            config_.mc_closure_background_mode != "separate") {
+            std::cerr << "Error: mc_closure.background_mode must be 'combined' or 'separate'" << std::endl;
+            return false;
+        }
     }
     
     if (config_.bins.empty()) {

@@ -26,12 +26,12 @@ eq1HadSV_CR: &eq1HadSV_CR
   - "(HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] >= 15)"
 
 geq1SV_CR: &geq1SV_CR
-  - "(((SV_nHadronic >= 1) & ROOT::VecOps::Any((HadronicSV_dxySig < 200) & (HadronicSV_mass >= 15))) | ((SV_nLeptonic >= 1) & ROOT::VecOps::Any((LeptonicSV_dxySig < 100) & (LeptonicSV_mass >= 10))))"
-  - "!ROOT::VecOps::Any((HadronicSV_dxySig >= 200) & (HadronicSV_dxySig < 800) & (HadronicSV_mass >= 15))"
+  - "(((SV_nHadronic >= 1) & ROOT::VecOps::Any((HadronicSV_dxySig < 100) & (HadronicSV_mass >= 15))) | ((SV_nLeptonic >= 1) & ROOT::VecOps::Any((LeptonicSV_dxySig < 100) & (LeptonicSV_mass >= 10))))"
+  - "!ROOT::VecOps::Any((HadronicSV_dxySig >= 100) & (HadronicSV_dxySig < 800) & (HadronicSV_mass >= 15))"
   - "!ROOT::VecOps::Any((LeptonicSV_dxySig >= 100) & (LeptonicSV_dxySig < 500) & (LeptonicSV_mass >= 10))"
 
 geq1SV_SR: &geq1SV_SR
-  - "(((SV_nHadronic >= 1) & ROOT::VecOps::Any((HadronicSV_dxySig >= 200) & (HadronicSV_dxySig < 800) & (HadronicSV_mass >= 15))) | ((SV_nLeptonic >= 1) & ROOT::VecOps::Any((LeptonicSV_dxySig >= 100) & (LeptonicSV_dxySig < 500) & (LeptonicSV_mass >= 10))))"
+  - "(((SV_nHadronic >= 1) & ROOT::VecOps::Any((HadronicSV_dxySig >= 100) & (HadronicSV_dxySig < 800) & (HadronicSV_mass >= 15))) | ((SV_nLeptonic >= 1) & ROOT::VecOps::Any((LeptonicSV_dxySig >= 100) & (LeptonicSV_dxySig < 500) & (LeptonicSV_mass >= 10))))"
 
 ##############################################################################
 # Photon selections

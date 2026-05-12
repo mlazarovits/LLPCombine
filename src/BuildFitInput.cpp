@@ -469,6 +469,17 @@ void BuildFitInput::AddDataToBinObjects( countmap countResults, summap sumResult
 		}
 	}
 }
+void BuildFitInput::AddMCClosureDataToBinObjects(std::map<std::string, Bin*>& analysisbins){
+	for(const auto& it: analysisbins ){
+		std::string binname = it.first;
+		analysisbins[binname]->data.first = "data";
+		analysisbins[binname]->data.second = new Process("data");
+		for(const auto& it2: analysisbins[binname]->combinedProcs){
+			analysisbins[binname]->data.second->Add(it2.second);
+		}
+		analysisbins[binname]->data.second->FixError();
+	}
+}
 void BuildFitInput::AddSigToBinObjects( countmap countResults, summap sumResults, errormap errorResults, std::map<std::string, Bin*>& analysisbins){
 	for(const auto& it: analysisbins ){
 		std::string binname = it.first;
@@ -513,5 +524,4 @@ void BuildFitInput::PrintBins(int verbosity){
 
 	
 		
-
 
