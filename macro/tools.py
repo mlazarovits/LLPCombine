@@ -1,5 +1,26 @@
 import re
 
+REGION_LABELS = {
+        "Ch1" : r"$SV^{CR, Sxy-}_{lep}$",
+        "Ch2" : r"$SV^{SR, Sxy+}_{lep}$",
+        "Ch3" : r"$SV^{CR, Sxy-}_{had}$",
+        "Ch4" : r"$SV^{SR, Sxy+}_{had}$",
+        "Ch5" : r"$\geq 1 \gamma^{CR, BH}_{t-}$",
+        "Ch6" : r"$\geq 1 \gamma^{CR, BH}_{t+}$",
+        "Ch7" : r"$\geq 1 \gamma^{CR, !BH}_{t-}$",
+        "Ch8" : r"$\geq 1 \gamma^{SR, !BH}_{t+}$",
+        "Ch9" : "navy",
+        "Ch10" : r"$1 \gamma^{SR, Tight Iso}_{t0}$",
+        "Ch11" : "darkorange",
+        "Ch12" : r"$2 \gamma^{SR, Tight Iso}_{t0}$",
+        "Ch13" : "darkturquoise",
+        "Ch14" : "deepskyblue",
+        "Ch15" : "teal",
+        "Ch16" : r"$\geq 1 SV_{had}, \gamma_{t+}^{SR, !BH}$",
+        "base" : "fuchsia",
+        "denom" : "palevioletred",
+}
+
 class EfficiencyParser:
     def __init__(self):
     	return
