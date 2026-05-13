@@ -22,7 +22,9 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 	//create histogram for b-only distribution of events
 	string bkghistname = srbin+"_bkgOnly_events_lambda"+dbl2str(lambda_sig,1);
 	string sighistname = srbin+"_sPlusb_events_lambda"+dbl2str(lambda_sig,1);
-	int nbins = int(nbkg + 50*sigma_nbkg);
+	int nbins = int(nbkg + 7*nbkg);
+	if(nbins < 10)
+		nbins = 20;
 	bkgOnly_events = TH1D(bkghistname.c_str(), bkghistname.c_str(),nbins,0,nbins);
 	//create histogram for s+b distribution of events
 	sPlusb_events = TH1D(sighistname.c_str(),sighistname.c_str(),nbins,0,nbins);
@@ -63,7 +65,7 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 //cout << "CLsb " << CLsb << " CLb " << CLb << " CLs " << CLsb / CLb << endl;
 	bool ul_found = false;
 	if(CLsb / CLb <= 0.05){
-		cout << "Upper limit found!! CLs = " << CLsb / CLb << " Nsig events: " << lambda_sig << endl;
+		//cout << "Upper limit found!! CLs = " << CLsb / CLb << " Nsig events: " << lambda_sig << endl;
 		ul_found = true;
 	}
 	return ul_found;
@@ -85,6 +87,11 @@ void ModelIndLimits(){
 	TFile* infile = TFile::Open(infilename.c_str(),"READ");
 	string ofilename = "ModelIndHists.root";
 	TFile* ofile = TFile::Open(ofilename.c_str(),"RECREATE");
+	cout << "\\begin{table}" << endl;
+	cout << "\\centering" << endl;
+	cout << "\\begin{tabular}{c | c | c | c | c}" << endl;
+	cout << "Region & $N^{\\text{pred}}_{\\text{bkg}}$ & $\\sigma(N^{\\text{pred}}_{\\text{bkg}})$ & $N_{\\text{obs}}$ & $\\text{S}_{\\text{UL}}$ \\\\" << endl;
+	cout << "\\hline \\hline" << endl;
 	for(auto chit = ch_map.begin(); chit != ch_map.end(); chit++){	
 		string srbin = chit->second;
 		//get bkg-only post-fit Nbkg and sigma(Nbkg) from fit diagnostics
@@ -102,7 +109,8 @@ void ModelIndLimits(){
 		double max_lsig = min_lsig + nsteps*d_lsig;
 
 		TH1D bkgOnly_events, sPlusb_events;
-		for(double lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
+		double lsig;
+		for(lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
 			bool ul_found = DoCLsProcedure(nbkg, sigma_nbkg, srbin, ntoys, lsig, obs, bkgOnly_events, sPlusb_events);
 			if(ul_found){
 				ofile->cd();
@@ -110,7 +118,8 @@ void ModelIndLimits(){
 				break;
 			}
 		}
-		cout << "bin " << srbin << " Nbkg " << nbkg << " sigma_nbkg " << sigma_nbkg << " obs " << obs << endl;
+		//cout << "bin " << srbin << " Nbkg " << nbkg << " sigma_nbkg " << sigma_nbkg << " obs " << obs << endl;
+		//cout << endl;
 		TLine* obsline = new TLine(obs, 0, obs, 1.);
 		ofile->cd();
 		ofile->WriteObject(obsline,(srbin+"_obsline").c_str());
@@ -119,7 +128,9 @@ void ModelIndLimits(){
 		bkgOnly_events.SetName(newbkgname.c_str());
 		bkgOnly_events.SetTitle(newbkgname.c_str());
 		bkgOnly_events.Write();
-		cout << endl;
+		cout << std::setprecision(2) << srbin << " & " << nbkg << " & " << sigma_nbkg << " & " << obs << " & " << lsig << " \\\\" << endl;
 	}
+	cout << "\\end{tabular}" << endl;
+	cout << "\\end{table}" << endl;
 	cout << "wrote hists to " << ofilename << endl;
 }
