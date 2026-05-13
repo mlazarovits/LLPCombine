@@ -225,7 +225,7 @@ void BuildFit::BuildShapeTransferFit(){
 		//set yields in every bin of the anchor channel to their nominal value
 		for(int b = 0; b < (int)anchor_bins.size(); b++){
 			double anchor_rate = GetYieldValue(anchor_bins[b], proc, 1, "BuildShapeTransferFit anchor rate");
-			cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << " rate " << anchor_rate << endl;
+			//cout << "anchor_bin " << anchor_bins[b] << " proc " << proc << " rate " << anchor_rate << endl;
 			//set yield
 			ch::Process anchorproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[anchor_bins[b]],anchor_bins[b]), false, anchor_rate);
 			cb.InsertProcess(anchorproc);
@@ -241,7 +241,7 @@ void BuildFit::BuildShapeTransferFit(){
 				}
 				string buoy_bin;
 				if(bin == _shape_anchor_bins[buoy_chs[i]]){
-					cout << "is buoy ch " << buoy_chs[i] << " bin " << bin << endl;
+					//cout << "is buoy ch " << buoy_chs[i] << " bin " << bin << endl;
 					buoy_bin = GetBuoyBin(buoy_chs[i]);
 				}
 				else{
@@ -252,7 +252,7 @@ void BuildFit::BuildShapeTransferFit(){
 					continue;
 				//match bin indices (assuming that bins have been defined identically)
 				//loop through bins in this channel
-				cout << " buoy_bin " << buoy_bin << " proc " << proc << " rate " << anchor_rate << endl;
+				//cout << " buoy_bin " << buoy_bin << " proc " << proc << " rate " << anchor_rate << endl;
 				ch::Process buoyproc = create_proc("*",_signalDetails[0],"13.6TeV",_signalDetails[1],proc,make_pair(_invcats[buoy_bin],buoy_bin), false, anchor_rate);
 				cb.InsertProcess(buoyproc);
 			}
@@ -265,15 +265,15 @@ void BuildFit::BuildShapeTransferFit(){
 		string anchor_ch = chit->first;
 		vector<string> buoy_chs = chit->second;
 		vector<string> anchor_bins = _shape_bin_ass.at(anchor_ch);
-		cout << "sys - anchor ch " << anchor_ch << " anchor bin " << _shape_anchor_bins[anchor_ch] << endl;
+		//cout << "sys - anchor ch " << anchor_ch << " anchor bin " << _shape_anchor_bins[anchor_ch] << endl;
 		double anchorch_anchorbin_tot_yield = getTotYield(anchor_ch+_shape_anchor_bins[anchor_ch]);
 		for(auto buoy_ch : buoy_chs){
 			//get buoy bin for this buoy channel
 			string buoy_bin = GetBuoyBin(buoy_ch);
-			cout << "sys - buoy ch anchor bin " << buoy_bin << endl;
+			//cout << "sys - buoy ch anchor bin " << buoy_bin << endl;
 			double buoych_anchorbin_tot_yield = getTotYield(buoy_bin);
 			double transfer_factor = buoych_anchorbin_tot_yield/anchorch_anchorbin_tot_yield;
-			cout << "sys - anchor ch anchor bin yield " << anchorch_anchorbin_tot_yield << " buoy ch anchor bin yield " << buoych_anchorbin_tot_yield << " transfer_factor " << transfer_factor << endl;
+			//cout << "sys - anchor ch anchor bin yield " << anchorch_anchorbin_tot_yield << " buoy ch anchor bin yield " << buoych_anchorbin_tot_yield << " transfer_factor " << transfer_factor << endl;
 			//tie anchor channel norm to buoy channels norm
 			//buoy channel bins (b_i) have rates set to their anchor counterparts (a_i)
 			//so we want to tie these bins together via a rate param initialized to the ratio N = A/B
@@ -320,18 +320,18 @@ void BuildFit::BuildABCDFit(){
 		if(x->process() != _bkg_proc) return;
 		//only do for bins in ABCD region
 		if(find(_bins_superset_abcd.begin(), _bins_superset_abcd.end(), x->bin()) == _bins_superset_abcd.end()) return;
-		cout << "abcd setting rate for bin " << x->bin() << " proc " << x->process() << endl;
+		//cout << "abcd setting rate for bin " << x->bin() << " proc " << x->process() << endl;
             x->set_rate(1.);
         });
 	//only applies ABCD treatment to background processes
 	//separate ABCD factors for each bin, bins in channel tied together with extra systematics
 	for(auto chit = _abcd_ch_ass.begin(); chit != _abcd_ch_ass.end(); chit++){
 		string sr_ch = chit->first;
-		cout << "sr_ch " << sr_ch << endl;
+		//cout << "sr_ch " << sr_ch << endl;
 		vector<string> sr_bins = _abcd_bin_ass[sr_ch];
 		vector<string> cr_chs = chit->second;
 		for(auto sr_bin : sr_bins){
-			cout << "sr_bin " << sr_bin << endl;
+			//cout << "sr_bin " << sr_bin << endl;
 			vector<string> cr_bins;
 			string binidx = getBinIdx(sr_bin);
 			vector<string> cr_bins_matchidx; //get bins of CR channels that match this bin idx
@@ -348,11 +348,12 @@ void BuildFit::BuildABCDFit(){
 				}
 
 			}
-			for(auto bin :  cr_bins_matchidx) cout << "match bin " << bin << endl;
+			//for(auto bin :  cr_bins_matchidx) cout << "match bin " << bin << endl;
 			//for a datadriven asimov fit (ie when the SR is blinded), set the observed yields in the SR bins to the expectation
 			//set rate of bkg in sr_bin to nominally be prediction from observations in cr bins
 			//A_pred = B*(C/D) from A*D = B*C
 			if(_asimov && _datadriven){
+				cout << "setting obs in signal ABCD bin " << sr_bin <<  " from CRs " <<  cr_bins_matchidx[0] << ", " << cr_bins_matchidx[1] << ", " << cr_bins_matchidx[2] << " to " << _obs_rates[cr_bins_matchidx[0]] * (_obs_rates[cr_bins_matchidx[1]] / _obs_rates[cr_bins_matchidx[2]]) << endl;
 				_obs_rates[sr_bin] = double(int(_obs_rates[cr_bins_matchidx[0]] * (_obs_rates[cr_bins_matchidx[1]] / _obs_rates[cr_bins_matchidx[2]])));
 			}
 

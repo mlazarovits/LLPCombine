@@ -116,7 +116,7 @@ class BuildFit{
 		double getTotYield(string bin){
 			double bin_tot_yield = 0;
                         for(auto proc : _bkgprocs){
-				std::cout << "getTotYield - bin " << bin << " proc " << proc << std::endl;
+				//std::cout << "getTotYield - bin " << bin << " proc " << proc << std::endl;
                                 bin_tot_yield += GetYieldValue(bin, proc, 1, "getTotYield");
                         }
 			return bin_tot_yield;
