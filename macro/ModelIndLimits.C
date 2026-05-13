@@ -17,13 +17,11 @@ string dbl2str(double indbl, int dec = 2){
 	return s;
 }
 
-bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, double lambda_sig, double obs, TH1D& bkgOnly_events, TH1D& sPlusb_events){
-
-
+bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, double lambda_sig, double& obs, TH1D& bkgOnly_events, TH1D& sPlusb_events){
 	TRandom3 rng;
 	//create histogram for b-only distribution of events
-	string bkghistname = "bkgOnly_events_lambda"+dbl2str(lambda_sig,1);
-	string sighistname = "sPlusb_events_lambda"+dbl2str(lambda_sig,1);
+	string bkghistname = srbin+"_bkgOnly_events_lambda"+dbl2str(lambda_sig,1);
+	string sighistname = srbin+"_sPlusb_events_lambda"+dbl2str(lambda_sig,1);
 	int nbins = int(nbkg + 50*sigma_nbkg);
 	bkgOnly_events = TH1D(bkghistname.c_str(), bkghistname.c_str(),nbins,0,nbins);
 	//create histogram for s+b distribution of events
@@ -49,6 +47,8 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 		//cout << " fill sPlusb_events with " << tot_nevts << " with sig_nevts = " << sig_nevts << endl;
 		sPlusb_events.Fill(tot_nevts);
 	}
+	//set obs to be mean of bkg events
+	obs = ceil(bkgOnly_events.GetMean());
 	//cout << "bkgOnly_events integral " << bkgOnly_events.Integral() << " nentries " << bkgOnly_events.GetEntries() << " sPlusb_events " << sPlusb_events.Integral() << endl;
 	//normalize histograms to make PDF (should be 1/ntoys for both)
 	if(bkgOnly_events.Integral() > 0) bkgOnly_events.Scale(1/bkgOnly_events.Integral());
@@ -60,7 +60,7 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 
 	int bkgOnlybin = bkgOnly_events.FindBin(obs);
 	double CLb = bkgOnly_events.Integral(0,bkgOnlybin);
-cout << "CLsb " << CLsb << " CLb " << CLb << " CLs " << CLsb / CLb << endl;
+//cout << "CLsb " << CLsb << " CLb " << CLb << " CLs " << CLsb / CLb << endl;
 	bool ul_found = false;
 	if(CLsb / CLb <= 0.05){
 		cout << "Upper limit found!! CLs = " << CLsb / CLb << " Nsig events: " << lambda_sig << endl;
@@ -70,51 +70,56 @@ cout << "CLsb " << CLsb << " CLb " << CLb << " CLs " << CLsb / CLb << endl;
 }
 
 
-//TODO - make cmd line args where inputs are infile and srbin (ie Ch12)
-//make dictionary of ChXX to SR bin
 void ModelIndLimits(){
-	int ntoys = 1000;
+	int ntoys = 100000;
 
-	string srbin = "Ch12SReq2PhoTightIsoPromptBin11"; //take highest kinematic bin as SR bin for each SR
+	map<string, string> ch_map;
+	ch_map["Ch2"] = "Ch2SRGeLep111";
+	ch_map["Ch4"] = "Ch4SRGeHad121";
+	ch_map["Ch8"] = "Ch8SRgeq1PhoNotBHLateBin11";
+	ch_map["Ch10"] = "Ch10SReq1PhoTightIsoPromptBin12";
+	ch_map["Ch12"] = "Ch12SReq2PhoTightIsoPromptBin11";
+	ch_map["Ch16"] = "Ch16SRgeq1SVgeq1PhoNotBHLateBin01";
+
 	string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton.root";
 	TFile* infile = TFile::Open(infilename.c_str(),"READ");
-	
-
-	//get bkg-only post-fit Nbkg and sigma(Nbkg) from fit diagnostics
-	TH1D* bonly_postfit_bkg = (TH1D*)infile->Get(("shapes_fit_b/"+srbin+"/total_background").c_str());
-	double nbkg = bonly_postfit_bkg->GetBinContent(1);
-	double sigma_nbkg = bonly_postfit_bkg->GetBinError(1);
-	//get observation
-	double x, obs;
-	TGraphAsymmErrors* data = (TGraphAsymmErrors*)infile->Get(("shapes_fit_b/"+srbin+"/data").c_str());
-	data->GetPoint(0, x, obs);
-	cout << "bin " << srbin << " Nbkg " << nbkg << " sigma_nbkg " << sigma_nbkg << " obs " << obs << endl;
-
-	double d_lsig = 0.1;
-	double min_lsig = double(int(nbkg));
-	int nsteps = 50;
-	double max_lsig = min_lsig + nsteps*d_lsig;
-
-	string ofilename = srbin+"_CLs.root";
+	string ofilename = "ModelIndHists.root";
 	TFile* ofile = TFile::Open(ofilename.c_str(),"RECREATE");
-	TH1D bkgOnly_events, sPlusb_events;
-	for(double lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
-		cout << " lambda_sig " << lsig << endl;
-		bool ul_found = DoCLsProcedure(nbkg, sigma_nbkg, srbin, ntoys, lsig, obs, bkgOnly_events, sPlusb_events);
-		cout << endl;
-		if(ul_found){
-			ofile->cd();
-			sPlusb_events.Write();
-			break;
+	for(auto chit = ch_map.begin(); chit != ch_map.end(); chit++){	
+		string srbin = chit->second;
+		//get bkg-only post-fit Nbkg and sigma(Nbkg) from fit diagnostics
+		TH1D* bonly_postfit_bkg = (TH1D*)infile->Get(("shapes_fit_b/"+srbin+"/total_background").c_str());
+		double nbkg = bonly_postfit_bkg->GetBinContent(1);
+		double sigma_nbkg = bonly_postfit_bkg->GetBinError(1);
+		//get observation
+		double x, obs;
+		TGraphAsymmErrors* data = (TGraphAsymmErrors*)infile->Get(("shapes_fit_b/"+srbin+"/data").c_str());
+		data->GetPoint(0, x, obs);
+
+		double d_lsig = 0.1;
+		double min_lsig = double(int(nbkg));
+		int nsteps = 200;
+		double max_lsig = min_lsig + nsteps*d_lsig;
+
+		TH1D bkgOnly_events, sPlusb_events;
+		for(double lsig = min_lsig; lsig < max_lsig; lsig += d_lsig){
+			bool ul_found = DoCLsProcedure(nbkg, sigma_nbkg, srbin, ntoys, lsig, obs, bkgOnly_events, sPlusb_events);
+			if(ul_found){
+				ofile->cd();
+				sPlusb_events.Write();
+				break;
+			}
 		}
+		cout << "bin " << srbin << " Nbkg " << nbkg << " sigma_nbkg " << sigma_nbkg << " obs " << obs << endl;
+		TLine* obsline = new TLine(obs, 0, obs, 1.);
+		ofile->cd();
+		ofile->WriteObject(obsline,(srbin+"_obsline").c_str());
+		string newbkgname = bkgOnly_events.GetName();
+		newbkgname = newbkgname.substr(0,newbkgname.find("_lambda"));
+		bkgOnly_events.SetName(newbkgname.c_str());
+		bkgOnly_events.SetTitle(newbkgname.c_str());
+		bkgOnly_events.Write();
+		cout << endl;
 	}
-	TLine* obsline = new TLine(obs, 0, obs, 1.);
-	ofile->cd();
-	ofile->WriteObject(obsline,"obsline");
-	string newbkgname = bkgOnly_events.GetName();
-	newbkgname = newbkgname.substr(0,newbkgname.find("_lambda"));
-	bkgOnly_events.SetName(newbkgname.c_str());
-	bkgOnly_events.SetTitle(newbkgname.c_str());
-	bkgOnly_events.Write();
 	cout << "wrote hists to " << ofilename << endl;
 }
