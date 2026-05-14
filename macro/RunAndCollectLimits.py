@@ -3,6 +3,20 @@ import argparse
 import subprocess
 import ROOT
 import json
+from tools import ALL_BINS
+
+
+#parse bins into pho/sv/mixed
+split_bins = {"Pho" : [], "SV" : [], "Mixed" : []}
+for val in ALL_BINS.values():
+    if "Pho" in val and "SV" not in val:
+        split_bins["Pho"].append(val)
+    elif "Pho" in val and "SV" in val:
+        split_bins["Mixed"].append(val)
+    else:
+        split_bins["SV"].append(val)
+
+
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("-d","--directory",help="datacard directory",required=True)
@@ -12,6 +26,7 @@ argparser.add_argument("--mN2",help="run over only this N2 sparticle mass",defau
 argparser.add_argument("--mN1",help="run over only this N1 sparticle mass",default=None)
 argparser.add_argument("--ctau",help="run over only this ctau",default=None)
 argparser.add_argument("-e","--extra",help="extra output file label",default=None)
+argparser.add_argument("--mask",help='mask channels',choices=['Pho','SV','Mixed'],default=None)
 args = argparser.parse_args()
 
 cmd = "combineTool.py -M AsymptoticLimits --there --parallel 4"
@@ -19,23 +34,44 @@ dirs = Path(args.directory).iterdir()
 
 #run asymptotic limits
 for idx, d in enumerate(dirs):
-    if args.signal not in d.name:
+    dname = d.name+"/"
+    if args.signal not in dname:
         continue
-    if args.mS is not None and args.mS not in d.name:
+    if args.mS is not None and args.mS not in dname:
         continue
-    if args.mN2 is not None and args.mN2 not in d.name:
+    if args.mN2 is not None and args.mN2 not in dname:
         continue
-    if args.mN1 is not None and args.mN1 not in d.name:
+    if args.mN1 is not None and args.mN1 not in dname:
         continue
-    if args.ctau is not None and args.ctau not in d.name:
+    if args.ctau is not None and args.ctau+"/" not in dname:
         continue
     mass = d.name[d.name.find("_")+1:]
     if Path(f"{args.directory}{d.name}/higgsCombine_{mass}.AsymptoticLimits.mH120.root").exists():
-        print(f"Skipping {d.name}/{mass}. AsymptoticLimits file already exists")
+        print(f"Skipping {args.directory}{d.name}. AsymptoticLimits file already exists.")
         continue
     print("Running limits for",d.name)
-    d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/*.txt"
+    if args.mask is not None:
+        print("Masking",args.mask,"channels")
+        #puts the workspace in the same directory as the datacard
+        ws_cmd = f"combineTool.py -M T2W -i {args.directory}{d.name}/*.txt -o ws_with_masks.root --channel-masks"
+        if not Path(f"{args.directory}{d.name}/ws_with_masks.root").exists():
+            print("Making workspace with mask parameters")
+            subprocess.run(ws_cmd.split(" "))
+        else:
+            print(f"Skipping workspace for {args.directory}{d.name}. Already exists.")
+        mask_chs = split_bins[args.mask]
+        mask_params = ""
+        for ch in mask_chs:
+            mask_params += f"mask_{ch}=1,"
+        d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/ws_with_masks.root --setParameters {mask_params}"
+    else:
+        d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/*.txt"
+    
+    print()
+    print(d_cmd)
+    print()
     subprocess.run(d_cmd.split(" "))
+    exit()
 
 #reset iterator
 dirs = Path(args.directory).iterdir()
@@ -52,15 +88,16 @@ if args.mN1 is not None:
 if args.ctau is not None:
     outname += f"_ctau-{args.ctau}"
 for idx, d in enumerate(dirs):
-    if args.signal not in d.name:
+    dname += "/"
+    if args.signal not in dname:
         continue
-    if args.mS is not None and args.mS not in d.name:
+    if args.mS is not None and args.mS not in dname:
         continue
-    if args.mN2 is not None and args.mN2 not in d.name:
+    if args.mN2 is not None and args.mN2 not in dname:
         continue
-    if args.mN1 is not None and args.mN1 not in d.name:
+    if args.mN1 is not None and args.mN1 not in dname:
         continue
-    if args.ctau is not None and args.ctau not in d.name:
+    if args.ctau is not None and args.ctau+"/" not in dname:
         continue
     #assume only 1 asymptotic limit file in each directory
     print("Collecting limits for",d.name)

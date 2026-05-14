@@ -12,17 +12,17 @@ SR_BINS = {
 CR_BINS = {
     "Ch1" : "Ch1CRGeLep1",
     "Ch3" : "Ch3CRGeHad1",
-    "Ch5" : "Ch5CRgeq1PhoBHEarlyBin",
-    "Ch6" : "Ch6CRgeq1PhoBHLateBin",
-    "Ch7" : "Ch7CRgeq1PhoNotBHEarlyBin",
-    "Ch9" : "Ch9CReq1PhoMedIsoPromptBin",
-    "Ch11" : "Ch11CReq2PhoMedIsoPromptBin",
-    "Ch13" : "Ch13CRgeq1SVgeq1PhoBHEarlyBin",
-    "Ch14" : "Ch14CRgeq1SVgeq1PhoBHLateBin",
-    "Ch15" : "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin"
+    "Ch5" : "Ch5CRgeq1PhoBHEarly",
+    "Ch6" : "Ch6CRgeq1PhoBHLate",
+    "Ch7" : "Ch7CRgeq1PhoNotBHEarly",
+    "Ch9" : "Ch9CReq1PhoMedIsoPrompt",
+    "Ch11" : "Ch11CReq2PhoMedIsoPrompt",
+    "Ch13" : "Ch13CRgeq1SVgeq1PhoBHEarly",
+    "Ch14" : "Ch14CRgeq1SVgeq1PhoBHLate",
+    "Ch15" : "Ch15CRgeq1SVgeq1PhoNotBHEarly"
 }
 
-ALL_BINS = SR_BINS + CR_BINS
+ALL_BINS = SR_BINS | CR_BINS
 
 REGION_LABELS = {
         "Ch1" : r"$SV^{CR, Sxy-}_{lep}$",
