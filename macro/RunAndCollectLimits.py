@@ -6,15 +6,23 @@ import json
 from tools import ALL_BINS
 
 
-#parse bins into pho/sv/mixed
 split_bins = {"Pho" : [], "SV" : [], "Mixed" : []}
-for val in ALL_BINS.values():
-    if "Pho" in val and "SV" not in val:
-        split_bins["Pho"].append(val)
-    elif "Pho" in val and "SV" in val:
-        split_bins["Mixed"].append(val)
-    else:
-        split_bins["SV"].append(val)
+def ParseObjectBins(dirname):
+    files = Path(dirname).glob("*.txt")
+    cardname = [file.name for file in files][0]
+    with open(dirname+"/"+cardname,"r") as f:
+        for line in f:
+            if "shapes * " not in line:
+                continue
+            binname = line.split(" ")[2]
+            if "Pho" in binname and "SV" not in binname:
+                split_bins["Pho"].append(binname)
+            elif "Pho" in binname and "SV" in binname:
+                split_bins["Mixed"].append(binname)
+            else:
+                split_bins["SV"].append(binname)
+
+
 
 
 
@@ -46,7 +54,11 @@ for idx, d in enumerate(dirs):
     if args.ctau is not None and args.ctau+"/" not in dname:
         continue
     mass = d.name[d.name.find("_")+1:]
-    if Path(f"{args.directory}{d.name}/higgsCombine_{mass}.AsymptoticLimits.mH120.root").exists():
+    if args.mask is None:
+        oname = f"{args.directory}{d.name}/higgsCombine_{mass}.AsymptoticLimits.mH120.root"
+    else:
+        oname = f"{args.directory}{d.name}/higgsCombine_{mass}_mask{args.mask}.AsymptoticLimits.mH120.root"
+    if Path(oname).exists():
         print(f"Skipping {args.directory}{d.name}. AsymptoticLimits file already exists.")
         continue
     print("Running limits for",d.name)
@@ -59,19 +71,17 @@ for idx, d in enumerate(dirs):
             subprocess.run(ws_cmd.split(" "))
         else:
             print(f"Skipping workspace for {args.directory}{d.name}. Already exists.")
+        #get binnames from datacard
+        ParseObjectBins(f"{args.directory}{d.name}")
         mask_chs = split_bins[args.mask]
         mask_params = ""
         for ch in mask_chs:
             mask_params += f"mask_{ch}=1,"
-        d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/ws_with_masks.root --setParameters {mask_params}"
+        mask_params = mask_params[:-1]
+        d_cmd = f"{cmd} -n _{mass}_mask{args.mask} -d {args.directory}{d.name}/ws_with_masks.root --setParameters {mask_params}"
     else:
         d_cmd = f"{cmd} -n _{mass} -d {args.directory}{d.name}/*.txt"
-    
-    print()
-    print(d_cmd)
-    print()
     subprocess.run(d_cmd.split(" "))
-    exit()
 
 #reset iterator
 dirs = Path(args.directory).iterdir()
@@ -87,8 +97,10 @@ if args.mN1 is not None:
     outname += f"_mN1-{args.mN1}"
 if args.ctau is not None:
     outname += f"_ctau-{args.ctau}"
+if args.mask is not None:
+    outname += f"_mask{args.mask}"
 for idx, d in enumerate(dirs):
-    dname += "/"
+    dname = d.name+"/"
     if args.signal not in dname:
         continue
     if args.mS is not None and args.mS not in dname:
@@ -101,7 +113,10 @@ for idx, d in enumerate(dirs):
         continue
     #assume only 1 asymptotic limit file in each directory
     print("Collecting limits for",d.name)
-    asymlimits = [item for item in Path(args.directory+"/"+d.name).glob(f"*AsymptoticLimits*.root")]
+    limits_name = f"*AsymptoticLimits*.root"
+    if args.mask is not None:
+        limits_name = f"*mask{args.mask}*AsymptoticLimits*.root"
+    asymlimits = [item for item in Path(args.directory+"/"+d.name).glob(limits_name)]
     n_asymlimits = len(asymlimits)
     if(n_asymlimits == 0):
         continue
