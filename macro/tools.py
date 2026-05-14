@@ -1,5 +1,29 @@
 import re
 
+SR_BINS = {
+    "Ch2": "Ch2SRGeLep111",
+    "Ch4": "Ch4SRGeHad121",
+    "Ch8": "Ch8SRgeq1PhoNotBHLateBin11",
+    "Ch10": "Ch10SReq1PhoTightIsoPromptBin12",
+    "Ch12": "Ch12SReq2PhoTightIsoPromptBin11",
+    "Ch16": "Ch16SRgeq1SVgeq1PhoNotBHLateBin01",
+}
+
+CR_BINS = {
+    "Ch1" : "Ch1CRGeLep1",
+    "Ch3" : "Ch3CRGeHad1",
+    "Ch5" : "Ch5CRgeq1PhoBHEarlyBin",
+    "Ch6" : "Ch6CRgeq1PhoBHLateBin",
+    "Ch7" : "Ch7CRgeq1PhoNotBHEarlyBin",
+    "Ch9" : "Ch9CReq1PhoMedIsoPromptBin",
+    "Ch11" : "Ch11CReq2PhoMedIsoPromptBin",
+    "Ch13" : "Ch13CRgeq1SVgeq1PhoBHEarlyBin",
+    "Ch14" : "Ch14CRgeq1SVgeq1PhoBHLateBin",
+    "Ch15" : "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin"
+}
+
+ALL_BINS = SR_BINS + CR_BINS
+
 REGION_LABELS = {
         "Ch1" : r"$SV^{CR, Sxy-}_{lep}$",
         "Ch2" : r"$SV^{SR, Sxy+}_{lep}$",
