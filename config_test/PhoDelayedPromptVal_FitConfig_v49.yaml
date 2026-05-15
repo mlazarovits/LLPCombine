@@ -1,0 +1,122 @@
+#test fit config
+fitname: "PhoDelayedPrompt"
+asimov: True
+datadriven: True
+
+#main fit
+#naming convention: Ch#[CR/SR]IDBin where Bin = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch5CRPho1Iso:
+      - "Ch5CRPho1Iso00"
+      - "Ch5CRPho1Iso01"
+      - "Ch5CRPho1Iso10"
+      - "Ch5CRPho1Iso11"
+    Ch6CRPho2Iso:
+      - "Ch6CRPho2Iso00"
+      - "Ch6CRPho2Iso01"
+      - "Ch6CRPho2Iso10"
+      - "Ch6CRPho2Iso11"
+  channel_association:
+    Ch5CRPho1Iso:
+      - "Ch6CRPho2Iso"
+  anchor_bin: "01"
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+  bin_association:
+    Ch1CRPhoBHEarly:
+      - "Ch1CRPhoBHEarly00"
+      - "Ch1CRPhoBHEarly10"
+    Ch2CRPhoBHLate:
+      - "Ch2CRPhoBHLate00"
+      - "Ch2CRPhoBHLate10"
+    Ch3CRPhonotBHEarly:
+      - "Ch3CRPhonotBHEarly00"
+      - "Ch3CRPhonotBHEarly10"
+    Ch4CRPhonotBHLate:
+      - "Ch4CRPhonotBHLate00"
+      - "Ch4CRPhonotBHLate10"
+  channel_association:
+    Ch4CRPhonotBHLate:
+      - "Ch2CRPhoBHLate"
+      - "Ch1CRPhoBHEarly"
+      - "Ch3CRPhonotBHEarly"
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys1:
+      type: "lnN"
+      name: "lnN_Ch5Ch6Shape00"
+      init_val: 1.1 
+      bins:
+          - "Ch5CRPho1Iso00"
+          - "Ch6CRPho2Iso00"
+  sys2:
+      type: "lnN"
+      name: "lnN_Ch5Ch6Shape01"
+      init_val: 1.1 
+      bins:
+          - "Ch5CRPho1Iso01"
+          - "Ch6CRPho2Iso01"
+  sys3:
+      type: "lnN"
+      name: "lnN_Ch5Ch6Shape10"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRPho1Iso10"
+          - "Ch6CRPho2Iso10"
+  sys3p1:
+      type: "lnN"
+      name: "lnN_Ch5Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch5CRPho1Iso01"
+  sys3p2:
+      type: "lnN"
+      name: "lnN_Ch6Shape01"
+      init_val: 1.05 
+      bins:
+          - "Ch6CRPho2Iso01"
+  sys4:
+      type: "lnN"
+      name: "lnN_Ch5Ch6Shape11"
+      init_val: 1.1 
+      bins:
+          - "Ch5CRPho1Iso11"
+          - "Ch6CRPho2Iso11"
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch1CRPhoBHEarly"
+      init_val: 1.05
+      bins:
+        - "Ch1CRPhoBHEarly00"
+        - "Ch1CRPhoBHEarly10"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch2CRPhoBHLate"
+      init_val: 1.05
+      bins:
+        - "Ch2CRPhoBHLate00"
+        - "Ch2CRPhoBHLate10"
+  sys7:
+      type: "lnN"
+      name: "lnN_Ch3CRPhonotBHEarly"
+      init_val: 1.05
+      bins:
+        - "Ch3CRPhonotBHEarly00"
+        - "Ch3CRPhonotBHEarly10"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch4CRPhonotBHLate"
+      init_val: 1.05
+      bins:
+        - "Ch4CRPhonotBHLate00"
+        - "Ch4CRPhonotBHLate10"

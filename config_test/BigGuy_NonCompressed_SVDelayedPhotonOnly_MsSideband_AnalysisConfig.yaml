@@ -1,0 +1,197 @@
+analysis:
+  name: "BigGuy_NonCompressed_FullRegions_MsSideband_SplitSVDelayedPhoton_4BinDelayedPhoton"
+  luminosity: 200
+  output_json: "BigGuy_NonCompressed_SVDelayedPhotonOnly_MsSideband.json"
+
+samples:
+  signals: ["gogoGZ"]
+  data: ["MET16","MET17","MET18","MET22", "MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)"
+
+Cleaning: &Cleaning
+  - "((Flag_MetFilters == 1) && (rjrPTS[0] < 150) && ((Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60)))"
+
+kin: &kin
+  - "((rjr_Ms[0] < 2000) && (rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.15))"
+  #- "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.15))"
+
+
+
+################################################################################################################################################################################################################################################################################################
+############### SV REGIONS ###############
+################################################################################################################################################################################################################################################################################################
+
+
+#highest priority - leptonic SV
+SVgeLep1_SR: &SVgeLep1_SR
+  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] > 200))"
+
+SVgeLep1_CR: &SVgeLep1_CR
+  - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200))"
+
+SVgeq1Had: &SVgeq1Had
+  - "((SV_nLeptonic == 0) && (SV_nHadronic >= 1))"
+
+#second priority - hadronic SV
+SVgeHad1_SR: &SVgeHad1_SR
+  - "(SV_nLeptonic == 0)"
+    #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800) && (HadronicSV_mass[0] > 15))"
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] > 800))"
+
+SVgeHad1_CR: &SVgeHad1_CR
+  - "(SV_nLeptonic == 0)"
+    #- "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800) && (HadronicSV_mass[0] > 15))"
+  - "((SV_nHadronic >= 1) && (HadronicSV_dxySig[0] < 800))"
+
+
+################################ Ge1Lep Kinematic Bins (2 Ms x 2 Rs = 4 bins) ################################
+
+bLep00: &bLep00
+  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3))"
+bLep10: &bLep10
+  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3))"
+bLep01: &bLep01
+  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.3))"
+bLep11: &bLep11
+  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.3))"
+
+################################ Ge1Had Kinematic Bins (2 low-Rs + 3 high-Rs = 5 bins) ################################
+
+
+SVDelayedBin00: &SVDelayedBin00
+  - "((rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3))"
+SVDelayedBin01: &SVDelayedBin01
+  - "((rjr_Ms[0] >= 1500) && (rjr_Rs[0] >= 0.3))"
+
+
+
+################################################################################################################################################################################################################################################################################################
+############### PHOTON REGIONS ###############
+################################################################################################################################################################################################################################################################################################
+noSV: &noSV
+  - "((SV_nHadronic==0) && (SV_nLeptonic==0))"
+
+Ch1CRgeq1PhoBHEarly: &Ch1CRgeq1PhoBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # >= 1 BH photon early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+Ch2CRgeq1PhoBHLate: &Ch2CRgeq1PhoBHLate
+  - "(nBaseLinePhotons > 0)"
+  # >= 1 BH photon late
+  - "(nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
+
+# ==0 BH photons
+# >= 1 notBH photons
+# >= 1 nonprompt
+Ch3CRgeq1PhoNotBHEarly: &Ch3CRgeq1PhoNotBHEarly
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # >=1 notBH photons early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] < -2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] < -2.5)) ) )"
+
+Ch4SRgeq1PhoNotBHLate: &Ch4SRgeq1PhoNotBHLate
+  - "(nBaseLinePhotons > 0)"
+  # == 0 BH photons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+  # >=1 notBH photons late
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] < 0.185 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] < 0.185 && baseLinePhoton_WTimeSig[1] >= 2.5)) ) )"
+
+
+noBHPhotons: &noBHPhotons
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
+
+noNonPromptPhotons: &noNonPromptPhotons
+  - "((nBaseLinePhotons == 0) || (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+
+geq1NonPromptPhotons: &geq1NonPromptPhotons
+  - "( (nBaseLinePhotons == 1 && ((baseLinePhoton_WTimeSig[0] > 2.5) || (baseLinePhoton_WTimeSig[0] < -2.5))) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] > 2.5) || (baseLinePhoton_WTimeSig[0] < -2.5) || ( (baseLinePhoton_WTimeSig[1] > 2.5) || (baseLinePhoton_WTimeSig[1] < -2.5)))))"
+
+
+
+
+
+bins:
+  # ==== Ch13: Ge1 SV had Photon Early BH CR ====
+  Ch13CRgeq1SVgeq1PhoBHEarlyBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch1CRgeq1PhoBHEarly
+      - *SVDelayedBin00
+  Ch13CRgeq1SVgeq1PhoBHEarlyBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch1CRgeq1PhoBHEarly
+      - *SVDelayedBin01
+  # ==== Ch14: Ge1 SV had Ge1 Photon Late BH CR ====
+  Ch14CRgeq1SVgeq1PhoBHLateBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch2CRgeq1PhoBHLate
+      - *SVDelayedBin00
+  Ch14CRgeq1SVgeq1PhoBHLateBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch2CRgeq1PhoBHLate
+      - *SVDelayedBin01
+  # ==== Ch15: Ge1 SV had Ge1 Photon Early !BH CR ====
+  Ch15CRgeq1SVgeq1PhoNotBHEarlyBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch3CRgeq1PhoNotBHEarly
+      - *SVDelayedBin00
+  Ch15CRgeq1SVgeq1PhoNotBHEarlyBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch3CRgeq1PhoNotBHEarly
+      - *SVDelayedBin01
+  # ==== Ch16: Ge1 SV had Ge1 Photon Late !BH SR ====
+  Ch16SRgeq1SVgeq1PhoNotBHLateBin00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch4SRgeq1PhoNotBHLate
+      - *SVDelayedBin00
+  Ch16SRgeq1SVgeq1PhoNotBHLateBin01:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
+      - *SVgeq1Had
+      - *geq1NonPromptPhotons
+      - *Ch4SRgeq1PhoNotBHLate
+      - *SVDelayedBin01
+
+
+
+

@@ -92,27 +92,31 @@ ABCD_fit:
       - "Ch8SRgeq1PhoNotBHLateBin10"
       - "Ch8SRgeq1PhoNotBHLateBin01"
       - "Ch8SRgeq1PhoNotBHLateBin11"
-    Ch13CRgeq1SVhadgeq1PhoBHEarlyBin:
-      - "Ch13CRgeq1SVhadgeq1PhoBHEarlyBin00"
-      - "Ch13CRgeq1SVhadgeq1PhoBHEarlyBin01"
-    Ch14CRgeq1SVhadgeq1PhoBHLateBin:
-      - "Ch14CRgeq1SVhadgeq1PhoBHLateBin00"
-      - "Ch14CRgeq1SVhadgeq1PhoBHLateBin01"
-    Ch15CRgeq1PhoNotBHEarlyBin:
-      - "Ch15CRgeq1PhoNotBHEarlyBin00"
-      - "Ch15CRgeq1PhoNotBHEarlyBin01"
-    Ch16SRgeq1PhoNotBHLateBin:
-      - "Ch16SRgeq1PhoNotBHLateBin00"
-      - "Ch16SRgeq1PhoNotBHLateBin01"
+    Ch13CRgeq1SVgeq1PhoBHEarlyBin:
+      - "Ch13CRgeq1SVgeq1PhoBHEarlyBin00"
+      - "Ch13CRgeq1SVgeq1PhoBHEarlyBin10"
+      - "Ch13CRgeq1SVgeq1PhoBHEarlyBin11"
+    Ch14CRgeq1SVgeq1PhoBHLateBin:
+      - "Ch14CRgeq1SVgeq1PhoBHLateBin00"
+      - "Ch14CRgeq1SVgeq1PhoBHLateBin10"
+      - "Ch14CRgeq1SVgeq1PhoBHLateBin11"
+    Ch15CRgeq1SVgeq1PhoNotBHEarlyBin:
+      - "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin00"
+      - "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin10"
+      - "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin11"
+    Ch16SRgeq1SVgeq1PhoNotBHLateBin:
+      - "Ch16SRgeq1SVgeq1PhoNotBHLateBin00"
+      - "Ch16SRgeq1SVgeq1PhoNotBHLateBin10"
+      - "Ch16SRgeq1SVgeq1PhoNotBHLateBin11"
   channel_association:
     Ch8SRgeq1PhoNotBHLateBin:
       - "Ch6CRgeq1PhoBHLateBin"
       - "Ch5CRgeq1PhoBHEarlyBin"
       - "Ch7CRgeq1PhoNotBHEarlyBin"
-    Ch16SRgeq1PhoNotBHLateBin:
-      - "Ch14CRgeq1SVhadgeq1PhoBHLateBin"
-      - "Ch13CRgeq1SVhadgeq1PhoBHEarlyBin"
-      - "Ch15CRgeq1PhoNotBHEarlyBin"
+    Ch16SRgeq1SVgeq1PhoNotBHLateBin:
+      - "Ch14CRgeq1SVgeq1PhoBHLateBin"
+      - "Ch13CRgeq1SVgeq1PhoBHEarlyBin"
+      - "Ch15CRgeq1SVgeq1PhoNotBHEarlyBin"
   #can add channel associations for stacked ABCD fits
 #extra systematics
 systematics:

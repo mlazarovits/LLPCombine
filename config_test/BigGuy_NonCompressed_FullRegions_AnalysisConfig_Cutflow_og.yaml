@@ -1,17 +1,35 @@
 analysis:
-  name: "BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton"
+  name: "BigGuy_NonCompressed_FullRegions_Cutflow"
   luminosity: 200
-  output_json: "BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton.json"
+  output_json: "BigGuy_NonCompressed_FullRegions_Cutflow.json"
 
 samples:
   signals: ["gogoGZ"]
-  data: ["MET16","MET17","MET18","MET22", "MET23"]
+  data: [] #"MET16","MET17","MET18","MET22", "MET23"]
+
+nosel: &nosel
+  - "(selCMet > -1)"
 
 baseline_cuts: &baseline_cuts
   - "(selCMet > 150)"
 
+isGG: &isGG
+  - "(Evt_isGG == 1)"
+
+isGZ: &isGZ
+  - "(Evt_isGZ == 1)"
+
+isZZ: &isZZ
+  - "(Evt_isZZ == 1)"
+
 Cleaning: &Cleaning
   - "((Flag_MetFilters == 1) && (rjrPTS[0] < 150) && ((Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60)))"
+
+cleaning_nopts: &cleaning_nopts
+  - "((Flag_MetFilters == 1) && ((Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60)))"
+
+ptsonly: &ptsonly
+  - "(rjrPTS[0] < 150)"
 
 kin: &kin
   - "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.15))"
@@ -30,8 +48,6 @@ SVgeLep1_SR: &SVgeLep1_SR
 SVgeLep1_CR: &SVgeLep1_CR
   - "((SV_nLeptonic >= 1) && (LeptonicSV_dxySig[0] < 200))"
 
-SVgeq1Had: &SVgeq1Had
-  - "((SV_nLeptonic == 0) && (SV_nHadronic >= 1))"
 
 #second priority - hadronic SV
 SVgeHad1_SR: &SVgeHad1_SR
@@ -70,21 +86,8 @@ bHad21: &bHad21
   - "((rjr_Ms[0] >= 3000) && (rjr_Rs[0] >= 0.35))"
 
 DelayedBin00: &DelayedBin00
-  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35))"
-DelayedBin10: &DelayedBin10
-  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35))"
-DelayedBin01: &DelayedBin01
-  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.35))"
-DelayedBin11: &DelayedBin11
-  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.35))"
-    #DelayedBin00: &DelayedBin00
-    #  - "(rjr_Ms[0] >= 2000)"
-    #  - "(rjr_Rs[0] >= 0.3)"
-
-SVDelayedBin00: &SVDelayedBin00
-  - "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.3))"
-SVDelayedBin01: &SVDelayedBin01
-  - "((rjr_Ms[0] >= 2000) && (rjr_Rs[0] >= 0.3))"
+  - "(rjr_Ms[0] >= 2000)"
+  - "(rjr_Rs[0] >= 0.3)"
 
 eq2b00: &eq2b00
   - "((rjr_Ms[0] >= 2500) && (rjr_Ms[0] < 2700) && (rjr_Rs[0] < 0.3))"
@@ -147,10 +150,8 @@ noBHPhotons: &noBHPhotons
   - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) ) )"
 
 noNonPromptPhotons: &noNonPromptPhotons
-  - "((nBaseLinePhotons == 0) || (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
+  - "( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5)) || (nBaseLinePhotons == 2 && ( baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && ( baseLinePhoton_WTimeSig[1] < 2.5 && baseLinePhoton_WTimeSig[1] > -2.5)) )"
 
-geq1NonPromptPhotons: &geq1NonPromptPhotons
-  - "( (nBaseLinePhotons == 1 && ((baseLinePhoton_WTimeSig[0] > 2.5) || (baseLinePhoton_WTimeSig[0] < -2.5))) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] > 2.5) || (baseLinePhoton_WTimeSig[0] < -2.5) || ( (baseLinePhoton_WTimeSig[1] > 2.5) || (baseLinePhoton_WTimeSig[1] < -2.5)))))"
 
 Ch6SReq1PhoTightIsoPrompt: &Ch6SReq1PhoTightIsoPrompt
   #below true SR line, but above intermediate line in pt-iso score plane
@@ -173,6 +174,26 @@ balRJRJets: &balRJRJets
 
 
 bins:
+  base:
+    cuts:
+      - *nosel
+  met_cut:
+    cuts:
+      - *baseline_cuts
+  cleaning: #triggers, event filters
+    cuts:
+      - *cleaning_nopts
+  pts: #rjr cleaning cut
+    cuts:
+      - *ptsonly
+  kin: #kinematic baseline selection
+    cuts:
+      - *kin
+  preselection:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kin
   # ==== Ch1: Ge1Lep anchor (CR, dxySig < 200) ====
   Ch1CRGeLep100:
     cuts:
@@ -239,7 +260,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_CR
-      - *noNonPromptPhotons
       - *bHad00
   Ch3CRGeHad110:
     cuts:
@@ -247,7 +267,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_CR
-      - *noNonPromptPhotons
       - *bHad10
   Ch3CRGeHad101:
     cuts:
@@ -255,7 +274,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_CR
-      - *noNonPromptPhotons
       - *bHad01
   Ch3CRGeHad111:
     cuts:
@@ -263,7 +281,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_CR
-      - *noNonPromptPhotons
       - *bHad11
   Ch3CRGeHad121:
     cuts:
@@ -271,7 +288,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_CR
-      - *noNonPromptPhotons
       - *bHad21
   # ==== Ch4: Ge1Had SR (dxySig > 800) ====
   # Ch4CRGeHad100 is the normalization anchor bin (lowest sensitivity, same SR selection)
@@ -281,7 +297,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_SR
-      - *noNonPromptPhotons
       - *bHad00
   Ch4SRGeHad110:
     cuts:
@@ -289,7 +304,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_SR
-      - *noNonPromptPhotons
       - *bHad10
   Ch4SRGeHad101:
     cuts:
@@ -297,7 +311,6 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_SR
-      - *noNonPromptPhotons
       - *bHad01
   Ch4SRGeHad111:
     cuts:
@@ -305,13 +318,11 @@ bins:
       - *Cleaning
       - *kin
       - *SVgeHad1_SR
-      - *noNonPromptPhotons
       - *bHad11
   Ch4SRGeHad121:
     cuts:
       - *baseline_cuts
       - *Cleaning
-      - *noNonPromptPhotons
       - *kin
       - *SVgeHad1_SR
       - *bHad21
@@ -320,134 +331,33 @@ bins:
     cuts:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch1CRgeq1PhoBHEarly
       - *DelayedBin00
-  Ch5CRgeq1PhoBHEarlyBin10:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch1CRgeq1PhoBHEarly
-      - *DelayedBin10
-  Ch5CRgeq1PhoBHEarlyBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch1CRgeq1PhoBHEarly
-      - *DelayedBin01
-  Ch5CRgeq1PhoBHEarlyBin11:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch1CRgeq1PhoBHEarly
-      - *DelayedBin11
   # ==== Ch6: Ge1 Photon Late BH CR ====
   Ch6CRgeq1PhoBHLateBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch2CRgeq1PhoBHLate
       - *DelayedBin00
-  Ch6CRgeq1PhoBHLateBin10:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch2CRgeq1PhoBHLate
-      - *DelayedBin10
-  Ch6CRgeq1PhoBHLateBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch2CRgeq1PhoBHLate
-      - *DelayedBin01
-  Ch6CRgeq1PhoBHLateBin11:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch2CRgeq1PhoBHLate
-      - *DelayedBin11
   # ==== Ch7: Ge1 Photon Early !BH CR ====
   Ch7CRgeq1PhoNotBHEarlyBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch3CRgeq1PhoNotBHEarly
       - *DelayedBin00
-  Ch7CRgeq1PhoNotBHEarlyBin10:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch3CRgeq1PhoNotBHEarly
-      - *DelayedBin10
-  Ch7CRgeq1PhoNotBHEarlyBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch3CRgeq1PhoNotBHEarly
-      - *DelayedBin01
-  Ch7CRgeq1PhoNotBHEarlyBin11:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch3CRgeq1PhoNotBHEarly
-      - *DelayedBin11
   # ==== Ch8: Ge1 Photon Late !BH SR ====
   Ch8SRgeq1PhoNotBHLateBin00:
     cuts:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch4SRgeq1PhoNotBHLate
       - *DelayedBin00
-  Ch8SRgeq1PhoNotBHLateBin10:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch4SRgeq1PhoNotBHLate
-      - *DelayedBin10
-  Ch8SRgeq1PhoNotBHLateBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch4SRgeq1PhoNotBHLate
-      - *DelayedBin01
-  Ch8SRgeq1PhoNotBHLateBin11:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *noSV
-      - *Ch4SRgeq1PhoNotBHLate
-      - *DelayedBin11
-  # ==== Ch9: Eq1 Photon Prompt CR ====
   Ch9CReq1PhoMedIsoPromptBin00:
     cuts:
       - *baseline_cuts
@@ -660,82 +570,6 @@ bins:
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
       - *eq2b11
-  # ==== Ch13: Ge1 SV had Photon Early BH CR ====
-  Ch13CRgeq1SVgeq1PhoBHEarlyBin00:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch1CRgeq1PhoBHEarly
-      - *SVDelayedBin00
-  Ch13CRgeq1SVgeq1PhoBHEarlyBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch1CRgeq1PhoBHEarly
-      - *SVDelayedBin01
-  # ==== Ch14: Ge1 SV had Ge1 Photon Late BH CR ====
-  Ch14CRgeq1SVgeq1PhoBHLateBin00:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch2CRgeq1PhoBHLate
-      - *SVDelayedBin00
-  Ch14CRgeq1SVgeq1PhoBHLateBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch2CRgeq1PhoBHLate
-      - *SVDelayedBin01
-  # ==== Ch15: Ge1 SV had Ge1 Photon Early !BH CR ====
-  Ch15CRgeq1PhoNotBHEarlyBin00:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch3CRgeq1PhoNotBHEarly
-      - *SVDelayedBin00
-  Ch15CRgeq1PhoNotBHEarlyBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch3CRgeq1PhoNotBHEarly
-      - *SVDelayedBin01
-  # ==== Ch16: Ge1 SV had Ge1 Photon Late !BH SR ====
-  Ch16SRgeq1PhoNotBHLateBin00:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch4SRgeq1PhoNotBHLate
-      - *SVDelayedBin00
-  Ch16SRgeq1PhoNotBHLateBin01:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch4SRgeq1PhoNotBHLate
-      - *SVDelayedBin01
 
 
 
@@ -759,7 +593,6 @@ regions:
       - *baseline_cuts
       - *Cleaning
       - *kin
-      - *noNonPromptPhotons
       - *SVgeHad1_CR
   # ==== Ch4: Ge1Had SR (dxySig > 800) ====
   # Ch4CRGeHad100 is the normalization anchor bin (lowest sensitivity, same SR selection)
@@ -767,35 +600,29 @@ regions:
       - *baseline_cuts
       - *Cleaning
       - *kin
-      - *kin
-      - *noNonPromptPhotons
       - *SVgeHad1_SR
   # ==== Ch5: Ge1 Photon Early BH CR ====
   Ch5CRgeq1PhoBHEarly:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch1CRgeq1PhoBHEarly
   # ==== Ch6: Ge1 Photon Late BH CR ====
   Ch6CRgeq1PhoBHLate:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch2CRgeq1PhoBHLate
   # ==== Ch7: Ge1 Photon Early !BH CR ====
   Ch7CRgeq1PhoNotBHEarly:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch3CRgeq1PhoNotBHEarly
   # ==== Ch8: Ge1 Photon Late !BH SR ====
   Ch8SRgeq1PhoNotBHLate:
       - *baseline_cuts
       - *Cleaning
-      - *kin
       - *noSV
       - *Ch4SRgeq1PhoNotBHLate
   Ch9CReq1PhoMedIsoPrompt:
@@ -832,35 +659,3 @@ regions:
       - *noBHPhotons
       - *noNonPromptPhotons
       - *Ch6SReq2PhoTightIsoPrompt
-  # ==== Ch13: Ge1 SV had Photon Early BH CR ====
-  Ch13CRgeq1SVgeq1PhoBHEarly:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch1CRgeq1PhoBHEarly
-  # ==== Ch14: Ge1 SV had Ge1 Photon Late BH CR ====
-  Ch14CRgeq1SVgeq1PhoBHLate:
-      - *baseline_cuts
-      - *Cleaning
-      - *SVgeq1Had
-      - *kin
-      - *geq1NonPromptPhotons
-      - *Ch2CRgeq1PhoBHLate
-  # ==== Ch15: Ge1 SV had Ge1 Photon Early !BH CR ====
-  Ch15CRgeq1SVgeq1PhoNotBHEarly:
-      - *baseline_cuts
-      - *Cleaning
-      - *SVgeq1Had
-      - *kin
-      - *geq1NonPromptPhotons
-      - *Ch3CRgeq1PhoNotBHEarly
-  # ==== Ch16: Ge1 SV had Ge1 Photon Late !BH SR ====
-  Ch16SRgeq1SVgeq1PhoNotBHLate:
-      - *baseline_cuts
-      - *Cleaning
-      - *kin
-      - *SVgeq1Had
-      - *geq1NonPromptPhotons
-      - *Ch4SRgeq1PhoNotBHLate

@@ -1,0 +1,162 @@
+#test fit config
+fitname: "Mixed_PromptRegions_NonCompressed_Validation"
+asimov: False
+datadriven: True
+
+#main fit
+#naming convention: Ch#[CR/SR]ID where  = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch5CRgeq1PhoMedIsoPromptSVLowDxy:
+      - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy00"
+      - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy10"
+      - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy01"
+      - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy11"
+        #Ch5CReq1PhoMedIsoPromptSVLowDxy:
+        #  - "Ch5CReq1PhoMedIsoPromptSVLowDxy00"
+        #  - "Ch5CReq1PhoMedIsoPromptSVLowDxy10"
+        #  - "Ch5CReq1PhoMedIsoPromptSVLowDxy01"
+        #  - "Ch5CReq1PhoMedIsoPromptSVLowDxy11"
+        #Ch5CReq2PhoMedIsoPromptSVLowDxy:
+        #  - "Ch5CReq2PhoMedIsoPromptSVLowDxy00"
+        #  - "Ch5CReq2PhoMedIsoPromptSVLowDxy01"
+        #  - "Ch5CReq2PhoMedIsoPromptSVLowDxy10"
+        #  - "Ch5CReq2PhoMedIsoPromptSVLowDxy11"
+    Ch6SRgeq1PhoTightIsoPromptSVHighDxy:
+      - "Ch6CRgeq1PhoTightIsoPromptSVHighDxy00"
+      - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy10"
+      - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy01"
+      - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy11"
+        #Ch6SReq1PhoTightIsoPromptSVHighDxy:
+        #  - "Ch6CReq1PhoTightIsoPromptSVHighDxy00"
+        #  - "Ch6SReq1PhoTightIsoPromptSVHighDxy10"
+        #  - "Ch6SReq1PhoTightIsoPromptSVHighDxy01"
+        #  - "Ch6SReq1PhoTightIsoPromptSVHighDxy11"
+        #Ch6SReq2PhoTightIsoPromptSVHighDxy:
+        #  - "Ch6CReq2PhoTightIsoPromptSVHighDxy00"
+        #  - "Ch6SReq2PhoTightIsoPromptSVHighDxy01"
+        #  - "Ch6SReq2PhoTightIsoPromptSVHighDxy10"
+        #  - "Ch6SReq2PhoTightIsoPromptSVHighDxy11"
+  channel_association:
+    Ch5CRgeq1PhoMedIsoPromptSVLowDxy:
+      - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy"
+        #Ch5CReq1PhoMedIsoPromptSVLowDxy:
+        #  - "Ch6SReq1PhoTightIsoPromptSVHighDxy"
+        #Ch5CReq2PhoMedIsoPromptSVLowDxy:
+        #  - "Ch6SReq2PhoTightIsoPromptSVHighDxy"
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys1p1:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape00"
+      init_val: 1.05
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy00"
+          - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy00"
+  sys1p3:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape10"
+      init_val: 1.1
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy10"
+          - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy10"
+  sys1p4:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape01"
+      init_val: 1.1
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy01"
+          - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy01"
+  sys1p5:
+      type: "lnN"
+      name: "lnN_Ch5Ch6eq1Shape11"
+      init_val: 1.1
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy11"
+          - "Ch6SRgeq1PhoTightIsoPromptSVHighDxy11"
+  sys4p1:
+      type: "lnN"
+      name: "lnN_Ch5eq1Shape00"
+      init_val: 1.05
+      bins:
+          - "Ch5CRgeq1PhoMedIsoPromptSVLowDxy00"
+  #sys1p1:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq1Shape00"
+  #    init_val: 1.05
+  #    bins:
+  #        - "Ch5CReq1PhoMedIsoPromptSVLowDxy00"
+  #        - "Ch6SReq1PhoTightIsoPromptSVHighDxy00"
+  #sys1p3:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq1Shape10"
+  #    init_val: 1.1
+  #    bins:
+  #        - "Ch5CReq1PhoMedIsoPromptSVLowDxy10"
+  #        - "Ch6SReq1PhoTightIsoPromptSVHighDxy10"
+  #sys1p4:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq1Shape01"
+  #    init_val: 1.1
+  #    bins:
+  #        - "Ch5CReq1PhoMedIsoPromptSVLowDxy01"
+  #        - "Ch6SReq1PhoTightIsoPromptSVHighDxy01"
+  #sys1p5:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq1Shape11"
+  #    init_val: 1.1
+  #    bins:
+  #        - "Ch5CReq1PhoMedIsoPromptSVLowDxy11"
+  #        - "Ch6SReq1PhoTightIsoPromptSVHighDxy11"
+  #sys4p1:
+  #    type: "lnN"
+  #    name: "lnN_Ch5eq1Shape00"
+  #    init_val: 1.1 
+  #    bins:
+  #        - "Ch5CReq1PhoMedIsoPromptSVLowDxy00"
+  #sys5:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq2Shape00"
+  #    init_val: 1.1 
+  #    bins:
+  #        - "Ch5CReq2PhoMedIsoPromptSVLowDxy00"
+  #        - "Ch6SReq2PhoTightIsoPromptSVHighDxy00"
+  #sys6:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq2Shape01"
+  #    init_val: 1.1 
+  #    bins:
+  #        - "Ch5CReq2PhoMedIsoPromptSVLowDxy01"
+  #        - "Ch6SReq2PhoTightIsoPromptSVHighDxy01"
+  #sys7:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq2Shape10"
+  #    init_val: 1.1 
+  #    bins:
+  #        - "Ch5CReq2PhoMedIsoPromptSVLowDxy10"
+  #        - "Ch6SReq2PhoTightIsoPromptSVHighDxy10"
+  #sys8:
+  #    type: "lnN"
+  #    name: "lnN_Ch5Ch6eq2Shape11"
+  #    init_val: 1.1
+  #    bins:
+  #        - "Ch5CReq2PhoMedIsoPromptSVLowDxy11"
+  #        - "Ch6SReq2PhoTightIsoPromptSVHighDxy11"
+  #sys9:
+  #    type: "lnN"
+  #    name: "lnN_Ch5eq1Shape00"
+  #    init_val: 1.1 
+  #    bins:
+  #        - "Ch5CReq2PhoMedIsoPromptSVLowDxy00"

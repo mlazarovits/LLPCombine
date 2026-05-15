@@ -1,0 +1,61 @@
+#test fit config
+fitname: "PhoOnly_PromptRegions_Compressed_FullRegions"
+asimov: True
+datadriven: True
+
+#main fit
+#naming convention: Ch#[CR/SR]ID where  = xy coord in MsRs plane
+shape_transfer_fit:
+  bin_association:
+    Ch1CReq2PhoMedIsoPrompt:
+      - "Ch1CReq2PhoMedIsoPrompt00"
+      - "Ch1CReq2PhoMedIsoPrompt01"
+      - "Ch1CReq2PhoMedIsoPrompt02"
+    Ch2SReq2PhoTightIsoPrompt:
+      - "Ch2CReq2PhoTightIsoPrompt00"
+      - "Ch2SReq2PhoTightIsoPrompt01"
+      - "Ch2SReq2PhoTightIsoPrompt02"
+  channel_association:
+    Ch1CReq2PhoMedIsoPrompt:
+      - "Ch2SReq2PhoTightIsoPrompt"
+#main fit
+#ABCD - SR bin (A) maps to [B, C, D]
+#grid convention
+#not bh    D | A
+#        ---------
+#bh        C | B
+#      early -> late
+# such that A*D = C*B -> A = C*B/D
+ABCD_fit:
+
+  #can add channel associations for stacked ABCD fits
+#extra systematics
+systematics:
+  #pin CR channels
+  sys5:
+      type: "lnN"
+      name: "lnN_Ch1Ch2eq2Shape00"
+      init_val: 1.1 
+      bins:
+          - "Ch1CReq2PhoMedIsoPrompt00"
+          - "Ch2SReq2PhoTightIsoPrompt00"
+  sys6:
+      type: "lnN"
+      name: "lnN_Ch1Ch2eq2Shape01"
+      init_val: 1.1 
+      bins:
+          - "Ch1CReq2PhoMedIsoPrompt01"
+          - "Ch2SReq2PhoTightIsoPrompt01"
+  sys8:
+      type: "lnN"
+      name: "lnN_Ch1Ch2eq2Shape02"
+      init_val: 1.05
+      bins:
+          - "Ch1CReq2PhoMedIsoPrompt02"
+          - "Ch2SReq2PhoTightIsoPrompt02"
+  sys9:
+      type: "lnN"
+      name: "lnN_Ch1eq2Shape00"
+      init_val: 1.1 
+      bins:
+          - "Ch1CReq2PhoMedIsoPrompt00"

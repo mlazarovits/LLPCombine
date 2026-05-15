@@ -1,0 +1,132 @@
+# Simple two-channel, four-bin analysis for had SVs and photons
+# validation fit: CR -> CR 
+
+analysis:
+  name: "Mixed_DelayedRegions_NonCompressed_FullRegions"
+  luminosity: 165.27
+  output_json: "Mixed_DelayedRegions_NonCompressed_FullRegions.json"
+
+samples:
+  #backgrounds: []#"Wjets", "Zjets", "QCD", "Top", "Gjets", "Box"]
+  signals: ["gogoGZ"] 
+  data: ["MET16","MET17","MET18","MET23"]
+
+baseline_cuts: &baseline_cuts
+  - "(selCMet > 150)" 
+
+
+################################################################
+
+####mixed
+# == 0 BH photons
+eq0BHPho: &eq0BHPho
+  - "((nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252) || (nBaseLinePhotons == 2 && baseLinePhoton_beamHaloCNNScore[0] < 0.917252 && baseLinePhoton_beamHaloCNNScore[1] < 0.917252) )"
+
+#for BH CRs
+geq1BHPho: &geq1BHPho
+  - "(( (nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] > 0.917252) || (nBaseLinePhotons == 2 && (baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 || baseLinePhoton_beamHaloCNNScore[1] >= 0.917252)) ) )"
+
+geq1NonPromptPho: &geq1NonPromptPho
+  - "(( (nBaseLinePhotons == 1 && !(baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_WTimeSig[0] < 2.5)) || (nBaseLinePhotons == 2 && (!(baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) || !(baseLinePhoton_WTimeSig[1] > -2.5 && baseLinePhoton_WTimeSig[1] < 2.5))) ) )"
+
+eq0NonPromptPho: &eq0NonPromptPho
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] > -2.5 && baseLinePhoton_WTimeSig[0] < 2.5)) || (nBaseLinePhotons == 2 && ((baseLinePhoton_WTimeSig[0] < 2.5 && baseLinePhoton_WTimeSig[0] > -2.5) && (baseLinePhoton_WTimeSig[1] > -2.5 && baseLinePhoton_WTimeSig[1] < 2.5))) ) )"
+
+geq1SV: &geq1SV
+  - "((SV_nHadronic >= 1) && (SV_nLeptonic == 0))"
+
+geq1Pho: &geq1Pho
+  - "(nBaseLinePhotons >= 1)"
+
+#all SVs lowdxy (hadronic for now)
+geq1SVLowDxy: &geq1SVLowDxy
+    #- "( (SV_nLeptonic == 1 && LeptonicSV_dxySig[0] <= 200) || (SV_nLeptonic == 2 && LeptonicSV_dxySig[0] <= 1000 && LeptonicSV_dxySig[1] <= 1000 ) )"
+  - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] <= 1000) || (SV_nHadronic == 2 && HadronicSV_dxySig[0] <= 1000 && HadronicSV_dxySig[1] <= 1000 ) )"
+    
+#at least 1 high dxy SV (hadronic for now) 
+geq1SVHighDxy: &geq1SVHighDxy 
+  #- "( ((SV_nHadronic == 1 && SV_nLeptonic == 1) && (HadronicSV_dxySig[0] > 1000 || LeptonicSV_dxySig[0] > 1000)) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 || HadronicSV_dxySig[1] > 1000) ) || ( SV_nLeptonic == 2 && (LeptonicSV_dxySig[0] > 1000 || LeptonicSV_dxySig[1] > 1000) ) )"
+    - "( (SV_nHadronic == 1 && HadronicSV_dxySig[0] > 1000) || (SV_nHadronic == 2 && (HadronicSV_dxySig[0] > 1000 || HadronicSV_dxySig[1] > 1000) ) )"
+
+#for BH CRs and not BH CR/SRs
+geq1PhoDelayed: &geq1PhoDelayed
+  - "(( (nBaseLinePhotons == 1 && (baseLinePhoton_WTimeSig[0] > 2.5 || baseLinePhoton_WTimeSig[0] < -2.5)) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] < -2.5 || baseLinePhoton_WTimeSig[0] > 2.5) || ( baseLinePhoton_WTimeSig[1] < -2.5 || baseLinePhoton_WTimeSig[1] > 2.5))) ) )"
+
+
+eq1PhoBHEarly: &geq1PhoBHEarly
+  #beam halo tagged photon is early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_WTimeSig[0] < -2.5 && baseLinePhoton_beamHaloCNNScore[0] > 0.917252) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] < -2.5 && baseLinePhoton_beamHaloCNNScore[0] > 0.917252) || (baseLinePhoton_WTimeSig[0] < -2.5 &&  baseLinePhoton_beamHaloCNNScore[1] >= 0.917252))))" 
+
+geq1PhoBHLate: &geq1PhoBHLate
+  #beam halo tagged photon is late
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[0] > 0.917252) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[0] > 0.917252) || (baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[1] >= 0.917252))))" 
+
+geq1PhoNotBHEarly: &geq1PhoNotBHEarly
+  #not beam halo (signal) tagged photon is early
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_WTimeSig[0] < -2.5 && baseLinePhoton_beamHaloCNNScore[0] < 0.185) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] < -2.5 && baseLinePhoton_beamHaloCNNScore[0] < 0.185) || (baseLinePhoton_WTimeSig[0] < -2.5 && baseLinePhoton_beamHaloCNNScore[1] < 0.185))))" 
+
+geq1PhoNotBHLate: &geq1PhoNotBHLate
+  #not beam halo (signal) tagged photon is late
+  - "( (nBaseLinePhotons == 1 && baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[0] < 0.185) || (nBaseLinePhotons == 2 && ( (baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[0] < 0.185) || (baseLinePhoton_WTimeSig[0] > 2.5 && baseLinePhoton_beamHaloCNNScore[1] < 0.185))))" 
+##########################################################
+Cleaning: &Cleaning
+  - "(Flag_MetFilters == 1)  && ( (Trigger_PFMET120_PFMHT120_IDTight == 1)||(Trigger_PFMET120_PFMHT120_IDTight_PFHT60 == 1)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight)||(Trigger_PFMETNoMu120_PFMHTNoMu120_IDTight_PFHT60))"
+
+kin: &kin
+  - "(rjr_Ms[0] >= 1000) && (rjr_Rs[0] >= 0.3)"
+    
+    #b00: &b00
+    #  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2400) && (rjr_Rs[0] < 0.2)"
+    #b10: &b10
+    #  - "(rjr_Ms[0] >= 2400) && (rjr_Rs[0] < 0.2)"
+    #b01: &b01
+    #  - "(rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2400) && (rjr_Rs[0] >= 0.2)"
+    #b11: &b11
+    #  - "(rjr_Ms[0] >= 2400) && (rjr_Rs[0] >= 0.2)"
+
+bins:
+  Ch1CRgeq1PhoBHEarlygeq1SVLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *geq1SV
+      - *geq1SVLowDxy
+      - *geq1Pho
+      - *geq1BHPho
+      - *geq1PhoBHEarly
+      - *kin
+  
+  Ch2CRgeq1PhoBHLategeq1SVLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *geq1SV
+      - *geq1SVLowDxy
+      - *geq1Pho
+      - *geq1BHPho
+      - *geq1PhoBHLate
+      - *kin
+  
+  Ch3CRgeq1PhoNotBHEarlygeq1SVLowDxy00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *geq1SV
+      - *geq1SVLowDxy
+      - *geq1Pho
+      - *eq0BHPho
+      - *geq1NonPromptPho
+      - *geq1PhoNotBHEarly
+      - *kin
+  
+  Ch4SRgeq1PhoNotBHLatege1SVHighDxy00:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *geq1Pho
+      - *geq1SV
+      - *geq1SVHighDxy
+      - *eq0BHPho
+      - *geq1NonPromptPho
+      - *geq1PhoNotBHLate
+      - *kin
