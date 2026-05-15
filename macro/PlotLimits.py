@@ -10,7 +10,7 @@ from scipy.interpolate import LinearNDInterpolator, griddata
 import mplhep as hep
 import argparse
 import json
-from limit_tools import ReadLimits, ReadLimitsBRs, gluino_xsec, br_colors
+from limit_tools import ReadLimits, ReadLimitsBRs, ReadLimitsKeyword, gluino_xsec, br_colors, GetMassFromFile
 
 hep.style.use("CMS")
 
@@ -364,14 +364,18 @@ def MakeCtauLimit( significance_dict, sig_label, mGo=2000, mN2 = 1500, mN1 = 500
     #plt.yscale('log')
     plot_sig_label = "$m_{"+sparticle_label+"}$ = "+str(mGo)+", $m_{\\tilde{\\chi}^0_2}$ = " + str(mN2) + ", $m_{\\tilde{\\chi}^0_1}$ = "+str(mN1)+" GeV"
 
-    print("xmin",xmin)
     dtext_start =  5e-5 
     dtext = 3e-2
     dtext_xoffset = 0
     plt.text(xmin+dtext_xoffset,plot_max*dtext_start, plot_sig_label, fontsize=20)
     if extra_text != "":
         plt.text(xmin+dtext_xoffset,plot_max*(dtext), extra_text, fontsize=20)
-    plotname = f"{oname}_{sig_label}_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}_ctau1D.pdf"
+    plotname = oname
+    if sig_label not in plotname:
+        plotname += "_"+sig_label
+    if f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}" not in plotname:
+        plotname += f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}"
+    plotname += "_ctau1D.pdf"
     print("Saving plot as",plotname)
     plt.savefig(plotname)
 
@@ -416,7 +420,16 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
 
         green = '#228b22' 
         yellow = '#ffcc00'
-        ax.plot(x, y, color=br_colors[br_idx], label = br_key, zorder=10)
+        if br_key in br_colors.keys():
+            color = br_colors[br_key]
+        else:
+            if "maskPho" in br_key:
+                color = br_colors["0PhoBR100ZBR"]
+            elif "maskSV" in br_key:
+                color = br_colors["100PhoBR0ZBR"]
+            else:
+                color = br_colors["50PhoBR50ZBR"]
+        ax.plot(x, y, color=color, label = br_key, zorder=10)
         br_idx += 1
         #plt.fill_between(np.asarray(x), 
         #                 np.asarray(y1sigup), 
@@ -439,6 +452,7 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
     # Style
     plt.legend(loc=1)
     plt.yscale('log')
+    plt.xscale('log')
     plot_max = 5e2
     plot_min = 5e-2
     plt.ylim(plot_min,plot_max)
@@ -455,7 +469,13 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
     plt.text(xmin+dtext_xoffset,plot_max*dtext_start, plot_sig_label, fontsize=20)
     if extra_text != "":
         plt.text(xmin+dtext_xoffset,plot_max*(dtext), extra_text, fontsize=20)
-    plotname = f"{oname}_{sig_label}_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}_ctau1DMultipleBRs.pdf"
+    plotname = oname
+    print("plotname",plotname,"sig_label",sig_label)
+    if sig_label not in plotname:
+        plotname += "_"+sig_label
+    if f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}" not in plotname:
+        plotname += f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}"
+    plotname += "_ctau1DMultipleBRs.pdf"
     print("Saving plot as",plotname)
     
     plt.savefig(plotname)
@@ -474,14 +494,30 @@ textfile = args.input[0]
 ofile = textfile[:textfile.find(".json")]
 lumi = args.lumi
 
-ctau_mass_pts = [[2300, 1300, 1000], [2500, 1200, 500]]
 if len(args.input) > 1:
-    #only do multiBR ctau limit for now
-    br_dict, sig_label = ReadLimitsBRs(args.input)
-    for ctau_mass_pt in ctau_mass_pts:
-        MakeCtauLimitMultipleBRs( br_dict, sig_label, ctau_mass_pt[0], ctau_mass_pt[1], ctau_mass_pt[2], extra_text, ofile)
-        break
-    exit()
+    if "_mask" in args.input[0]:
+        sig_dict, sig_label = ReadLimitsKeyword(args.input,"mask")
+        mass_pt = GetMassFromFile(args.input[0])
+        for file in args.input:
+            if any([f"-{i}" not in file for i in mass_pt]):
+                print("file",file,"does not have mass pt",mass_pt,"all files need to have same mass point. not making plot.")
+                exit()
+        #remove first BR from outfile name (matches what's done in ReadLimitsBRs)
+        ofile = ofile.replace("_"+list(sig_dict.keys())[0],"")
+        MakeCtauLimitMultipleBRs( sig_dict, sig_label, mass_pt[0], mass_pt[1], mass_pt[2], extra_text, ofile+"_maskChs")
+        exit()
+    else:
+        br_dict, sig_label = ReadLimitsBRs(args.input)
+        mass_pt = GetMassFromFile(args.input[0])
+        for file in args.input:
+            if any([f"-{i}" not in file for i in mass_pt]):
+                print("file",file,"does not have mass pt",mass_pt,"all files need to have same mass point. not making plot.")
+                exit()
+        #remove first BR from outfile name (matches what's done in ReadLimitsBRs)
+        ofile = ofile.replace("_"+list(br_dict.keys())[0],"")
+        MakeCtauLimitMultipleBRs( br_dict, sig_label, mass_pt[0], mass_pt[1], mass_pt[2], extra_text, ofile)
+        exit()
+
 
 significance_dict, sig_label = ReadLimits(textfile)
 print("sig",sig_label)
@@ -498,15 +534,15 @@ for key in significance_dict:
 
 
 #do 1D ctau limits
-#turn off for now to debug 2D interpolation
-#ctau_mass_pts = [[2100, 2050, 2000]]
 for limit_file in args.input:
-    for ctau_mass_pt in ctau_mass_pts:
-        if f"mGl-{ctau_mass_pt[0]}_mN2-{ctau_mass_pt[1]}_mN1-{ctau_mass_pt[2]}" not in limit_file:
-            continue
-        print("making ctau limit plot for mass pt",ctau_mass_pt)
-        MakeCtauLimit( significance_dict, sig_label, ctau_mass_pt[0], ctau_mass_pt[1], ctau_mass_pt[2], extra_text, ofile)
+    mass_pt = GetMassFromFile(limit_file)
+    if len(mass_pt) > 1:
+        print("Making 1D ctau limit for mass",mass_pt)
+        MakeCtauLimit( significance_dict, sig_label, mass_pt[0], mass_pt[1], mass_pt[2], extra_text, ofile)
     exit()
+
+#do 2D limit plots
+#TODO - wait until we have more mass points for a more fleshed out mass plane
 #MakeSN1Limit( significance_dict, sig_label, 10, extra_text, ofile)
 #MakeSN1Limit( significance_dict, sig_label, 50, extra_text, ofile)
 #exit()

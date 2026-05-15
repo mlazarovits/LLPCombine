@@ -1,4 +1,5 @@
 import json
+import re
 from pathlib import Path
 
 gluino_xsec = {
@@ -21,7 +22,20 @@ squark_xsec = {
         2200 : 9.949E-05,
     }
 
-br_colors = ['pink', 'green', 'purple']
+br_colors = {'50PhoBR50ZBR':'pink', '100PhoBR0ZBR':'green', '0PhoBR100ZBR':'purple'}
+
+
+
+def GetMassFromFile(limit_file):
+    match_obj = re.search(r"_mGl-\d+_mN2-\d+_mN1-\d+", limit_file)
+    mass_pt = []
+    if match_obj:
+        mass_ptidx = limit_file.find("mGl")
+        mass_ptidx_end = re.search(r'mN1-\d+', limit_file).end() 
+        mass_pt = limit_file[mass_ptidx:mass_ptidx_end]
+        mass_pt = [mass_pt[mass_pt.find("mGl-")+4:mass_pt.find("_mN2")], mass_pt[mass_pt.find("mN2-")+4:mass_pt.find("_mN1")], mass_pt[mass_pt.find("mN1-")+4:]]
+        mass_pt = [int(i) for i in mass_pt]
+    return mass_pt
 
 def GetMasses( signalString ):
     splitSignal = signalString.split("_")
@@ -41,7 +55,7 @@ def ReadLimits( inputfilename ):
         masses = GetMasses(key)
         #parent mass, mn2, mn1, ctau
         limit_dict[(masses[0],masses[1], masses[2], masses[3])] = val
-    print("label",sig_label)
+    #print("label",sig_label)
     return limit_dict, sig_label
 
 
@@ -50,9 +64,22 @@ def ReadLimitsBRs(inputfiles):
     for file in inputfiles:
         br_key = Path(file).stem 
         br_key = br_key.split("_")[3]
-        print("file",file,"br_key",br_key)
+        #print("file",file,"br_key",br_key)
         limit_dict, sig_label = ReadLimits(file)
         br_dict[br_key] = limit_dict
+    if list(br_dict.keys())[-1] in sig_label:
+        sig_label = sig_label.replace("_"+list(br_dict.keys())[-1],"")
     return br_dict, sig_label
+
+def ReadLimitsKeyword(inputfiles,keyword):
+    out_dict = {}
+    for file in inputfiles:
+        key = Path(file).stem 
+        key = [k for k in key.split("_") if keyword in k][0]
+        limit_dict, sig_label = ReadLimits(file)
+        out_dict[key] = limit_dict
+    if list(out_dict.keys())[-1] in sig_label:
+        sig_label = sig_label.replace("_"+list(out_dict.keys())[-1],"")
+    return out_dict, sig_label
 
 
