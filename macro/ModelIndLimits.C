@@ -35,7 +35,11 @@ bool DoCLsProcedure(double nbkg, double sigma_nbkg, string srbin, int ntoys, dou
 		double lognorm_mu = log( (nbkg*nbkg) / sqrt(nbkg*nbkg + sigma_nbkg*sigma_nbkg) );
 		double lognorm_sig2 = log(1 + (sigma_nbkg*sigma_nbkg)/(nbkg*nbkg));
 		//if X ~ N(mu, sigma^2), then exp(X) ~ logNormal(mu, sigma^2) for expected background rate
-		double lambda_bkg = exp(rng.Gaus(lognorm_mu, lognorm_sig2));
+		//double lambda_bkg = exp(rng.Gaus(lognorm_mu, lognorm_sig2));
+		double lambda_bkg = rng.Gaus(nbkg, sigma_nbkg);
+		while(lambda_bkg <= 0){
+			lambda_bkg = rng.Gaus(nbkg, sigma_nbkg);
+		}
 		//cout << " expected bkg rate " << lambda_bkg << " ln(rate) " << log(lambda_bkg) << endl;
 		//sample from pois(lambda_bkg) for expected # events
 		double bkg_nevts = rng.Poisson(lambda_bkg);
@@ -92,7 +96,7 @@ void ModelIndLimits(){
 	cout << "\\begin{tabular}{c | c | c | c | c}" << endl;
 	cout << "Region & $N^{\\text{pred}}_{\\text{bkg}}$ & $\\sigma(N^{\\text{pred}}_{\\text{bkg}})$ & $N_{\\text{obs}}$ & $\\text{S}_{\\text{UL}}$ \\\\" << endl;
 	cout << "\\hline \\hline" << endl;
-	for(auto chit = ch_map.begin(); chit != ch_map.end(); chit++){	
+	for(auto chit = ch_map.begin(); chit != ch_map.end(); chit++){
 		string srbin = chit->second;
 		//get bkg-only post-fit Nbkg and sigma(Nbkg) from fit diagnostics
 		TH1D* bonly_postfit_bkg = (TH1D*)infile->Get(("shapes_fit_b/"+srbin+"/total_background").c_str());
