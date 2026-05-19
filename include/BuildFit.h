@@ -94,7 +94,8 @@ class BuildFit{
 		channelmap _shape_ch_ass; //channel association for shape transfer fit
 		channelmap _shape_bin_ass; //bin associations for each channel
 		channelmap _abcd_bin_ass; //SR (key) to B, C, D (vals) for ABCD fit
-		channelmap _abcd_ch_ass; //if channels are connected between ABCD fits
+		//channelmap _abcd_ch_ass; //if channels are connected between ABCD fits
+		map<string,channelmap> _abcd_ch_ass; //maps like _abcd_ch_ass[sr_ch][proc] = {cr_bins}
 		vector<yamlSys> _systs; //extra systematics to connect channels, etc
 		ch::Categories _cats;
 		map<string, int> _invcats; 
