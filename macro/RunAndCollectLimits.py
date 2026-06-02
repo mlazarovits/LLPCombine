@@ -113,9 +113,11 @@ for idx, d in enumerate(dirs):
         continue
     #assume only 1 asymptotic limit file in each directory
     print("Collecting limits for",d.name)
-    limits_name = f"*AsymptoticLimits*.root"
+    mass = dname[dname.find(args.signal)+len(args.signal)+1:-1]
     if args.mask is not None:
-        limits_name = f"*mask{args.mask}*AsymptoticLimits*.root"
+        limits_name = f"*mask{args.mask}*AsymptoticLimits.mH120.root"
+    else:
+        limits_name = f"*{mass}.AsymptoticLimits.mH120.root"
     asymlimits = [item for item in Path(args.directory+"/"+d.name).glob(limits_name)]
     n_asymlimits = len(asymlimits)
     if(n_asymlimits == 0):
