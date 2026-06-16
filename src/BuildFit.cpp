@@ -73,13 +73,13 @@ BuildFit::BuildFit(string infile){
 				string nodekey = it->first.as<string>();
 				_abcd_ch_ass[nodekey] = channelmap();
 				auto nodelist = it->second;
-				cout << "ch " << nodekey << endl;
+				//cout << "ch " << nodekey << endl;
 				if(nodelist.IsSequence()){
-					cout << "node is sequence" << endl;
+					//cout << "node is sequence" << endl;
 					_abcd_ch_ass[nodekey][_bkg_proc] = nodelist.as<vector<string>>();
 				}
 				else if(nodelist.IsMap()){
-					cout << "node is map" << endl;
+					//cout << "node is map" << endl;
 					for(auto iit = nodelist.begin(); iit != nodelist.end(); iit++){
 						_abcd_ch_ass[nodekey][iit->first.as<string>()] = iit->second.as<vector<string>>();
 					}
@@ -348,14 +348,16 @@ void BuildFit::BuildABCDFit(){
 	//for having separate processes in different bins
 	for(auto c : cats_abcd){
 		if(c.second.find("SR") == string::npos){
-			//cout << "cat " << c.second << " gets proc " << _bkg_proc << endl;
-			cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {_bkg_proc}, {c}, false);
+			string bkgproc = getProcess(c.second);
+			//cout << "cat " << c.second << " gets proc " << bkgproc << endl;
+			cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, {bkgproc}, {c}, false);
 		}
 		//assume only SRs are getting predicted from ABCD
 		else{
 			vector<string> procs;
 			string ch = c.second.substr(0, c.second.size() - 2);
 			//cout << "ch " << ch << endl;
+
 			for(auto it = _abcd_ch_ass[ch].begin(); it != _abcd_ch_ass[ch].end(); it++)
 				procs.push_back(it->first);
 			//cout << "cat " << c.second << " gets procs " << endl;
@@ -383,14 +385,14 @@ void BuildFit::BuildABCDFit(){
 
 
 		////set rates of cr channels to be their nominal expected yield
-		for(auto b : _bins_superset_abcd){
-			//do only for CR channels
-			if(b.find("SR") != string::npos)
-				continue;
-			double bkgrate_cr = GetYieldValue(b, _bkg_proc, 1, "BuildABCDFit CR rate");
-			//cout << "adding rate param for bin " << b << endl;
-			cb.cp().process({_bkg_proc}).bin({b}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({b}, bkgrate_cr));
-		}
+		//for(auto b : _bins_superset_abcd){
+		//	//do only for CR channels
+		//	if(b.find("SR") != string::npos)
+		//		continue;
+		//	double bkgrate_cr = GetYieldValue(b, _bkg_proc, 1, "BuildABCDFit CR rate");
+		//	cout << "adding rate param for bin " << b << endl;
+		//	cb.cp().process({_bkg_proc}).bin({b}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({b}, bkgrate_cr));
+		//}
 
 			//for(auto cr_ch : cr_chs){
 			//	cr_bins = _abcd_bin_ass[cr_ch];
@@ -424,6 +426,9 @@ void BuildFit::BuildABCDFit(){
 						if(getBinIdx(cr_bin) != binidx)
 							continue;
 						cr_bins_matchidx.push_back(cr_bin);
+						double bkgrate_cr = GetYieldValue(cr_bin, _bkg_proc, 1, "BuildABCDFit CR rate");
+						//cb.cp().process({_bkg_proc}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
+						cb.cp().process({pit->first}).bin({cr_bin}).AddSyst(cb, "scale_$BIN", "rateParam", SystMap<bin>::init({cr_bin}, bkgrate_cr));
 					}
 				}
 				//cout << " cr bins " << endl;
@@ -436,7 +441,7 @@ void BuildFit::BuildABCDFit(){
 				string cr_rateparams = "scale_"+cr_bins_matchidx[0];
 				for(int i = 1; i < (int)cr_bins_matchidx.size(); i++)
 					cr_rateparams += ",scale_"+cr_bins_matchidx[i];
-				//cout << "proc " << pit->first << " cr_rateparams " << cr_rateparams << endl;
+				//cout << "proc " << pit->first << " cr_rateparams " << cr_rateparams << " sr bin " << sr_bin << endl;
 				cb.cp().process({pit->first}).bin({sr_bin}).AddSyst(cb, "scale_$BIN_$PROCESS", "rateParam", SystMapFunc<>::init
 								("(@0*@1/@2)",cr_rateparams)
 					);

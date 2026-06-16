@@ -90,6 +90,21 @@ class BuildFit{
 
 		string GetFitName(){ return _fitname; }
 
+		//get process for bin (includes binidx)
+		string getProcess(string crbin){
+			string crch = crbin.substr(0, crbin.size() - 2);
+			for(auto it = _abcd_ch_ass.begin(); it != _abcd_ch_ass.end(); it++){
+				string srch = it->first;
+				for(auto iit = _abcd_ch_ass[srch].begin(); iit != _abcd_ch_ass[srch].end(); iit++){
+					string proc = iit->first;
+					vector<string> crchs = _abcd_ch_ass[srch][proc];
+					if(find(crchs.begin(), crchs.end(), crch) != crchs.end())
+						return proc;
+				}
+			}
+			return _bkg_proc;
+		}
+
 	private:
 		channelmap _shape_ch_ass; //channel association for shape transfer fit
 		channelmap _shape_bin_ass; //bin associations for each channel
