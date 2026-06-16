@@ -4,8 +4,26 @@
 #include "ConfigParser.h"
 #include "ArgumentParser.h"
 #include <iostream>
+#include <sstream>
+#include <cmath>
+#include <algorithm>
 #include <sys/stat.h>
 #include <errno.h>
+
+// Convert a ctau value to a filename-safe tag using the Xp convention:
+//   50.0  -> "50"
+//   0.01  -> "0p01"
+//   1.5   -> "1p5"
+static std::string CtauToTag(double ctau) {
+    if (ctau == std::floor(ctau)) {
+        return std::to_string(static_cast<long long>(ctau));
+    }
+    std::ostringstream oss;
+    oss << ctau;
+    std::string s = oss.str();
+    std::replace(s.begin(), s.end(), '.', 'p');
+    return s;
+}
 
 // Function to process a single configuration file
 int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& options) {
@@ -16,12 +34,62 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 		return 1;
 	}
 	
-	const AnalysisConfig& config = configParser.GetConfig();
-	
+	AnalysisConfig cfg = configParser.GetConfig();
+
 	// Override config with command-line options if provided
-	double luminosity = (options.luminosity > 0) ? options.luminosity : config.luminosity;
-	int verbosity = (options.verbosity >= 0) ? options.verbosity : config.verbosity;
-	std::string output_dir = options.output_dir.empty() ? config.output_dir : options.output_dir;
+	double luminosity = (options.luminosity > 0) ? options.luminosity : cfg.luminosity;
+	int verbosity = (options.verbosity >= 0) ? options.verbosity : cfg.verbosity;
+	std::string output_dir = options.output_dir.empty() ? cfg.output_dir : options.output_dir;
+
+	// Apply CLI ctau overrides. Capture whether YAML already configured reweighting before
+	// applying overrides so we know whether to auto-suffix the output filename below.
+	bool yaml_had_reweighting = (cfg.sampleLifetime > 0);
+	if (options.source_ctau > 0) cfg.sampleLifetime = options.source_ctau;
+	if (options.target_ctau > 0) cfg.targetLifetime = options.target_ctau;
+
+	// When --target-ctau is supplied on the CLI and the YAML did not already configure
+	// reweighting, suffix the output JSON name with _ctauN so that runs at different ctau
+	// values don't overwrite each other (e.g. "MyAnalysis.json" -> "MyAnalysis_ctau30.json").
+	// NOTE: The signal process KEY inside the JSON (e.g. "gogoGZ_2300_1300_1000_50") comes
+	// from the MC filename via BFTool::GetSignalTokens and reflects the *generated* ctau, not
+	// the target ctau. BF.x therefore names datacard directories after the original ctau.
+	// A ctau scan pipeline must rename those directories to carry the correct target ctau label.
+	if (options.target_ctau > 0 && !yaml_had_reweighting) {
+		std::string suffix = "_ctau" + CtauToTag(options.target_ctau);
+		size_t dot = cfg.output_json.rfind('.');
+		if (dot != std::string::npos)
+			cfg.output_json = cfg.output_json.substr(0, dot) + suffix + cfg.output_json.substr(dot);
+		else
+			cfg.output_json += suffix;
+	}
+
+	// Apply CLI BR overrides. When --target-zrate/--target-grate are given and the YAML did
+	// not already have a decayWeights block, auto-suffix the output JSON so runs at different
+	// BR points don't overwrite each other (e.g. "MyAnalysis.json" -> "MyAnalysis_Z100G0.json").
+	bool yaml_had_decay_weights = (cfg.targetZrate >= 0 || cfg.targetGrate >= 0);
+	if (options.source_zrate >= 0) cfg.sampleZrate = options.source_zrate;
+	if (options.source_grate >= 0) cfg.sampleGrate = options.source_grate;
+	if (options.target_zrate >= 0) cfg.targetZrate = options.target_zrate;
+	if (options.target_grate >= 0) cfg.targetGrate = options.target_grate;
+	// SMS samples are generated at equal Z/photon BR (50/50). Default to that
+	// when neither the YAML nor the CLI specified target rates.
+	if (cfg.targetZrate < 0 && cfg.targetGrate < 0) {
+		cfg.targetZrate = 0.5;
+		cfg.targetGrate = 0.5;
+	}
+	// Default source rates to 0.5 when not explicitly provided.
+	if (cfg.sampleZrate < 0) cfg.sampleZrate = 0.5;
+	if (cfg.sampleGrate < 0) cfg.sampleGrate = 0.5;
+	if (!yaml_had_decay_weights) {
+		int zpct = static_cast<int>(std::round(cfg.targetZrate * 100));
+		int gpct = static_cast<int>(std::round(cfg.targetGrate * 100));
+		std::string suffix = "_Z" + std::to_string(zpct) + "G" + std::to_string(gpct);
+		size_t dot = cfg.output_json.rfind('.');
+		if (dot != std::string::npos)
+			cfg.output_json = cfg.output_json.substr(0, dot) + suffix + cfg.output_json.substr(dot);
+		else
+			cfg.output_json += suffix;
+	}
 	
 	// Print configuration if verbose
 	if (verbosity > 0 && !options.batch_mode) {
@@ -33,11 +101,11 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 		if (!options.output_dir.empty()) std::cout << "  Output dir: " << output_dir << std::endl;
 		std::cout << std::endl;
 	} else if (options.batch_mode && verbosity > 0) {
-		std::cout << "Processing: " << config.name << " -> " << config.output_json << std::endl;
+		std::cout << "Processing: " << cfg.name << " -> " << cfg.output_json << std::endl;
 	}
-	
+
 	// Dry run - just validate and exit
-	if (options.dry_run || config.dry_run) {
+	if (options.dry_run || cfg.dry_run) {
 		if (verbosity > 0) {
 			std::cout << "Dry run completed - configuration " << config_file << " is valid." << std::endl;
 		}
@@ -57,9 +125,9 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	SampleTool* ST = new SampleTool();
 	
 	// Convert vectors to the expected stringlist format
-	stringlist bkglist(config.backgrounds.begin(), config.backgrounds.end());
-	stringlist siglist(config.signals.begin(), config.signals.end());
-	stringlist datalist(config.data.begin(), config.data.end());	
+	stringlist bkglist(cfg.backgrounds.begin(), cfg.backgrounds.end());
+	stringlist siglist(cfg.signals.begin(), cfg.signals.end());
+	stringlist datalist(cfg.data.begin(), cfg.data.end());
 	
 	ST->LoadBkgs(bkglist);
 	ST->LoadSigs(siglist);
@@ -82,11 +150,10 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	//BFI->BuildScaledEvtWt(luminosity);
 
 	//Load new weights for reweighting scenarios
-    BFI->BuildReweights( config );	
+	BFI->BuildReweights( cfg );
 
-		
 	// Create analysis bins from configuration
-	for (const auto& bin : config.bins) {
+	for (const auto& bin : cfg.bins) {
 		std::string combined_cuts = configParser.GetCombinedCuts(bin.name);
 		
 		if (verbosity > 1 && !options.batch_mode) {
@@ -135,7 +202,7 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	// Aggregate maps into more easily useable classes
 	BFI->ConstructBkgBinObjects(countResults, sumResults, errorResults);
 	BFI->AddSigToBinObjects(countResults_S, sumResults_S, errorResults_S, BFI->analysisbins);
-	if(config.mc_closure){
+	if(cfg.mc_closure){
 		BFI->AddMCClosureDataToBinObjects(BFI->analysisbins);
 	}
 	else{
@@ -145,10 +212,10 @@ int ProcessSingleConfig(const std::string& config_file, const ProgramOptions& op
 	if (verbosity > 0 && !options.batch_mode) {
 		BFI->PrintBins(verbosity > 1 ? 1 : 0);
 	}
-	
+
 	// Write output JSON
-	std::string output_path = output_dir + "/" + config.output_json;
-	JSONFactory* json = new JSONFactory(BFI->analysisbins, config, config.mc_closure, config.mc_closure_background_mode);
+	std::string output_path = output_dir + "/" + cfg.output_json;
+	JSONFactory* json = new JSONFactory(BFI->analysisbins, cfg, cfg.mc_closure, cfg.mc_closure_background_mode);
 	json->WriteJSON(output_path);
 	
 	if (verbosity > 0) {

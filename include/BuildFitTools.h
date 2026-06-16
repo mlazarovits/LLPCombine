@@ -10,6 +10,7 @@
 #include <algorithm> // For std::all_of
 #include <cctype>    // For std::isdigit
 #include <cmath>
+#include <stdexcept>
 #include "Math/ProbFunc.h"
 #include "Math/PdfFuncMathCore.h"
 
@@ -48,11 +49,12 @@ class Bin{
 
 class BFTool{
 
-	public:
-	static std::vector<std::string> SplitString(const std::string& str,const std::string& delimiter);
-	static std::string GetSignalTokens(std::string& input);
-	static bool  ContainsAnySubstring(const std::string& mainString, const std::vector<std::string>& substrings);
-	static std::string RoundNumber(const std::string& str, int ndigits);
+		public:
+		static std::vector<std::string> SplitString(const std::string& str,const std::string& delimiter);
+		static std::string GetSignalTokens(std::string& input);
+		static std::string NormalizeCtauToken(const std::string& ctau_token);
+		static bool  ContainsAnySubstring(const std::string& mainString, const std::vector<std::string>& substrings);
+		static std::string RoundNumber(const std::string& str, int ndigits);
 };
 inline std::string BFTool::RoundNumber(const std::string& str, int ndigits = 1){
 	std::string ret;
@@ -65,9 +67,9 @@ inline std::string BFTool::RoundNumber(const std::string& str, int ndigits = 1){
 }
 
 inline std::vector<std::string> BFTool::SplitString(const std::string& str,const std::string& delimiter) {
-    std::vector<std::string> tokens;
-    size_t prev_pos = 0;
-    size_t current_pos;
+	    std::vector<std::string> tokens;
+	    size_t prev_pos = 0;
+	    size_t current_pos;
 
     while ((current_pos = str.find(delimiter, prev_pos)) != std::string::npos) {
         tokens.push_back(str.substr(prev_pos, current_pos - prev_pos));
@@ -75,61 +77,87 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
     }
     tokens.push_back(str.substr(prev_pos)); // Add the last token
 
-    return tokens;
-}
-inline std::string BFTool::GetSignalTokens(std::string& input ){
-	std::string mode = "x";
-	std::string mgo = "0";
-	std::string mn2 = "0";
-	std::string mn1 = "0";
+	    return tokens;
+	}
+	inline std::string BFTool::NormalizeCtauToken(const std::string& ctau_token){
+		std::string ctau = ctau_token;
+		if(ctau.rfind("ct", 0) == 0)
+			ctau = ctau.substr(2);
+
+		if(ctau.empty())
+			throw std::invalid_argument("Could not parse empty ctau token: " + ctau_token);
+
+		// Preserve the historical process-key conversion used by existing SMS files:
+		// ct0p1 -> 10, ct0p5 -> 50, etc.
+		if(ctau.rfind("0p", 0) == 0){
+			std::vector<std::string> toks = SplitString(ctau, "p");
+			if(toks.size() < 2)
+				throw std::invalid_argument("Could not parse ctau token: " + ctau_token);
+
+			char padding_char = '0';
+			std::string padded_str = toks[1];
+			size_t first_digit_pos = padded_str.find_first_not_of(padding_char);
+			if (first_digit_pos == std::string::npos)
+				return "0";
+
+			std::string numeric_str = padded_str.substr(first_digit_pos);
+			int num_value = std::stoi(numeric_str);
+			num_value *= 10;
+
+			std::string new_numeric_str = std::to_string(num_value);
+			size_t target_length = padded_str.length();
+			int new_padding_count = 0;
+			if (target_length > new_numeric_str.length())
+				new_padding_count = target_length - new_numeric_str.length();
+
+			return std::string(new_padding_count, padding_char) + new_numeric_str;
+		}
+
+		// Newer files may spell meter values with an extra separator, e.g. ct-3p0.
+		// Treat ct-3p0 like ct3p0: 3.0 m -> 300 cm.
+		if(ctau[0] == '-')
+			ctau = ctau.substr(1);
+
+		if(ctau.find('p') != std::string::npos){
+			std::replace(ctau.begin(), ctau.end(), 'p', '.');
+			double meters = std::stod(ctau);
+			long long cm = std::llround(meters * 100.0);
+			return std::to_string(cm);
+		}
+
+		if(!std::all_of(ctau.begin(), ctau.end(), [](unsigned char c){ return std::isdigit(c); }))
+			throw std::invalid_argument("Could not parse ctau token: " + ctau_token);
+
+		return ctau;
+	}
+	inline std::string BFTool::GetSignalTokens(std::string& input ){
+		std::string mode = "x";
+		std::string mgo = "0";
+		std::string mn2 = "0";
+		std::string mn1 = "0";
 	std::string ctau = "10";
-	std::vector<std::string> siglist_toks = SplitString(input, "/");
-	std::string sig = siglist_toks[ siglist_toks.size()-1];
-	std::vector<std::string> sig_toks = SplitString(sig, "_");
-	
-	mode = sig_toks[3];
-	mgo = SplitString(sig_toks[5], "-")[1];
-	mn2 = SplitString(sig_toks[6], "-")[1];
-	mn1 = SplitString(sig_toks[7], "-")[1];
-//	ctau = SplitString(sig_toks[7], "-")[2];
-//squarks have different naming atm
-	ctau = sig_toks[8];
+		std::vector<std::string> siglist_toks = SplitString(input, "/");
+		std::string sig = siglist_toks[ siglist_toks.size()-1];
+		std::vector<std::string> sig_toks = SplitString(sig, "_");
+		
+		for(const auto& tok : sig_toks){
+			if(tok == "gogoGZ" || tok == "gogoG" || tok == "gogoZ" || tok == "sqsqG")
+				mode = tok;
+			else if(tok.rfind("mGl-", 0) == 0)
+				mgo = SplitString(tok, "-")[1];
+			else if(tok.rfind("mN2-", 0) == 0)
+				mn2 = SplitString(tok, "-")[1];
+			else if(tok.rfind("mN1-", 0) == 0)
+				mn1 = SplitString(tok, "-")[1];
+			else if(tok.rfind("ct", 0) == 0)
+				ctau = NormalizeCtauToken(tok);
+		}
 
-	ctau = SplitString(ctau, "p")[1];
-	//fancy padding operations to deal with ctau <1 //////////////////////
-	char padding_char = '0'; // Assuming '0' as padding character
-	std::string padded_str = ctau;
-    size_t first_digit_pos = padded_str.find_first_not_of(padding_char);
-    if (first_digit_pos == std::string::npos) { // String is all padding or empty
-        // Handle this case, e.g., if "000", then value is 0 and padding is 3
-        first_digit_pos = padded_str.length(); // Treat as if numeric part is empty
-    }
-
-//    int padding_count = first_digit_pos;
-    std::string numeric_str = padded_str.substr(first_digit_pos);
-    int num_value = std::stoi(numeric_str);
-    num_value *= 10; //make it ctau in cm (10 because we take the digit past the p in m (.x) 
-    //end padding
-	
-	std::string new_numeric_str = std::to_string(num_value);
-
-    // Determine target total length (original string length)
-    size_t target_length = padded_str.length();
-
-    // Calculate new padding count
-    int new_padding_count = 0;
-    if (target_length > new_numeric_str.length()) {
-        new_padding_count = target_length - new_numeric_str.length();
-    }
-
-
-    std::string final_padded_str = std::string(new_padding_count, padding_char) + new_numeric_str;
-    ////end padding
-	
-	ctau = final_padded_str;
-	
-	std::string signalKeys = mode+"_"+mgo+"_"+mn2+"_"+mn1+"_"+ctau;
-	return signalKeys;
+		if(mode == "x" || mgo == "0" || mn2 == "0" || mn1 == "0")
+			throw std::invalid_argument("Could not parse signal filename: " + sig);
+		
+		std::string signalKeys = mode+"_"+mgo+"_"+mn2+"_"+mn1+"_"+ctau;
+		return signalKeys;
 	
 	
 }

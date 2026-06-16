@@ -87,24 +87,29 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 	for( unsigned int i=0; i< siglist.size(); i++){//signal keys are vector doubles (mode, mgo, mn2, mn1, ctau)
 		//std::string subkey = key+"_"+std::to_string(i);//1 file per?
 		std::string subkey = BFTool::GetSignalTokens( siglist[i]);
-		if(gSystem->AccessPathName(siglist[i].c_str())){
-			cout << "File " << siglist[i] << " not found. Skipping..." << endl;
-			return;
-		}
-
-
 		//also make the event weight branch here while we have the correct bkg file
 		int ntot{};
 		float xsec{};
 		//float sums =0.;
 		TFile* f = TFile::Open(siglist[i].c_str());
+		if(!f || f->IsZombie()){
+			cout << "Signal file " << siglist[i] << " could not be opened. Skipping..." << endl;
+			if(f) f->Close();
+			continue;
+		}
 		TTree* configTree = (TTree*)f->Get("kuSkimConfigTree");
+		if(!configTree){
+			cout << "Signal file " << siglist[i] << " has no kuSkimConfigTree. Skipping..." << endl;
+			f->Close();
+			continue;
+		}
 		configTree->SetBranchAddress("nTotEvts", &ntot);//cross section is genweight!!
 		configTree->SetBranchAddress("sCrossSection", &xsec);
 		configTree->GetEntry(0);
 		//catch for signal samples with bad weights
 		if(ntot == 0){
 			cout << "sample " << subkey << " has bad weights. Skipping..." << endl;
+			f->Close();
 			continue;
 		}
 		
@@ -524,4 +529,3 @@ void BuildFitInput::PrintBins(int verbosity){
 
 	
 		
-

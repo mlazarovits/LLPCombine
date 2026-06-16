@@ -68,6 +68,8 @@ SampleTool::SampleTool(){
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
 
+	MasterDict["gogoGZ300"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-3p0_rjrskim.root"};
+
 	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
 
 	MasterDict["MET16"] = { pathPrefix+"MET_R16_SVHPM100_MiniAOD_v34_MET_Run2016B-ver2_HIPM_UL2016_rjrskim.root",
@@ -100,9 +102,26 @@ SampleTool::SampleTool(){
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023C-19Dec2023-v1_rjrskim.root",
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023D-19Dec2023-v1_rjrskim.root"};
 
+	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v50/";
 	
 	MasterDict["MET24"] = { pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024C-PromptReco-v1_rjrskim.root",
-				pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root"};
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024E-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024E-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024F-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024G-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024H-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024I-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024I-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024C-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024E-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024E-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024F-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024G-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024H-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024I-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024I-PromptReco-v2_rjrskim.root"};
 	
 	
 	
