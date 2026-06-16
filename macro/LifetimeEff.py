@@ -42,29 +42,27 @@ signal_mass = f'gogoGZ_{args.mGl}_{args.mN2}_{args.mN1}'
 lumi = 200
 
 ctau_files = glob.glob("../json/BigGuy_NonCompressed_FullRegions_Ctau*.json") 
+ctau_files.append("../json/BigGuy_NonCompressed_FullRegions.json")
 
 ctau_ch_evts = {}
 ch_names = {}
-lifetimes = []
 for BFIfile in ctau_files:
     print(BFIfile)
     data = {}
     with open(BFIfile,"r") as f:
         data = json.load(f)
     
-    lifetime = BFIfile[BFIfile.find("CtauReweight")+12:BFIfile.find(".json")]
-    lifetime = lifetime[lifetime.find("to")+2:]
-    lifetimes.append(float(lifetime))
-    ctau_ch_evts[lifetime] = {}
-    ctau_ch_evts[lifetime]['denom'] = [0.,0.]
     for reg_name, region in data.items():
         if args.SRsonly and "SR" not in reg_name:
             continue
         for signal, evts in region.items():
             if signal_mass not in signal:
                 continue
-            #lifetime = signal.split("_")[-1]
-            #print(reg_name,"signal",signal)
+            lifetime = signal.split("_")[-1]
+            if lifetime not in ctau_ch_evts.keys():
+                ctau_ch_evts[lifetime] = {}
+                ctau_ch_evts[lifetime]['denom'] = [0.,0.]
+            print("signal",signal)
             wt_evt = region[signal][1]
             wt_err = region[signal][2]
             ch_key = re.match(r"Ch\d*", reg_name)
@@ -107,7 +105,7 @@ fig, ax = plt.subplots(figsize=(10,8))
 hep.cms.label("Preliminary", data = False, lumi=None,com=13.6)
 for ch, val in effs.items():
     effs[ch] = np.array(sorted(val,key=lambda x : x[0]))
-    ax.plot(effs[ch][:,0], effs[ch][:,1],label=ch_names[ch],linestyle='solid',color=COLORS[ch])
+    ax.plot(effs[ch][:,0], effs[ch][:,1],label=ch_names[ch],linestyle='solid',color=COLORS[ch],marker='o')
 
 ax.set_xlabel(r'$c\tau$ (cm)')
 ax.set_ylabel("efficiency")
