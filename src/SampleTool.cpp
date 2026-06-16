@@ -68,6 +68,8 @@ SampleTool::SampleTool(){
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p1_rjrskim.root",
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
 
+	MasterDict["gogoGZ300"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-3p0_rjrskim.root"};
+
 	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
 
 	MasterDict["MET16"] = { pathPrefix+"MET_R16_SVHPM100_MiniAOD_v34_MET_Run2016B-ver2_HIPM_UL2016_rjrskim.root",
@@ -100,58 +102,71 @@ SampleTool::SampleTool(){
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023C-19Dec2023-v1_rjrskim.root",
 				pathPrefix+"JetMET_R23_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2023D-19Dec2023-v1_rjrskim.root"};
 
+	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v50/";
 	
 	MasterDict["MET24"] = { pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024C-PromptReco-v1_rjrskim.root",
-				pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root"};
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024E-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024E-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024F-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024G-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024H-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024I-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET0_MINIAOD_Run2024I-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024C-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024D-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024E-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024E-PromptReco-v2_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024F-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024G-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024H-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024I-PromptReco-v1_rjrskim.root",
+	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024I-PromptReco-v2_rjrskim.root"};
 	
 	
 	
 	
 	
-	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
-	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-100To200_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-1200To2500_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-200To400_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-2500ToInf_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-400To600_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-600To800_rjrskim.root",
-				pathPrefix+"WJets_R18_SVIPM100_v31_WJetsToLNu_HT-800To1200_rjrskim.root"};		
+	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
+	MasterDict["Wjets"] = {pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-70To100_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"WJets_R18_SVIPM100_MiniAOD_v34_WJetsToLNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root"};		
 			
 
-	MasterDict["Zjets"] = {pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-100To200_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-1200To2500_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-200To400_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-2500ToInf_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-400To600_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-600To800_rjrskim.root",
-				pathPrefix+"ZJets_R18_SVIPM100_v31_ZJetsToNuNu_HT-800To1200_rjrskim.root"};
+	MasterDict["Zjets"] = {pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-1200To2500_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-2500ToInf_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-600To800_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"ZJets_R18_SVIPM100_MiniAOD_v34_ZJetsToNuNu_HT-800To1200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root"};
 
 
-	MasterDict["Top"] = {pathPrefix+"TTXJets_R18_SVIPM100_v31_TGJets_rjrskim.root",
-				pathPrefix+"TTXJets_R18_SVIPM100_v31_TTGJets_rjrskim.root",
-				pathPrefix+"TTXJets_R18_SVIPM100_v31_TTJets_rjrskim.root",
-				pathPrefix+"TTXJets_R18_SVIPM100_v31_ttWJets_rjrskim.root",
-				pathPrefix+"TTXJets_R18_SVIPM100_v31_ttZJets_rjrskim.root"};
+	MasterDict["Top"] = {pathPrefix+"TTJets_R18_SVIPM100_MiniAOD_v34_TTJets_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root"};
 						 
-	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
-	MasterDict["Gjets"] = {pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v34_GJets_HT-100To200_RunIISummer20UL18_rjrskim.root",
-				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v34_GJets_HT-200To400_RunIISummer20UL18_rjrskim.root",
-				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v34_GJets_HT-400To600_RunIISummer20UL18_rjrskim.root",
-				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v34_GJets_HT-40To100_RunIISummer20UL18_rjrskim.root",
-				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v34_GJets_HT-600ToInf_RunIISummer20UL18_rjrskim.root"};
+	MasterDict["Gjets"] = {pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v2_v34_GJets_HT-100To200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v2_v34_GJets_HT-200To400_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v2_v34_GJets_HT-400To600_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v2_v34_GJets_HT-40To100_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"GJets_R18_SVHPM100_MiniAOD_v2_v34_GJets_HT-600ToInf_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root"};
 	
 
-	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
-	MasterDict["QCD"] = {pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT1000to1500_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT100to200_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT1500to2000_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT2000toInf_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT200to300_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT300to500_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT500to700_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT50to100_rjrskim.root",
-				pathPrefix+"QCD_R18_SVIPM100_v31_QCD_HT700to1000_rjrskim.root"};	
+	MasterDict["QCD"] = {pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT1000to1500_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT100to200_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT1500to2000_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT2000toInf_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT200to300_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT300to500_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT500to700_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT50to100_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root",
+				pathPrefix+"QCD_R18_SVIPM100_MiniAOD_v34_QCD_HT700to1000_TuneCP5_13TeV-madgraphMLM-pythia8_rjrskim.root"};	
 						 
+	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v46/";
 	MasterDict["DB"] = {pathPrefix+"WZ_R18_IPM100_v24_LLPGskim_v24_rjrvars.root"};
 
 	MasterDict["Box"] = {pathPrefix+"DiPJBox_R18_SVIPM100_v31_DiPhotonJetsBox_M40_80-sherpa_rjrskim.root",
@@ -275,6 +290,5 @@ void SampleTool::PrintKeys( stringlist sl ){
 	}
 
 }
-
 
 

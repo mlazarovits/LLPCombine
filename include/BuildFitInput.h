@@ -97,6 +97,7 @@ class BuildFitInput{
 	void ConstructBkgBinObjects( countmap countResults, summap sumResults, errormap errorResults );
 	void AddSigToBinObjects( countmap countResults, summap sumResults, errormap errorResults, std::map<std::string, Bin*>& analysisbins);
 	void AddDataToBinObjects( countmap countResults, summap sumResults, errormap errorResults, std::map<std::string, Bin*>& analysisbins);
+	void AddMCClosureDataToBinObjects(std::map<std::string, Bin*>& analysisbins);
 	void PrintBins(int verbosity=1);
 };
 #endif
