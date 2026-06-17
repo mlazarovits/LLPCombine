@@ -53,6 +53,60 @@ ProgramOptions ArgumentParser::Parse(int argc, char* argv[]) {
                 throw;
             }
         }
+        else if (arg == "--source-ctau") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.source_ctau = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid source-ctau value: " << val << std::endl;
+                throw;
+            }
+        }
+        else if (arg == "--target-ctau") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.target_ctau = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid target-ctau value: " << val << std::endl;
+                throw;
+            }
+        }
+        else if (arg == "--source-zrate") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.source_zrate = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid source-zrate value: " << val << std::endl;
+                throw;
+            }
+        }
+        else if (arg == "--source-grate") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.source_grate = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid source-grate value: " << val << std::endl;
+                throw;
+            }
+        }
+        else if (arg == "--target-zrate") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.target_zrate = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid target-zrate value: " << val << std::endl;
+                throw;
+            }
+        }
+        else if (arg == "--target-grate") {
+            std::string val = GetNextArg(args, i);
+            try {
+                options.target_grate = std::stod(val);
+            } catch (const std::exception& e) {
+                std::cerr << "Error: Invalid target-grate value: " << val << std::endl;
+                throw;
+            }
+        }
         else if (arg == "--dry-run") {
             options.dry_run = true;
         }
@@ -106,8 +160,14 @@ void ArgumentParser::PrintHelp(const std::string& program_name) const {
     std::cout << "  -o, --output-dir DIR    Output directory for results\n";
     std::cout << "  -l, --luminosity LUMI   Integrated luminosity (fb^-1)\n";
     std::cout << "      --verbosity LEVEL   Verbosity level (0-3)\n";
-    std::cout << "      --dry-run           Validate configuration without processing\n\n";
-    std::cout << "      --unblind           Unblinds signal regions\n\n";
+    std::cout << "      --dry-run           Validate configuration without processing\n";
+    std::cout << "      --unblind           Unblinds signal regions\n";
+    std::cout << "      --source-ctau VAL   Override source (sample) lifetime in cm (for reweighting)\n";
+    std::cout << "      --target-ctau VAL   Override target lifetime in cm (for reweighting)\n";
+    std::cout << "      --source-zrate VAL  Override source (sample) Z decay rate (0-1)\n";
+    std::cout << "      --source-grate VAL  Override source (sample) photon decay rate (0-1)\n";
+    std::cout << "      --target-zrate VAL  Override target Z decay rate (0-1, e.g. 1 for 100% Z BR)\n";
+    std::cout << "      --target-grate VAL  Override target photon decay rate (0-1, e.g. 1 for 100% gamma BR)\n\n";
     std::cout << "Batch Processing Support:\n";
     std::cout << "  Multiple configs:       " << program_name << " config1.yaml config2.yaml config3.yaml\n";
     std::cout << "  Config list file:       " << program_name << " configs.txt (or .list)\n";

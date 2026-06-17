@@ -128,7 +128,15 @@ for idx, d in enumerate(dirs):
     json_key = d.name[d.name.find("_")+1:]
     file_name = args.directory+"/"+d.name+"/"+asymlimits[0].name
     limit_file = ROOT.TFile(file_name)
+    if limit_file.IsZombie() or limit_file.GetNkeys() == 0:
+        print(f"Warning: skipping bad/empty file {file_name}")
+        limit_file.Close()
+        continue
     tree = limit_file.Get("limit")
+    if not tree or not isinstance(tree, ROOT.TTree):
+        print(f"Warning: no 'limit' TTree found in {file_name}, skipping")
+        limit_file.Close()
+        continue
     #from HiggsAnalysis code - toys and limit_err options not implemented
     for evt in tree:
         mh = json_key#str(evt.mh)

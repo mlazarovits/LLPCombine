@@ -22,9 +22,13 @@ squark_xsec = {
         2200 : 9.949E-05,
     }
 
-br_colors = {'50PhoBR50ZBR':'pink', '100PhoBR0ZBR':'green', '0PhoBR100ZBR':'purple'}
 
-
+br_colors = {
+    '100PhoBR0ZBR':  'green',
+    '50PhoBR50ZBR':  'pink',
+    '0PhoBR100ZBR':  'purple',
+}
+_br_colors_fallback = ['tab:blue', 'tab:orange', 'tab:brown']
 
 def GetMassFromFile(limit_file):
     match_obj = re.search(r"_mGl-\d+_mN2-\d+_mN1-\d+", limit_file)
@@ -60,11 +64,16 @@ def ReadLimits( inputfilename ):
 
 
 def ReadLimitsBRs(inputfiles):
+    import re
     br_dict = {}
     for file in inputfiles:
-        br_key = Path(file).stem 
-        br_key = br_key.split("_")[3]
-        #print("file",file,"br_key",br_key)
+        br_key = Path(file).stem
+        br_key = br_key.split("_")[-1]
+        m = re.fullmatch(r'Z(\d+)G(\d+)', br_key)
+        if m:
+            br_key = f"{m.group(2)}PhoBR{m.group(1)}ZBR"
+        elif not re.fullmatch(r'\d+PhoBR\d+ZBR', br_key):
+            br_key = "50PhoBR50ZBR"
         limit_dict, sig_label = ReadLimits(file)
         br_dict[br_key] = limit_dict
     if list(br_dict.keys())[-1] in sig_label:

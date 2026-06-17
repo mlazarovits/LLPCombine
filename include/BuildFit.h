@@ -116,6 +116,8 @@ class BuildFit{
 		map<string, int> _invcats; 
 		bool _asimov; //sets observation to expected yields
 		bool _datadriven; //uses data as 'bkg procs'
+		bool _preserve_background_processes = false; //keeps MC backgrounds as separate Combine processes
+		bool _direct_mc_backgrounds_inserted = false;
 		std::map<std::string, float> _obs_rates;
 		std::vector<std::string> _bkgprocs;
 		std::vector<std::string> _signalDetails;
@@ -133,7 +135,7 @@ class BuildFit{
 			double bin_tot_yield = 0;
                         for(auto proc : _bkgprocs){
 				//std::cout << "getTotYield - bin " << bin << " proc " << proc << std::endl;
-                                bin_tot_yield += GetYieldValue(bin, proc, 1, "getTotYield");
+                                bin_tot_yield += GetYieldValueOrZero(bin, proc, 1, "getTotYield");
                         }
 			return bin_tot_yield;
 		}
@@ -148,7 +150,11 @@ class BuildFit{
 		}
 
 		void sumBkgs();
+		void InsertDirectMCBackgroundProcesses();
 		double GetYieldValue(const string& bin, const string& proc, int index, const string& context) const;
+		double GetYieldValueOrZero(const string& bin, const string& proc, int index, const string& context) const;
+		std::vector<std::string> FitBackgroundProcesses() const;
+		std::vector<std::string> ExpandConfiguredProcesses(const std::vector<std::string>& configured) const;
 
 		ch::Process create_proc(string mass, string analysis, string era, string channel, string proc, pair<int, string> bininfo, bool signal, double rate){
 			ch::Process newproc;

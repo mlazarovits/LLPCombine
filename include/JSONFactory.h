@@ -16,6 +16,7 @@ class JSONFactory{
 	public:
 	JSONFactory(std::map<std::string, Bin*> analysisbins);
 	JSONFactory(std::map<std::string, Bin*> analysisbins, const AnalysisConfig& c);
+	JSONFactory(std::map<std::string, Bin*> analysisbins, const AnalysisConfig& c, bool mc_closure, const std::string& background_mode);
 	JSONFactory(std::string filename);
 	json j{};
 	std::vector<std::string> GetSigProcs();

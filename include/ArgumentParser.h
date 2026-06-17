@@ -9,6 +9,12 @@ struct ProgramOptions {
     std::vector<std::string> config_files;  // Changed to support multiple files
     std::string output_dir;
     double luminosity;
+    double source_ctau;
+    double target_ctau;
+    double source_zrate;
+    double source_grate;
+    double target_zrate;
+    double target_grate;
     int verbosity;
     bool help;
     bool dry_run;
@@ -16,9 +22,15 @@ struct ProgramOptions {
     bool unblind;
     bool batch_mode;  // New: indicates batch processing
 
-    ProgramOptions() : 
+    ProgramOptions() :
         output_dir(""),
         luminosity(-1.0),  // -1 indicates not set
+        source_ctau(-1.0), // -1 indicates not set
+        target_ctau(-1.0), // -1 indicates not set
+        source_zrate(-1.0),// -1 indicates not set
+        source_grate(-1.0),// -1 indicates not set
+        target_zrate(-1.0),// -1 indicates not set
+        target_grate(-1.0),// -1 indicates not set
         verbosity(-1),     // -1 indicates not set
         help(false),
         dry_run(false),
