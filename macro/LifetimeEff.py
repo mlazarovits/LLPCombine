@@ -12,20 +12,27 @@ import glob
 
 hep.style.use("CMS")
 
+
+
 COLORS = {
         "Ch1" : "purple",
         "Ch2" : "purple",
+        "SVonly_SR" : "purple",
         "Ch3" : "darkviolet",
         "Ch4" : "darkviolet",
         "Ch5" : "olive",
         "Ch6" : "limegreen",
         "Ch7" : "forestgreen",
         "Ch8" : "darkgreen",
+        "DelPho_NotBHLateSR" : "darkgreen",
         "Ch9" : "greenyellow",
         "Ch10" : "greenyellow",
         "Ch11" : "mediumseagreen",
         "Ch12" : "mediumseagreen",
-        "Ch16": "palevioletred", 
+        "Eq2Pho_TightIsoSR" : "mediumseagreen",
+        "Ch16": "palevioletred",
+        "MixDel_NotBHLateSR": "palevioletred",
+        "MixPrompt_SR": "deeppink",
 }
 
 
@@ -40,9 +47,15 @@ args.SRsonly = True
 
 signal_mass = f'gogoGZ_{args.mGl}_{args.mN2}_{args.mN1}'
 lumi = 200
+compressed = False
+if float(args.mGl) - float(args.mN2) <= 100 and float(args.mN2) - float(args.mN1) <= 100:
+    jsonname = "../json/LittleGuy_Compressed_FullRegions"
+    compressed = True
+else:
+    jsonname = "../json/BigGuy_NonCompressed_FullRegions"
 
-ctau_files = glob.glob("../json/BigGuy_NonCompressed_FullRegions_Ctau*.json") 
-ctau_files.append("../json/BigGuy_NonCompressed_FullRegions.json")
+ctau_files = glob.glob(f"{jsonname}_Ctau*_Z50G50.json")
+ctau_files.append(f"{jsonname}_Z50G50.json")
 
 ctau_ch_evts = {}
 ch_names = {}
@@ -62,7 +75,7 @@ for BFIfile in ctau_files:
             if lifetime not in ctau_ch_evts.keys():
                 ctau_ch_evts[lifetime] = {}
                 ctau_ch_evts[lifetime]['denom'] = [0.,0.]
-            print("signal",signal)
+            #print("signal",signal)
             wt_evt = region[signal][1]
             wt_err = region[signal][2]
             ch_key = re.match(r"Ch\d*", reg_name)
@@ -71,12 +84,16 @@ for BFIfile in ctau_files:
                 ch_key = reg_name
             #ch_key += f"_{lifetime}"
             #overwrite 'anchor' CR regions
-            ch_name = reg_name[reg_name.find(ch_key)+len(ch_key):-2]
+            if ch_key != reg_name:
+                ch_name = reg_name[reg_name.find(ch_key)+len(ch_key):-2]
+            else:
+                ch_name = reg_name[:-2]
+                ch_key = ch_name
             if "Bin" in ch_name:
                 ch_name = ch_name[:ch_name.find("Bin")]
-            if args.SRsonly:
+            if args.SRsonly and not compressed:
                 ch_name = ch_name[ch_name.find("SR")+2:]
-            ch_names[ch_key] = ch_name 
+            ch_names[ch_key] = ch_name
             if ch_key not in ctau_ch_evts[lifetime].keys():
                 ctau_ch_evts[lifetime][ch_key] = {}
                 ctau_ch_evts[lifetime][ch_key] = [wt_evt, wt_err]
@@ -113,11 +130,24 @@ plt.xscale('log')
 plt.ylim(-0.1,1.1)
 #plt.legend(fontsize=12)
 plot_signal_label = "$m_{\\tilde{g}}=$"+args.mGl+" GeV, $m_{\chi^0_2}=$" + args.mN2 + " GeV, $m_{\chi^0_1}=$"+args.mN1+" GeV"
-plt.text(3,0.8, plot_signal_label, fontsize=15)
 
-ax.legend(ncol=2,fontsize=15)
+legloc = 'best'
+if compressed:
+    legloc = 2
+leg = ax.legend(ncol=2,fontsize=15,loc=legloc)
+#force draw to get legend location
+fig.canvas.draw()
+
+#get axis info
+inverse_transform = ax.transAxes.inverted()
+bbox = leg.get_frame().get_window_extent()
+bottom_left_axes = inverse_transform.transform((bbox.x0, bbox.y0))
+text_x = bottom_left_axes[0]
+text_y = bottom_left_axes[1] - 0.05  # Subtract a small padding offset
+
+plt.text(text_x,text_y, plot_signal_label, fontsize=15,transform=ax.transAxes)
 if args.SRsonly:
-    plt.text(3,0.75,"SR Breakdown",fontsize=15)
+    plt.text(text_x,text_y - 0.05,"SR Breakdown",fontsize=15, transform=ax.transAxes)
 
 pltname = f"lifetimeEff_gogoGZ_mGl-{args.mGl}_mN2-{args.mN2}_mN1-{args.mN1}.pdf"
 plt.savefig(pltname)
