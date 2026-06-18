@@ -315,6 +315,7 @@ def MakeCtauLimit( significance_dict, sig_label, mGo=2000, mN2 = 1500, mN1 = 500
             continue
         x.append(key[3])#ctau on xaxis
         #just do median for now * xsec (gluino_xsec in pb, convert to fb)
+        print(entry["exp0"], gluino_xsec[mGo])
         y.append(entry["exp0"] * gluino_xsec[mGo] * 1000)
         y1sigup.append(entry["exp+1"] * gluino_xsec[mGo] * 1000)
         y2sigup.append(entry["exp+2"] * gluino_xsec[mGo] * 1000)
@@ -327,6 +328,8 @@ def MakeCtauLimit( significance_dict, sig_label, mGo=2000, mN2 = 1500, mN1 = 500
     sort_idx = np.argsort(x)
     x=np.array(x)[sort_idx]
     y=np.array(y)[sort_idx]
+    print(x)
+    print(y)
     y1sigup=np.array(y1sigup)[sort_idx]
     y2sigup=np.array(y2sigup)[sort_idx]
     y1sigdn=np.array(y1sigdn)[sort_idx]
@@ -530,36 +533,36 @@ for mp in mass_pts:
 
 #do 2D limit plots
 #TODO - wait until we have more mass points for a more fleshed out mass plane
+#turn off for now
 #MakeSN1Limit( significance_dict, sig_label, 10, extra_text, ofile)
 #MakeSN1Limit( significance_dict, sig_label, 50, extra_text, ofile)
-#exit()
 #if multiple n1 masses
-if(len(set(n1mass)) > 1 and len(set(smass)) == 1):
-    if(len(np.unique(n2mass)) == len(n2mass)): #all n2s are unique
-        print("making N1N2 plot")
-        #plot N1N2
-        MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
-    else: #unique mass splittings
-        print("making N2N1dM plot")
-        #plot N1N2
-        MakeN2N1dMplot( significance_dict, sig_label, smass[0], extra_text, ofile)
-elif(len(set(n1mass)) == 1 and len(set(smass)) > 1):
-    print("making N2dM plot")
-    #plot n2 vs dM 
-    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
-elif(len(set(n1mass)) == 1 and len(set(smass)) == 1):
-    print("making N1N2 plot")
-    #plot N1N2
-    MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
-    print("making N2dM plot")
-    #plot n2 vs dM 
-    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
-else:
-    ctaus = np.unique(ctaus)
-    smasses = np.unique(smass)
-    for smass, ctau in list(itertools.product(smasses, ctaus)):
-        print("making N1N2 plot for parent sparticle mass",smass,"and ctau",ctau,"cm")
-        #plot N1N2
-        MakeN1N2plot( significance_dict, sig_label, int(smass), int(ctau), extra_text, ofile)
+#if(len(set(n1mass)) > 1 and len(set(smass)) == 1):
+#    if(len(np.unique(n2mass)) == len(n2mass)): #all n2s are unique
+#        print("making N1N2 plot")
+#        #plot N1N2
+#        MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
+#    else: #unique mass splittings
+#        print("making N2N1dM plot")
+#        #plot N1N2
+#        MakeN2N1dMplot( significance_dict, sig_label, smass[0], extra_text, ofile)
+#elif(len(set(n1mass)) == 1 and len(set(smass)) > 1):
+#    print("making N2dM plot")
+#    #plot n2 vs dM 
+#    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
+#elif(len(set(n1mass)) == 1 and len(set(smass)) == 1):
+#    print("making N1N2 plot")
+#    #plot N1N2
+#    MakeN1N2plot( significance_dict, sig_label, smass[0], extra_text, ofile)
+#    print("making N2dM plot")
+#    #plot n2 vs dM 
+#    MakeSN2dMplot( significance_dict, sig_label, n1mass[0], extra_text, ofile)
+#else:
+#    ctaus = np.unique(ctaus)
+#    smasses = np.unique(smass)
+#    for smass, ctau in list(itertools.product(smasses, ctaus)):
+#        print("making N1N2 plot for parent sparticle mass",smass,"and ctau",ctau,"cm")
+#        #plot N1N2
+#        MakeN1N2plot( significance_dict, sig_label, int(smass), int(ctau), extra_text, ofile)
 
 
