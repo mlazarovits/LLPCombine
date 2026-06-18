@@ -436,8 +436,10 @@ void BuildFit::BuildABCDFit(){
 			string ch = c.second.substr(0, c.second.size() - 2);
 			//cout << "ch " << ch << endl;
 
-			for(auto it = _abcd_ch_ass[ch].begin(); it != _abcd_ch_ass[ch].end(); it++)
+			for(auto it = _abcd_ch_ass[ch].begin(); it != _abcd_ch_ass[ch].end(); it++){
+				//cout << "ch " << ch << " proc " << it->first << " has " << it->second.size() << " cr bins" << endl;
 				procs.push_back(it->first);
+			}
 			//cout << "cat " << c.second << " gets procs " << endl;
 			//for(auto p : procs) cout << " " << p << endl;
 			cb.AddProcesses(   {"*"}, {_signalDetails[0]}, {"13.6TeV"}, {_signalDetails[1]}, procs, {c}, false);
