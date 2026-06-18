@@ -69,6 +69,8 @@ SampleTool::SampleTool(){
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
 
 	MasterDict["gogoGZ300"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-3p0_rjrskim.root"};
+	MasterDict["gogoGZ1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p01_rjrskim.root"};
+	MasterDict["gogoGZ0p1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p001_rjrskim.root"};
 
 	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
 
