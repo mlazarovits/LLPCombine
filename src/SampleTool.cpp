@@ -69,8 +69,8 @@ SampleTool::SampleTool(){
                             pathPrefix+"SMS_SVHPM100_v34p1_gogoGZ_FULLMINI_mGl-2500_mN2-2450_mN1-2400_ct0p5_rjrskim.root"};
 
 	MasterDict["gogoGZ300"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-3p0_rjrskim.root"};
-	MasterDict["gogoGZ1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p01_rjrskim.root"};
-	MasterDict["gogoGZ0p1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p001_rjrskim.root"};
+        MasterDict["gogoGZ1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p01_rjrskim.root"};
+        MasterDict["gogoGZ0p1"] = {pathPrefix+"SMS_SVHPM100_v36_gogoGZ_FULLMINI_mGl-2300_mN2-1300_mN1-1000_ct-0p001_rjrskim.root"};
 
 	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
 
@@ -126,7 +126,19 @@ SampleTool::SampleTool(){
 	  pathPrefix+"JetMET_R24_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2024I-PromptReco-v2_rjrskim.root"};
 	
 	
-	
+	 MasterDict["MET25"] = { pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2025D-PromptReco-v1_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2025E-PromptReco-v1_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2025F-PromptReco-v1_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2025F-PromptReco-v2_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET1_MINIAOD_Run2025G-PromptReco-v1_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET0_MINIAOD_Run2025C_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET0_MINIAOD_Run2025E_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET0_MINIAOD_Run2025F_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET0_v2_MINIAOD_Run2025C_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET0_v2_MINIAOD_Run2025F_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET1_MINIAOD_Run2025C_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_JetMET1_v2_MINIAOD_Run2025C_rjrskim.root",
+            pathPrefix+"JetMET_R25_SVHPM100_MiniAOD_v34_JetMET_R25_SVHPM100_v34_recovery_JetMET0_MINIAOD_Run2025G_rjrskim.root"};
 	
 	
 	pathPrefix = "root://cmseos.fnal.gov//store/user/lpcsusylep/malazaro/KUCMSSkims/skims_v49/";
