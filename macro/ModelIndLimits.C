@@ -85,9 +85,9 @@ void ModelIndLimits(){
 	ch_map["Ch8"] = "Ch8SRgeq1PhoNotBHLateBin11";
 	ch_map["Ch10"] = "Ch10SReq1PhoTightIsoPromptBin12";
 	ch_map["Ch12"] = "Ch12SReq2PhoTightIsoPromptBin11";
-	ch_map["Ch16"] = "Ch16SRgeq1SVgeq1PhoNotBHLateBin01";
+	ch_map["Ch14"] = "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate01";
 
-	string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton.root";
+	string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions.root";//"FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton.root";
 	TFile* infile = TFile::Open(infilename.c_str(),"READ");
 	string ofilename = "ModelIndHists.root";
 	TFile* ofile = TFile::Open(ofilename.c_str(),"RECREATE");
