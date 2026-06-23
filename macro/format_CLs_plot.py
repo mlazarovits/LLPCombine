@@ -10,6 +10,7 @@ hep.style.use("CMS")
 
 argparser = argparse.ArgumentParser()
 argparser.add_argument("--input","-i",help='ROOT file with CLs+b and CLb histograms',required=True)
+argparser.add_argument("--lumi",help='luminosity',required=True)
 args = argparser.parse_args()
 
 infile = args.input
@@ -54,7 +55,7 @@ for chname, binname in SR_BINS.items():
     ax.set_ylim([ymin, ymax])
     plt.plot([obs, obs], [ymin, ymax],label='$N_{obs}$ = '+str(round(obs)),color='green')
     plt.legend()
-    hep.cms.label('Preliminary', data=True, lumi=200, com=13.6)
+    hep.cms.label('Preliminary', data=True, lumi=args.lumi, com=13.6)
     
     plt.xlabel("Events")
     plt.ylabel("Probability")
