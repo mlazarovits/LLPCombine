@@ -6,7 +6,7 @@ SR_BINS = {
     "Ch8": "Ch8SRgeq1PhoNotBHLateBin11",
     "Ch10": "Ch10SReq1PhoTightIsoPromptBin12",
     "Ch12": "Ch12SReq2PhoTightIsoPromptBin11",
-    "Ch16": "Ch16SRgeq1SVgeq1PhoNotBHLateBin01",
+    "Ch14": "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate01",
 }
 
 CR_BINS = {
