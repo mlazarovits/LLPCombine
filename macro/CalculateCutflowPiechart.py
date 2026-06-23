@@ -11,14 +11,23 @@ import numpy as np
 COLORS = {
         "CRGeLep1": ROOT.kBlue, 
         "CRGeHad1": ROOT.kCyan+4,
+        "SVonly\\_AnchorCR": ROOT.kBlue, 
         "CRgeq1SVgeq1PhoBHEarly": ROOT.kOrange+7, 
+        "MixDel\\_BHEarlyCR": ROOT.kOrange+7, 
         "CRgeq1SVgeq1PhoBHLate":ROOT.kOrange,
+        "MixDel\\_BHLateCR":ROOT.kOrange,
         "CRgeq1SVgeq1PhoNotBHEarly":ROOT.kOrange+10,
+        "MixDel\\_NotBHEarlyCR":ROOT.kOrange+10,
         "CRgeq1PhoBHEarly": ROOT.kSpring-5, 
+        "DelPho\\_BHEarlyCR": ROOT.kSpring-5, 
         "CRgeq1PhoBHLate": ROOT.kGreen,
+        "DelPho\\_BHLateCR": ROOT.kGreen,
         "CRgeq1PhoNotBHEarly": ROOT.kCyan, 
+        "DelPho\\_NotBHEarlyCR": ROOT.kCyan, 
         "CReq1PhoMedIsoPrompt":  ROOT.kTeal-1, 
+        "MixPrompt\\_AnchorCR":  ROOT.kTeal-1, 
         "CReq2PhoMedIsoPrompt": ROOT.kTeal-7, 
+        "Eq2Pho\\_MedIsoCR":  ROOT.kTeal-7, 
         #"SRgeq1SVgeq1PhoNotBHLate": ROOT.kViolet-3, 
         #"SReq2PhoTightIsoPrompt": ROOT.kPink+1, 
         #"SReq1PhoTightIsoPrompt": ROOT.kPink+4, 
@@ -26,10 +35,15 @@ COLORS = {
         #"SRGeLep1": ROOT.kAzure+2, 
         #"SRGeHad1": ROOT.kAzure+10,
         "SRgeq1SVgeq1PhoNotBHLate": ROOT.kPink-4, 
+        "MixDel\\_NotBHLateSR": ROOT.kPink-4, 
         "SReq2PhoTightIsoPrompt": ROOT.kGreen+3, 
+        "Eq2Pho\\_TightIsoSR": ROOT.kGreen+3, 
         "SReq1PhoTightIsoPrompt": ROOT.kGreen-7, 
+        "MixPrompt\\_SR": ROOT.kGreen-7, 
         "SRgeq1PhoNotBHLate": ROOT.kTeal-4, 
+        "DelPho\\_NotBHLateSR": ROOT.kTeal-4, 
         "SRGeLep1": ROOT.kViolet-3, 
+        "SVonly\\_SR": ROOT.kViolet-3, 
         "SRGeHad1": ROOT.kViolet+9,
 }
 
@@ -52,6 +66,8 @@ sigs = fileprocessor.GetFiles("SMS_gogoGZ")
 
 def main(args):
     yaml_path = '../config_master/BigGuy_NonCompressed_FullRegions_AnalysisConfig_SplitSVDelayedPhoton_4BinDelayedPhoton.yaml'
+    if args.compressed:
+        yaml_path = '../config_master/LittleGuy_Compressed_FullRegions_AnalysisConfig.yaml'
     yaml_regions = {}
     
     #assuming baseline and cleaning are the same across yamls
@@ -62,7 +78,9 @@ def main(args):
         data = yaml.safe_load(f)
     baseline = data['baseline_cuts'][0]
     cleaning = data['Cleaning'][0]
-    kin = data['kin'][0]
+    kin = None
+    if not args.compressed:
+        kin = data['kin'][0]
     if 'regions' not in data.keys():
         print("Regions not defined in yaml",yaml_path,"Please define in yaml and rerun")
         exit()
@@ -72,7 +90,7 @@ def main(args):
         yaml_regions = {k:  v for k, v in yaml_regions.items() if "SR" in k}
 
     #create output root file
-    ofilename = "cutflowPieCharts"
+    ofilename = "cutflowPieChartsCompressed"
     if(args.SRsonly):
         ofilename += "_SRsOnly"
     ofilename += ".root" 
@@ -83,7 +101,9 @@ def main(args):
     for sig in sigs:
         dmass = GetTotalMassSplit(sig)
         #skip compressed signals (for now)
-        if(dmass <= 200):
+        if(dmass <= 200) and not args.compressed:
+            continue
+        if(dmass > 200) and args.compressed:
             continue
         signame = sig[sig.find("mGl-"):sig.find("_rjrskim")]
         signame = signame.replace("-","_")
@@ -96,6 +116,8 @@ def main(args):
             #apply preselection
             presel_name = f'presel_and_{final_state}'
             presel_sel = f'{baseline} && {cleaning} && {kin} && {final_state}'
+            if args.compressed:
+                presel_sel = f'{baseline} && {cleaning} && {final_state}'
             #make denom total of SRs
             if args.SRsonly:
                 SRs = [key for key, val in yaml_regions.items() if "SR" in key]
@@ -180,6 +202,7 @@ def main(args):
 
 if __name__ == "__main__":
     argparser = argparse.ArgumentParser()
+    argparser.add_argument("--compressed",help='do compressed analysis',action='store_true',default=False)
     argparser.add_argument("--SRsonly",help='only plot SRs in piechart',action='store_true',default=False)
     argparser.add_argument("--lumi",help='luminosity',default=200)
     args = argparser.parse_args()
