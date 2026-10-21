@@ -85,10 +85,8 @@ with open(ref_yaml,"r") as f:
 
 #maybe move to input arguments since different mass points (and full/fastsim) have different simulated lifetimes
 sampleToTargetCtaus = {
-                        #10:[0.1,1,5],
-                        10:[1],
-                        50:[20]
-                        #50:[20,30]
+                        10:[0.1,1,5],
+                        50:[20,30]
                     }
 
 #dont run on config that is already being reweighted
@@ -103,7 +101,7 @@ ctau_yaml_dir.mkdir(parents=True,exist_ok=True)
 
 for sampleLifetime, targetLifetimes in sampleToTargetCtaus.items():
     for targetLifetime in targetLifetimes:
-        new_yaml_file = f"{ctau_yaml_dir}/{yamlname}_Ctau{sampleLifetime}to{targetLifetime}.yaml"
+        new_yaml_file = f"{ctau_yaml_dir}/{yamlname}_Ctau{sampleLifetime}to{str(targetLifetime).replace('.','p')}.yaml"
         if Path(new_yaml_file).is_file() and not remakeyamls:
             print(f"AnalysisConfig {new_yaml_file} exists. Skipping.")
             continue
@@ -119,7 +117,7 @@ for sampleLifetime, targetLifetimes in sampleToTargetCtaus.items():
         else:
             splitidx = outputjson.find("_Ctau")
         outputjson = outputjson[:splitidx]
-        outputjson += f"_CtauReweight{sampleLifetime}to{targetLifetime}.json"
+        outputjson += f"_CtauReweight{sampleLifetime}to{str(targetLifetime).replace('.','p')}.json"
         data["analysis"]["output_json"] = outputjson
         data["samples"]["signals"] = FlowList(
            data["samples"]["signals"]
