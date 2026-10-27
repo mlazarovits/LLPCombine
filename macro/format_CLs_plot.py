@@ -4,6 +4,7 @@ import mplhep as hep
 import matplotlib.pyplot as plt
 import argparse
 import re
+from pathlib import Path
 from tools import REGION_LABELS, SR_BINS
 
 hep.style.use("CMS")
@@ -13,6 +14,9 @@ argparser.add_argument("--input","-i",help='ROOT file with CLs+b and CLb histogr
 argparser.add_argument("--lumi",help='luminosity',required=True)
 args = argparser.parse_args()
 
+odir = 'ModelIndPlots/'
+if not Path(odir).is_dir():
+    Path(odir).mkdir(parents=True,exist_ok=True)
 infile = args.input
 file = uproot.open(infile)
 for chname, binname in SR_BINS.items():
@@ -69,6 +73,6 @@ for chname, binname in SR_BINS.items():
     binlabel = REGION_LABELS[ch_key]
     plt.text(xtext, ytext,binlabel,size=25)
     
-    pltname = f'{binname}_CLs.pdf'
+    pltname = f'{odir}{binname}_CLs.pdf'
     fig.savefig(pltname)
     print("Saved figure to",pltname)
