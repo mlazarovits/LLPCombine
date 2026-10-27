@@ -45,13 +45,13 @@ for idx, d in enumerate(dirs):
     dname = d.name+"/"
     if args.signal not in dname:
         continue
-    if args.mS is not None and args.mS not in dname:
+    if args.mS is not None and "_"+args.mS+"_" not in dname:
         continue
-    if args.mN2 is not None and args.mN2 not in dname:
+    if args.mN2 is not None and "_"+args.mN2+"_" not in dname:
         continue
-    if args.mN1 is not None and args.mN1 not in dname:
+    if args.mN1 is not None and "_"+args.mN1+"_" not in dname:
         continue
-    if args.ctau is not None and args.ctau+"/" not in dname:
+    if args.ctau is not None and f"_{args.ctau}"+"/" not in dname:
         continue
     mass = d.name[d.name.find("_")+1:]
     if args.mask is None:
@@ -88,7 +88,9 @@ dirs = Path(args.directory).iterdir()
 #collect limits in json
 js_out = {}
 dirname = args.directory[args.directory.find("datacards_")+10:].strip("/")
-outname = dirname+"_"+args.signal+"_limits"
+if not Path("limits").is_dir():
+    Path("limits").mkdir(parents=True,exist_ok=True)
+outname = "limits/"+dirname+"_"+args.signal+"_limits"
 if args.mS is not None:
     outname += f"_mGl-{args.mS}"
 if args.mN2 is not None:
