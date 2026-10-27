@@ -3,9 +3,9 @@ import re
 SR_BINS = {
     "Ch2": "Ch2SRGeLep111",
     "Ch4": "Ch4SRGeHad121",
-    "Ch8": "Ch8SRgeq1PhoNotBHLateBin11",
-    "Ch10": "Ch10SReq1PhoTightIsoPromptBin12",
-    "Ch12": "Ch12SReq2PhoTightIsoPromptBin11",
+    "Ch8": "Ch8SRgeq1PhoNotBHLateTightIso11",
+    "Ch10": "Ch10SReq1PhoTightIsoPrompt12",
+    "Ch12": "Ch12SReq2PhoTightIsoPrompt11",
     "Ch14": "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate01",
 }
 
