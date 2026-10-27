@@ -105,13 +105,13 @@ for idx, d in enumerate(dirs):
     dname = d.name+"/"
     if args.signal not in dname:
         continue
-    if args.mS is not None and args.mS not in dname:
+    if args.mS is not None and "_"+args.mS+"_" not in dname:
         continue
-    if args.mN2 is not None and args.mN2 not in dname:
+    if args.mN2 is not None and "_"+args.mN2+"_" not in dname:
         continue
-    if args.mN1 is not None and args.mN1 not in dname:
+    if args.mN1 is not None and "_"+args.mN1+"_" not in dname:
         continue
-    if args.ctau is not None and args.ctau+"/" not in dname:
+    if args.ctau is not None and f"_{args.ctau}"+"/" not in dname:
         continue
     #assume only 1 asymptotic limit file in each directory
     print("Collecting limits for",d.name)
