@@ -42,6 +42,8 @@ struct yamlSys{
                         _type = syst["type"].as<string>();
                         _name = syst["name"].as<string>();
                         _init_val = syst["init_val"].as<double>();
+			if(syst["init_err"])
+				_init_err = syst["init_err"].as<double>();
 			if(!syst["bins"])
 				_bins = {};
 			else{
@@ -64,6 +66,7 @@ struct yamlSys{
                 string _type;
 		string _name;
                 double _init_val;
+		double _init_err = -999;
                 vector<string> _bins;
 		vector<string> _procs;
 		SplitCorrelation _split_correlation;
@@ -191,6 +194,7 @@ class BuildFit{
 	private:
 		channelmap _shape_ch_ass; //channel association for shape transfer fit
 		channelmap _shape_bin_ass; //bin associations for each channel
+		map<pair<string,string>,double> _shape_tf_ass; //associates channel mappings to transfer factor, _shape_tf_ass[(anchor,buoy)] = tf
 		channelmap _abcd_bin_ass; //SR (key) to B, C, D (vals) for ABCD fit
 		//channelmap _abcd_ch_ass; //if channels are connected between ABCD fits
 		map<string,channelmap> _abcd_ch_ass; //maps like _abcd_ch_ass[sr_ch][proc] = {cr_bins}
@@ -218,13 +222,14 @@ class BuildFit{
 		//template decompositions of the current model, computed before any ABCD rateParam is created
 		vector<ABCDTemplateSplitResult> _abcd_template_results;
 		map<string, ABCDTemplateBinResult> _abcd_template_bins; //concrete target bin -> its decomposition
+		map<string, string> _abcd_proc_denom_ch;
 		string _fitname;
 		string _signalPoint;
 		map<string, string> _shape_anchor_bins;
 		string _bkg_proc = "bkg";
 		bool _rateparam_railguard_enabled = true;
 		double _rateparam_railguard_min = 1.0e-6;
-		double _rateparam_railguard_max = 10000.0;
+		double _rateparam_railguard_max = 1000000.0;
 		bool _rateparam_floor_zero_init = true;
 		bool _yearsplit = false;
 		bool _runsplit = false;

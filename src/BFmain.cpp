@@ -116,7 +116,6 @@ int main(int argc, char* argv[]){
 			//write datacard
 			BF.WriteDatacard(datacard_dir, true);
 			datacard_dir = "datacards";
-			break;
 		}
 	}
 	catch(const std::exception& e){
