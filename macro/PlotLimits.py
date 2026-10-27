@@ -1,4 +1,5 @@
 import itertools
+from pathlib import Path
 import math as mt
 import matplotlib.pyplot as plt
 import numpy as np
@@ -75,6 +76,98 @@ def MakeN2N1dMplot( significance_dict, sig_label, mS=2000, extra_text="", oname=
     print("Saving plot as",oname+"_"+sig_label+"_n2n1dM.pdf")
     plt.savefig(oname+"_"+sig_label+"_n2n1dM.pdf")
     #plt.show()
+
+def MakeSdMN2N1plot( significance_dict, sig_label, lumi, ctau=10, brgam = 50, extra_text="", oname="sigs", comp_info = None):
+    x,y,z=[],[],[]
+    if "gogo" in sig_label:
+        xsecdict = gluino_xsec
+    elif "sqsq" in sig_label:
+        xsecdict = squark_xsec 
+    else:
+        xsecdict = None
+    if xsecdict is None:
+        return
+    for key in significance_dict:
+        if ctau != key[3]:
+            continue
+        if comp_info is not None and (key[1]-key[2]) < 200:
+            continue
+        mGo = key[0]
+        x.append(key[0])
+        y.append(key[1]-key[2])
+        z.append(significance_dict[key]["exp0"])
+    if comp_info is not None:
+        comp_dict = comp_info[0]
+        comp_sig_label = comp_info[1]
+        for key in comp_dict:
+            if ctau != key[3]:
+                continue
+            if (key[1]-key[2]) >= 200:
+                continue
+            if(key[0] > 2000): #skip higher parent masses
+                continue
+            mGo = key[0]
+            x.append(key[0])
+            y.append(key[1]-key[2])
+            z.append(comp_dict[key]["exp0"])
+        
+    x=np.array(x)
+    y=np.array(y)
+    
+    ColMin=0#default to zbi
+    ColMax=5
+    cmap = plt.cm.viridis_r
+    cmap =truncate_colormap(cmap, 0, 0.8)
+    norm = plt.Normalize(vmin=ColMin, vmax=ColMax)
+    
+    fig, ax = plt.subplots(figsize=(10,8))
+    scatter = ax.scatter(x,y,c=z,norm=norm,cmap=cmap,edgecolors='black',s=100)
+    minmass = 1e6
+    for i, txt in enumerate(z):
+        v=round(z[i],2)
+        color = cmap(norm(v))
+        if( y[i] != 1900):
+            plt.text(x[i],y[i]+0.01*(max(y)-min(y)), str(round(z[i],2)),fontsize=14, ha='center', va='bottom',color=color,fontweight='bold')
+        if( y[i] == 1900):
+            plt.text(x[i],y[i], str(round(z[i],2)),fontsize=14, ha='center', va='top',color=color,fontweight='bold')
+        if( x[i] < minmass):
+            minmass = x[i]
+    #axes[j].scatter(x,y,c=zslice,norm=norm,cmap=cmap,edgecolors='black')
+    if("sqsq" in sig_label):
+        plt.xlabel('$m_{\\tilde{q}}$ (GeV)')
+    if("gogo" in sig_label):
+        plt.xlabel('$m_{\\tilde{g}}$ (GeV)')
+    plt.ylabel('$\Delta(m_{N2},m_{N1})$ (GeV)')
+
+    #plt.yscale('log')
+    
+    plt.text(minmass+50,max(y)-100, r"$c\tau=$ "+str(ctau)+" cm", fontsize=20)
+    plt.text(minmass+50,max(y)-200, r"BR $\gamma$: "+str(br)+"%, BR Z: "+str((100-br))+"%", fontsize=20)
+    if(extra_text != ""):
+        plt.text(minmass+50,800, extra_text, fontsize=20)
+
+    #cbar = plt.colorbar(scatter_plot, label='Color Value',cm.ScalarMappable(norm=norm, cmap=cmap))
+
+    cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),ax=ax, orientation='vertical')#, shrink=0.7)
+    cbar.set_label("Median Expected 95% CL $\\sigma/\\sigma_{th}$",size=20)
+    hep.cms.label("Preliminary", data = True, lumi=lumi,com=13.6)
+    brlabel = f"{int(100-br)}Z{br}G"
+    if comp_sig_label is not None:
+        comp_sig_label = Path(comp_sig_label).name
+        comp_sig_label_split = comp_sig_label.split("_")
+        comp_sig_label = ""
+        for entry in comp_sig_label_split:
+            if entry not in sig_label:
+                comp_sig_label += f"_{entry}"
+    if sig_label not in oname:
+        oname += f"_{sig_label}"
+    if comp_sig_label is not None and comp_sig_label != "":
+        oname += comp_sig_label 
+    if f"_ctau-{ctau}_BR-{brlabel}" not in oname:
+        oname += f"_ctau-{ctau}_BR-{brlabel}"
+    plotname = f"{oname}_mSn2n1dM.pdf"
+    print("Saving plot as",plotname)
+    plt.savefig(plotname)
 
 def MakeSN2dMplot( significance_dict, sig_label, mN1=100, extra_text="", oname="sigs"):
     x,y,z=[],[],[]
@@ -484,7 +577,7 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
 
 parser = argparse.ArgumentParser()
 parser.add_argument("--input", "-i", required=True, nargs='+',help="input limit .json file")
-parser.add_argument("--lumi",help='luminosity',default='200')
+parser.add_argument("--lumi",help='luminosity',default='424')
 parser.add_argument("--extra", "-e", help="extra text")
 parser.add_argument("--mass-point", "-m", nargs=3, type=int, action='append',
                     metavar=('mGo', 'mN2', 'mN1'),
@@ -505,7 +598,8 @@ lumi = args.lumi
 default_mass_pts = [[2300, 1300, 1000], [2500, 1200, 500]]
 mass_pts = args.mass_point if args.mass_point else default_mass_pts
 
-if len(args.input) > 1:
+dobrlimits = False
+if len(args.input) > 1 and dobrlimits:
     #only do multiBR ctau limit for now
     br_dict, sig_label = ReadLimitsBRs(args.input)
     required = {"exp0", "exp+1", "exp+2", "exp-1", "exp-2"}
@@ -514,12 +608,12 @@ if len(args.input) > 1:
     ctau_xmax = args.xmax if args.xmax is not None else (max(all_ctaus) if all_ctaus else None)
     for mp in mass_pts:
         MakeCtauLimitMultipleBRs( br_dict, sig_label, mp[0], mp[1], mp[2], extra_text, ofile, args.ymin, args.ymax, ctau_xmin, ctau_xmax)
-    exit()
 
 significance_dict, sig_label = ReadLimits(textfile)
 print("sig",sig_label)
 n1mass = []
 n2mass = []
+n1n2dm = []
 smass = []
 ctaus = []
 for key in significance_dict:
@@ -527,19 +621,30 @@ for key in significance_dict:
     smass.append(key[0])
     n2mass.append(key[1])
     n1mass.append(key[2])
+    n1n2dm.append(key[1] - key[2])
     ctaus.append(key[3])
 
-
+n1n2dm = set(n1n2dm)
+smass = set(smass)
+ctaus = set(ctaus)
 #do 1D ctau limits
-required_keys = {"exp0", "exp+1", "exp+2", "exp-1", "exp-2"}
-valid_ctaus = [key[3] for key, entry in significance_dict.items() if required_keys.issubset(entry.keys())]
-ctau_xmin = args.xmin if args.xmin is not None else (min(valid_ctaus) if valid_ctaus else None)
-ctau_xmax = args.xmax if args.xmax is not None else (max(valid_ctaus) if valid_ctaus else None)
-for mp in mass_pts:
-    print("making ctau limit plot for mass pt", mp)
-    MakeCtauLimit( significance_dict, sig_label, mp[0], mp[1], mp[2], extra_text, ofile, args.ymin, args.ymax, ctau_xmin, ctau_xmax, lumi)
-
+if len(ctaus) > 1:
+    required_keys = {"exp0", "exp+1", "exp+2", "exp-1", "exp-2"}
+    valid_ctaus = [key[3] for key, entry in significance_dict.items() if required_keys.issubset(entry.keys())]
+    ctau_xmin = args.xmin if args.xmin is not None else (min(valid_ctaus) if valid_ctaus else None)
+    ctau_xmax = args.xmax if args.xmax is not None else (max(valid_ctaus) if valid_ctaus else None)
+    for mp in mass_pts:
+        print("making ctau limit plot for mass pt", mp)
+        MakeCtauLimit( significance_dict, sig_label, mp[0], mp[1], mp[2], extra_text, ofile, args.ymin, args.ymax, ctau_xmin, ctau_xmax, lumi)
 #do 2D limit plots
+br = 50 #default gamma BR, Z BR = 100-br
+if len(smass) > 1 and len(n1n2dm) > 1:
+    comp_dict = None
+    for json in args.input:
+        if "LittleGuy" in json or "_Compressed" in json:
+            comp_info = ReadLimits(json)
+            break
+    MakeSdMN2N1plot( significance_dict, sig_label, lumi, ctau=10, extra_text=extra_text, oname=ofile,brgam=50,comp_info=comp_info)
 #TODO - wait until we have more mass points for a more fleshed out mass plane
 #turn off for now
 #MakeSN1Limit( significance_dict, sig_label, 10, extra_text, ofile)
