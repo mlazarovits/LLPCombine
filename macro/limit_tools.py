@@ -27,8 +27,20 @@ br_colors = {
     '100PhoBR0ZBR':  'green',
     '50PhoBR50ZBR':  'pink',
     '0PhoBR100ZBR':  'purple',
+    '0Z100G':  'green',
+    '25Z75G':  'mediumspringgreen',
+    '50Z50G':  'pink',
+    '75Z25G':  'mediumslateblue',
+    '100Z0G':  'purple',
 }
 _br_colors_fallback = ['tab:blue', 'tab:orange', 'tab:brown']
+
+#assuming brkey is *Z*G
+def br_label(brkey):
+    zfrac = int(brkey[:brkey.find("Z")])
+    gfrac = int(brkey[brkey.find("Z")+1:brkey.find("G")])
+    return f"{gfrac}% $\gamma$, {zfrac}% Z"
+
 
 def GetMassFromFile(limit_file):
     match_obj = re.search(r"_mGl-\d+_mN2-\d+_mN1-\d+", limit_file)
@@ -68,12 +80,13 @@ def ReadLimitsBRs(inputfiles):
     br_dict = {}
     for file in inputfiles:
         br_key = Path(file).stem
-        br_key = br_key.split("_")[-1]
+        br_key = br_key[:br_key.find("_gogoGZ")]
+        br_key = br_key.split("_")[-1] 
         m = re.fullmatch(r'Z(\d+)G(\d+)', br_key)
         if m:
-            br_key = f"{m.group(2)}PhoBR{m.group(1)}ZBR"
-        elif not re.fullmatch(r'\d+PhoBR\d+ZBR', br_key):
-            br_key = "50PhoBR50ZBR"
+            br_key = f"{m.group(2)}Z{m.group(1)}G"
+        elif not re.fullmatch(r'\d+Z\d+G', br_key):
+            br_key = "50Z50G"
         limit_dict, sig_label = ReadLimits(file)
         br_dict[br_key] = limit_dict
     if list(br_dict.keys())[-1] in sig_label:

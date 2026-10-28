@@ -10,7 +10,7 @@ from scipy.interpolate import LinearNDInterpolator, griddata
 import mplhep as hep
 import argparse
 import json
-from limit_tools import ReadLimits, ReadLimitsBRs, ReadLimitsKeyword, gluino_xsec, br_colors, GetMassFromFile, _br_colors_fallback
+from limit_tools import ReadLimits, ReadLimitsBRs, ReadLimitsKeyword, gluino_xsec, br_colors, GetMassFromFile, _br_colors_fallback, br_label
 
 hep.style.use("CMS")
 
@@ -532,7 +532,7 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
         green = '#228b22'
         yellow = '#ffcc00'
         color = br_colors.get(br_key, _br_colors_fallback[br_idx % len(_br_colors_fallback)])
-        ax.plot(x, y, color=color, linestyle='solid', label = br_key, zorder=10)
+        ax.plot(x, y, color=color, marker='o',linestyle='solid', label = br_label(br_key), zorder=10)
         br_idx += 1
         #plt.fill_between(np.asarray(x), 
         #                 np.asarray(y1sigup), 
@@ -566,13 +566,10 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
     plt.text(0.98, 0.04, plot_sig_label, fontsize=16, ha='right', va='bottom', transform=ax.transAxes)
     if extra_text != "":
         plt.text(0.98, 0.10, extra_text, fontsize=16, ha='right', va='bottom', transform=ax.transAxes)
-    if sig_label not in oname:
-        oname += f"_{sig_label}"
     if f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}" not in oname:
         oname += f"_mGl-{mGo}_mN2-{mN2}_mN1-{mN1}"
     plotname = f"{oname}_ctau1DMultipleBRs.pdf"
     print("Saving plot as",plotname)
-    
     plt.savefig(plotname)
 
 parser = argparse.ArgumentParser()
@@ -597,8 +594,7 @@ lumi = args.lumi
 
 default_mass_pts = [[2300, 1300, 1000], [2500, 1200, 500]]
 mass_pts = args.mass_point if args.mass_point else default_mass_pts
-
-dobrlimits = False
+dobrlimits = True
 if len(args.input) > 1 and dobrlimits:
     #only do multiBR ctau limit for now
     br_dict, sig_label = ReadLimitsBRs(args.input)
@@ -610,7 +606,6 @@ if len(args.input) > 1 and dobrlimits:
         MakeCtauLimitMultipleBRs( br_dict, sig_label, mp[0], mp[1], mp[2], extra_text, ofile, args.ymin, args.ymax, ctau_xmin, ctau_xmax)
 
 significance_dict, sig_label = ReadLimits(textfile)
-print("sig",sig_label)
 n1mass = []
 n2mass = []
 n1n2dm = []
@@ -628,7 +623,7 @@ n1n2dm = set(n1n2dm)
 smass = set(smass)
 ctaus = set(ctaus)
 #do 1D ctau limits
-if len(ctaus) > 1:
+if len(ctaus) > 1 and not dobrlimits:
     required_keys = {"exp0", "exp+1", "exp+2", "exp-1", "exp-2"}
     valid_ctaus = [key[3] for key, entry in significance_dict.items() if required_keys.issubset(entry.keys())]
     ctau_xmin = args.xmin if args.xmin is not None else (min(valid_ctaus) if valid_ctaus else None)
