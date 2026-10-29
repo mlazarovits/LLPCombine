@@ -58,7 +58,8 @@ def GetMasses( signalString ):
     mgo = float(splitSignal[0])
     mn2 = float(splitSignal[1])
     mn1 = float(splitSignal[2])
-    ctau = float(splitSignal[3])
+    ctau = splitSignal[3]
+    ctau = float(ctau)
     return [mgo,mn2,mn1,ctau]
 
 def ReadLimits( inputfilename ):
