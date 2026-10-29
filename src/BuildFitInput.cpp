@@ -106,7 +106,7 @@ void BuildFitInput::LoadSig_KeyValue( std::string key, stringlist siglist, doubl
 		if(yr != "")
 			subkey += "_"+yr;
 		//std::cout << "siglist[i] " << siglist[i] << " subkey " << subkey << std::endl;
-		std::cout << "subkey " << subkey << std::endl;
+		//std::cout << "subkey " << subkey << std::endl;
 		//also make the event weight branch here while we have the correct bkg file
 		int ntot{};
 		float xsec{};
