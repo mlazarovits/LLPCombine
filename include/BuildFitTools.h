@@ -53,7 +53,7 @@ class BFTool{
 		public:
 		static std::vector<std::string> SplitString(const std::string& str,const std::string& delimiter);
 		static std::string GetSignalTokens(std::string& input);
-		static std::string NormalizeCtauToken(const std::string& ctau_token, bool printout);
+		static std::string NormalizeCtauToken(const std::string& ctau_token);
 		static bool  ContainsAnySubstring(const std::string& mainString, const std::vector<std::string>& substrings);
 		static std::string RoundNumber(const std::string& str, int ndigits);
 };
@@ -80,14 +80,10 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 
 	    return tokens;
 	}
-	inline std::string BFTool::NormalizeCtauToken(const std::string& ctau_token, bool printout){
-		if(printout)
-			std::cout << "NormalizeCtauToken - ctau_token " << ctau_token << std::endl;
+	inline std::string BFTool::NormalizeCtauToken(const std::string& ctau_token){
 		std::string ctau = ctau_token;
 		if(ctau.rfind("ct", 0) == 0)
 			ctau = ctau.substr(2);
-		if(printout)
-			std::cout << " ctau " << ctau << std::endl;
 
 		if(ctau.empty())
 			throw std::invalid_argument("Could not parse empty ctau token: " + ctau_token);
@@ -125,25 +121,15 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 				return "0";
 
 			std::string numeric_str = padded_str.substr(first_digit_pos);
-			if(printout)
-				std::cout << " numeric_str " << numeric_str << std::endl;
 			int num_value = std::stoi(numeric_str);
-			if(printout)
-				std::cout << " num_value " << num_value << std::endl;
 			num_value *= 10;
-			if(printout)
-				std::cout << " num_value*10 " << num_value << std::endl;
 
 			std::string new_numeric_str = std::to_string(num_value);
 			size_t target_length = padded_str.length();
 			int new_padding_count = 0;
 			if (target_length > new_numeric_str.length())
 				new_padding_count = target_length - new_numeric_str.length();
-			if(printout)
-				std::cout << " new_numeric_str " <<  new_numeric_str <<  " target_length " << target_length << " new_padding_count " << new_padding_count << " padded_str " << padded_str << std::endl;
 			
-			if(printout)
-				std::cout << " ret " <<  std::string(new_padding_count, padding_char) + new_numeric_str << std::endl;
 			return std::string(new_padding_count, padding_char) + new_numeric_str;
 			*/
 		}
@@ -153,12 +139,12 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 		if(ctau[0] == '-')
 			ctau = ctau.substr(1);
 
-		//if(ctau.find('p') != std::string::npos){
-		//	std::replace(ctau.begin(), ctau.end(), 'p', '.');
-		//	double meters = std::stod(ctau);
-		//	long long cm = std::llround(meters * 100.0);
-		//	return std::to_string(cm);
-		//}
+		if(ctau.find('p') != std::string::npos){
+			std::replace(ctau.begin(), ctau.end(), 'p', '.');
+			double meters = std::stod(ctau);
+			long long cm = std::llround(meters * 100.0);
+			return std::to_string(cm);
+		}
 
 		if(!std::all_of(ctau.begin(), ctau.end(), [](unsigned char c){ return std::isdigit(c); }))
 			throw std::invalid_argument("Could not parse ctau token: " + ctau_token);
@@ -167,11 +153,6 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 	}
 	inline std::string BFTool::GetSignalTokens(std::string& input ){
 		std::string match = "gogoGZ_mGl-2300_mN2-1300_mN1-1000";
-		bool printout = false;
-		if(input.find(match) != std::string::npos){
-			std::cout << "GetSignalTokens - input " << input << std::endl;
-			printout = true;
-		}
 		std::string mode = "x";
 		std::string mgo = "0";
 		std::string mn2 = "0";
@@ -194,7 +175,7 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 			else if(tok.rfind("mN1-", 0) == 0)
 				mn1 = SplitString(tok, "-")[1];
 			else if(tok.rfind("ct", 0) == 0)
-				ctau = NormalizeCtauToken(tok,printout);
+				ctau = NormalizeCtauToken(tok);
 			// N2ctau-300cm: value already in cm
 			else if(tok.rfind("N2ctau-", 0) == 0){
 				std::string val = tok.substr(7);
@@ -210,8 +191,6 @@ inline std::vector<std::string> BFTool::SplitString(const std::string& str,const
 			throw std::invalid_argument("Could not parse signal filename: " + sig);
 		
 		std::string signalKeys = mode+"_"+mgo+"_"+mn2+"_"+mn1+"_"+ctau;
-		if(input.find(match) != std::string::npos)
-			std::cout << "returning sigkey " << signalKeys << std::endl;
 		return signalKeys;
 	
 	
