@@ -1,5 +1,5 @@
 #test fit config
-fitname: "BigGuy_NonCompressed_FullRegions_TESTCHANGES"
+fitname: "BigGuy_NonCompressed_FullRegions_v52"
 asimov: True
 datadriven: True
 
@@ -59,6 +59,16 @@ shape_transfer_fit:
     Ch14SRgeq1SVHighDxygeq1PhoNotBHLate:
       - "Ch14CRgeq1SVHighDxygeq1PhoNotBHLate00"
       - "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate01"
+    Ch6CRgeq1PhoBHLate:
+      - "Ch6CRgeq1PhoBHLate00"
+      - "Ch6CRgeq1PhoBHLate10"
+      - "Ch6CRgeq1PhoBHLate01"
+      - "Ch6CRgeq1PhoBHLate11"
+    Ch8SRgeq1PhoNotBHLateTightIso:
+      - "Ch8SRgeq1PhoNotBHLateTightIso00"
+      - "Ch8SRgeq1PhoNotBHLateTightIso10"
+      - "Ch8SRgeq1PhoNotBHLateTightIso01"
+      - "Ch8SRgeq1PhoNotBHLateTightIso11"
   channel_association:
     Ch1CRGeLep1:
       - "Ch2SRGeLep1"
@@ -70,6 +80,9 @@ shape_transfer_fit:
       - "Ch12SReq2PhoTightIsoPrompt"
     Ch13CRgeq1SVLowDxygeq1PhoNotBHLate:
       - "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate"
+    Ch6CRgeq1PhoBHLate:
+      Ch8SRgeq1PhoNotBHLateTightIso: 9.8 #set transfer factor
+    
 #main fit
 #ABCD - SR bin (D) maps to [C, A, B]
 #grid convention
@@ -80,21 +93,6 @@ shape_transfer_fit:
 # such that D/A = C/B -> D = C*A/B 
 ABCD_fit:
   bin_association:
-    Ch5CRgeq1PhoBHEarly:
-      - "Ch5CRgeq1PhoBHEarly00"
-      - "Ch5CRgeq1PhoBHEarly10"
-      - "Ch5CRgeq1PhoBHEarly01"
-      - "Ch5CRgeq1PhoBHEarly11"
-    Ch6CRgeq1PhoBHLate:
-      - "Ch6CRgeq1PhoBHLate00"
-      - "Ch6CRgeq1PhoBHLate10"
-      - "Ch6CRgeq1PhoBHLate01"
-      - "Ch6CRgeq1PhoBHLate11"
-    Ch7CRgeq1PhoNotBHEarly:
-      - "Ch7CRgeq1PhoNotBHEarly00"
-      - "Ch7CRgeq1PhoNotBHEarly10"
-      - "Ch7CRgeq1PhoNotBHEarly01"
-      - "Ch7CRgeq1PhoNotBHEarly11"
     Ch15CRgeq1PhoMedIsoEarly:
       - "Ch15CRgeq1PhoMedIsoEarly00"
       - "Ch15CRgeq1PhoMedIsoEarly10"
@@ -117,109 +115,108 @@ ABCD_fit:
       - "Ch8SRgeq1PhoNotBHLateTightIso11"
   channel_association:
     Ch8SRgeq1PhoNotBHLateTightIso:
-      bkgbh:
-        - "Ch6CRgeq1PhoBHLate"
-        - "Ch7CRgeq1PhoNotBHEarly"
-        - "Ch5CRgeq1PhoBHEarly"
       bkgprompt:
         - "Ch16CRgeq1PhoMedIsoLate"
         - "Ch17CRgeq1PhoTightIsoEarly"
         - "Ch15CRgeq1PhoMedIsoEarly"
   # Prompt bkg leaking into the notBH early CR, templated bin-by-bin from the tight-iso early CR.
   # transfer_factor: auto = min over bins of yield(target)/yield(source), or give a number.
-  template_processes:
-    - source_channel: "Ch17CRgeq1PhoTightIsoEarly"
-      target_channel: "Ch7CRgeq1PhoNotBHEarly"
-      process: "bkgprompt"
-      transfer_factor: auto
+  #template_processes:
+  #  - source_channel: "Ch17CRgeq1PhoTightIsoEarly"
+  #    target_channel: "Ch7CRgeq1PhoNotBHEarly"
+  #    process: "bkgprompt"
+  #    transfer_factor: auto
+  #ratio_denom:
+  #  bkgbh: "Ch5CRgeq1PhoBHEarly"
+  #  bkgprompt: "Ch15CRgeq1PhoMedIsoEarly"
   #can add channel associations for stacked ABCD fits
 #extra systematics
 systematics:
   #sys0:
-  #    type: "lnN"
-  #    name: "scale_Ch7CRgeq1PhoNotBHEarly11"
-  #    init_val: 1.05
-  #    procs:
-  #      - "bkgbh"
+  #    type: "param"
+  #    name: "Ch8SRgeq1PhoNotBHLateTightIsoNorm"
+  #    init_val: 9.8
   #    bins:
-  #      - "Ch7CRgeq1PhoNotBHEarly11"
+  #      - "Ch8SRgeq1PhoNotBHLateTightIso00"
+  #      - "Ch8SRgeq1PhoNotBHLateTightIso01"
+  #      - "Ch8SRgeq1PhoNotBHLateTightIso10"
 
   #pin CR channels
   sys1:
       type: "lnN"
-      name: "lnN_Ch1Ch2geLep1Shape00"
+      name: "lnN_Ch1Ch2GeLep1Shape00"
       init_val: 1.05
       bins:
-        - "Ch1CRgeLep100"
-        - "Ch2CRgeLep100"
+        - "Ch1CRGeLep100"
+        - "Ch2CRGeLep100"
   sys2:
       type: "lnN"
-      name: "lnN_Ch1Ch2geLep1Shape01"
+      name: "lnN_Ch1Ch2GeLep1Shape01"
       init_val: 1.05
       bins:
-        - "Ch1CRgeLep101"
-        - "Ch2SRgeLep101"
+        - "Ch1CRGeLep101"
+        - "Ch2SRGeLep101"
   sys3:
       type: "lnN"
-      name: "lnN_Ch1Ch2geLep1Shape10"
+      name: "lnN_Ch1Ch2GeLep1Shape10"
       init_val: 1.05
       bins:
-        - "Ch1CRgeLep110"
-        - "Ch2SRgeLep110"
+        - "Ch1CRGeLep110"
+        - "Ch2SRGeLep110"
   sys4:
       type: "lnN"
-      name: "lnN_Ch1Ch2geLep1Shape11"
+      name: "lnN_Ch1Ch2GeLep1Shape11"
       init_val: 1.05
       bins:
-        - "Ch1CRgeLep111"
-        - "Ch2SRgeLep111"
+        - "Ch1CRGeLep111"
+        - "Ch2SRGeLep111"
   sys5:
       type: "lnN"
-      name: "lnN_Ch1geLep1Shape00"
+      name: "lnN_Ch1GeLep1Shape00"
       init_val: 1.05
       bins:
-        - "Ch1CRgeLep100"
+        - "Ch1CRGeLep100"
   sys6:
       type: "lnN"
-      name: "lnN_Ch3Ch4geHad1Shape00"
+      name: "lnN_Ch3Ch4GeHad1Shape00"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad100"
-        - "Ch4CRgeHad100"
+        - "Ch3CRGeHad100"
+        - "Ch4CRGeHad100"
   sys7:
       type: "lnN"
-      name: "lnN_Ch3Ch4geHad1Shape01"
+      name: "lnN_Ch3Ch4GeHad1Shape01"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad101"
-        - "Ch4SRgeHad101"
+        - "Ch3CRGeHad101"
+        - "Ch4SRGeHad101"
   sys8:
       type: "lnN"
-      name: "lnN_Ch3Ch4geHad1Shape10"
+      name: "lnN_Ch3Ch4GeHad1Shape10"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad110"
-        - "Ch4SRgeHad110"
+        - "Ch3CRGeHad110"
+        - "Ch4SRGeHad110"
   sys9:
       type: "lnN"
-      name: "lnN_Ch3Ch4geHad1Shape11"
+      name: "lnN_Ch3Ch4GeHad1Shape11"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad111"
-        - "Ch4SRgeHad111"
+        - "Ch3CRGeHad111"
+        - "Ch4SRGeHad111"
   sys10:
       type: "lnN"
-      name: "lnN_Ch3Ch4geHad1Shape21"
+      name: "lnN_Ch3Ch4GeHad1Shape21"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad121"
-        - "Ch4SRgeHad121"
+        - "Ch3CRGeHad121"
+        - "Ch4SRGeHad121"
   sys11:
       type: "lnN"
-      name: "lnN_Ch3geHad1Shape00"
+      name: "lnN_Ch3GeHad1Shape00"
       init_val: 1.05
       bins:
-        - "Ch3CRgeHad100"
+        - "Ch3CRGeHad100"
   #sys12:
   #  type: "lnN"
   #  name: "scale_Ch5CRgeq1PhoBHEarly00"

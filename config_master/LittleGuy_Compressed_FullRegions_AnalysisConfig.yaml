@@ -1,8 +1,8 @@
 # Compressed analysis prototype
 analysis:
   name: "LittleGuy_Compressed_FullRegions_AnalysisConfig"
-  luminosity: 421.0
-  output_json: "LittleGuy_Compressed_FullRegions_AnalysisConfig.json"
+  luminosity: 424
+  output_json: "LittleGuy_Compressed_FullRegions_AnalysisConfig_v52.json"
 
 samples:
   signals: ["gogoGZ"]
@@ -140,7 +140,7 @@ kinSV: &kinSV
 
 # Ch 2: ptISR > 600, nSVisObjects > 2 (RISR handled by bin)
 kinDelPho: &kinDelPho
-  - "(rjrIsr_PtIsr > 600 && rjrIsr_nSVisObjects > 0)"
+  - "(rjrIsr_PtIsr > 850 && rjrIsr_nSVisObjects > 0)"
 
 # Ch 3: ptISR > 900, nSVisObjects > 0, RISR floor at 0.4
 kinEq2Pho: &kinEq2Pho
@@ -386,7 +386,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoBHEarly
 
@@ -395,7 +395,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoBHLate
 
@@ -404,7 +404,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoNotBHEarly
 
@@ -413,7 +413,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoNotBHLate
 
@@ -422,7 +422,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoMedIsoEarly
 
@@ -431,7 +431,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoMedIsoLate
 
@@ -440,7 +440,7 @@ bins:
       - *baseline_cuts
       - *Cleaning
       - *kinDelPho
-      - *b20
+      - *b00
       - *noSV
       - *geq1PhoTightIsoEarly
 
@@ -504,6 +504,69 @@ bins:
       - *Cleaning
       - *kinDelPho
       - *b10
+      - *noSV
+      - *geq1PhoTightIsoEarly
+  
+  DelPho_BHEarlyCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoBHEarly
+
+  DelPho_BHLateCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoBHLate
+
+  DelPho_NotBHEarlyCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoNotBHEarly
+
+  DelPho_NotBHLateSR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoNotBHLate
+
+  DelPho_MedIsoEarlyCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoMedIsoEarly
+
+  DelPho_MedIsoLateCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
+      - *noSV
+      - *geq1PhoMedIsoLate
+
+  DelPho_TightIsoEarlyCR20:
+    cuts:
+      - *baseline_cuts
+      - *Cleaning
+      - *kinDelPho
+      - *b20
       - *noSV
       - *geq1PhoTightIsoEarly
 

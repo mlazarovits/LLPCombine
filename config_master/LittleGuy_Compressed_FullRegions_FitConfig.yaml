@@ -12,7 +12,7 @@
 #   BH       C (early) | B (late)
 #   such that A = B*C/D
 
-fitname: "LittleGuy_Compressed_FullRegions"
+fitname: "LittleGuy_Compressed_FullRegions_v52"
 asimov: True
 datadriven: True
 
@@ -64,6 +64,14 @@ shape_transfer_fit:
       - "MixDel_CR00"
       - "MixDel_SR10"
       - "MixDel_SR20"
+    DelPho_BHLateCR:
+      - "DelPho_BHLateCR00"
+      - "DelPho_BHLateCR10"
+      - "DelPho_BHLateCR20"
+    DelPho_NotBHLateSR:
+      - "DelPho_NotBHLateSR00"
+      - "DelPho_NotBHLateSR10"
+      - "DelPho_NotBHLateSR20"
 
   channel_association:
     SVonly_AnchorCR:
@@ -74,41 +82,34 @@ shape_transfer_fit:
       - "MixPrompt_SR"
     MixDel_AnchorCR:
       - "MixDel_SR"
+    DelPho_BHLateCR:
+      DelPho_NotBHLateSR: 9.8 
 
 # ── ABCD: Ch 2 ──────────────────────────────────────────────────────
 ### need SR/CR in channel names because they need to match the bin names since thats how the CombineHarvester categories are built
 ABCD_fit:
   bin_association:
     # Ch 2 — delayed photon (2 RISR bins per cell)
-    DelPho_BHEarlyCR:
-      - "DelPho_BHEarlyCR00"
-      - "DelPho_BHEarlyCR10"
-    DelPho_BHLateCR:
-      - "DelPho_BHLateCR00"
-      - "DelPho_BHLateCR10"
-    DelPho_NotBHEarlyCR:
-      - "DelPho_NotBHEarlyCR00"
-      - "DelPho_NotBHEarlyCR10"
     DelPho_NotBHLateSR:
       - "DelPho_NotBHLateSR00"
       - "DelPho_NotBHLateSR10"
+      - "DelPho_NotBHLateSR20"
     DelPho_MedIsoEarlyCR:
       - "DelPho_MedIsoEarlyCR00"
       - "DelPho_MedIsoEarlyCR10"
+      - "DelPho_MedIsoEarlyCR20"
     DelPho_MedIsoLateCR:
       - "DelPho_MedIsoLateCR00"
       - "DelPho_MedIsoLateCR10"
+      - "DelPho_MedIsoLateCR20"
     DelPho_TightIsoEarlyCR:
       - "DelPho_TightIsoEarlyCR00"
       - "DelPho_TightIsoEarlyCR10"
+      - "DelPho_TightIsoEarlyCR20"
 
   channel_association:
     # A = B*C/D: SR (notBH late) predicted by [BH late, notBH early, BH early]
     DelPho_NotBHLateSR:
-      bkgbh:
-        - "DelPho_BHLateCR"
-        - "DelPho_NotBHEarlyCR"
-        - "DelPho_BHEarlyCR"
       bkgprompt:
         - "DelPho_MedIsoLateCR"
         - "DelPho_TightIsoEarlyCR"
@@ -116,11 +117,11 @@ ABCD_fit:
 
   # Prompt bkg leaking into the notBH early CR, templated bin-by-bin from the tight-iso early CR.
   # transfer_factor: auto = min over bins of yield(target)/yield(source), or give a number.
-  template_processes:
-    - source_channel: "DelPho_TightIsoEarlyCR"
-      target_channel: "DelPho_NotBHEarlyCR"
-      process: "bkgprompt"
-      transfer_factor: auto
+  #template_processes:
+  #  - source_channel: "DelPho_TightIsoEarlyCR"
+  #    target_channel: "DelPho_NotBHEarlyCR"
+  #    process: "bkgprompt"
+  #    transfer_factor: auto
 
 # ── Systematics ──────────────────────────────────────────────────────────────
 
