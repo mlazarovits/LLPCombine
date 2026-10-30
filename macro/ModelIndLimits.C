@@ -82,12 +82,44 @@ void ModelIndLimits(){
 	map<string, string> ch_map;
 	ch_map["Ch2"] = "Ch2SRGeLep111";
 	ch_map["Ch4"] = "Ch4SRGeHad121";
-	ch_map["Ch8"] = "Ch8SRgeq1PhoNotBHLateBin11";
-	ch_map["Ch10"] = "Ch10SReq1PhoTightIsoPromptBin12";
-	ch_map["Ch12"] = "Ch12SReq2PhoTightIsoPromptBin11";
+	ch_map["Ch8"] = "Ch8SRgeq1PhoNotBHLateTightIso11";
+	ch_map["Ch10"] = "Ch10SReq1PhoTightIsoPrompt12";
+	ch_map["Ch12"] = "Ch12SReq2PhoTightIsoPrompt11";
 	ch_map["Ch14"] = "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate01";
+	ch_map["DelPho_NotBHLateSR"] = "DelPho_NotBHLateSR10";
+	ch_map["Eq2Pho_TightIsoSR"] = "Eq2Pho_TightIsoSR30";
+	ch_map["MixDel_SR"] = "MixDel_SR20";
+	ch_map["MixPrompt_SR"] = "MixPrompt_SR20";
+	ch_map["SVonly_SR"] = "SVonly_SR20";
 
-	string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions.root";//"FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_SplitSVDelayedPhoton_4BinDelayedPhoton.root";
+
+	map<string,string> reg_labels;
+        reg_labels["Ch1"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{lep}}$";
+        reg_labels["Ch2"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{lep}}$";
+        reg_labels["Ch3"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}$";
+        reg_labels["Ch4"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}$";
+        reg_labels["SVonly_SR"] ="$\mathrm{SV}^{SR, Sxy+}$";
+        reg_labels["Ch5"] ="$\gamma^{CR, BH}_{t-}$";
+        reg_labels["Ch6"] ="$\gamma^{CR, BH}_{t+}$";
+        reg_labels["Ch7"] ="$\gamma^{CR, !BH}_{t-}$";
+        reg_labels["Ch8"] ="$\gamma^{SR, !BH}_{t+}$";
+        reg_labels["DelPho_NotBHLateSR"] ="$\gamma^{SR, !BH}_{t+}$";
+        reg_labels["Ch10"] ="$1 \gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Ch12"] ="$2 \gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Eq2Pho_TightIsoSR"] ="$2 \gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Ch13"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
+        reg_labels["Ch14"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
+        reg_labels["MixDel_SR"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
+        reg_labels["MixPrompt_SR"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t0}^{SR, Tight Iso}$";
+        reg_labels["Ch15"] ="$\gamma^{CR, Med Iso}_{t-}$";
+        reg_labels["Ch16"] ="$\gamma^{CR, Med Iso}_{t+}$";
+        reg_labels["Ch17"] ="$\gamma^{CR, Tight Iso}_{t-}$";
+
+
+
+	string infilename = "FitDiagnostics/fitDiagnostics_LittleGuy_Compressed_FullRegions_v52.root";
+	//string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_TFBeamHalo.root";
+	cout << "Using FitDiagnostics: " << infilename << endl;
 	TFile* infile = TFile::Open(infilename.c_str(),"READ");
 	string ofilename = "ModelIndHists.root";
 	TFile* ofile = TFile::Open(ofilename.c_str(),"RECREATE");
@@ -100,6 +132,8 @@ void ModelIndLimits(){
 		string srbin = chit->second;
 		//get bkg-only post-fit Nbkg and sigma(Nbkg) from fit diagnostics
 		TH1D* bonly_postfit_bkg = (TH1D*)infile->Get(("shapes_fit_b/"+srbin+"/total_background").c_str());
+		if(bonly_postfit_bkg == nullptr)
+			continue;
 		double nbkg = bonly_postfit_bkg->GetBinContent(1);
 		double sigma_nbkg = bonly_postfit_bkg->GetBinError(1);
 		//get observation
@@ -132,7 +166,7 @@ void ModelIndLimits(){
 		bkgOnly_events.SetName(newbkgname.c_str());
 		bkgOnly_events.SetTitle(newbkgname.c_str());
 		bkgOnly_events.Write();
-		cout << std::setprecision(2) << srbin << " & " << nbkg << " & " << sigma_nbkg << " & " << obs << " & " << lsig << " \\\\" << endl;
+		cout << std::setprecision(2) << reg_labels[chit->first] << " & " << nbkg << " & " << sigma_nbkg << " & " << obs << " & " << lsig << " \\\\" << endl;
 	}
 	cout << "\\end{tabular}" << endl;
 	cout << "\\end{table}" << endl;

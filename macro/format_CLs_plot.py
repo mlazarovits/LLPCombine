@@ -20,12 +20,15 @@ if not Path(odir).is_dir():
 infile = args.input
 file = uproot.open(infile)
 for chname, binname in SR_BINS.items():
+    sig_hist_name = None
     for key in file.keys():
         if binname not in key:
             continue
         if "sPlusb_events" in key:
             sig_hist_name = key
             break
+    if sig_hist_name is None:
+        continue
     sig_hist = file[sig_hist_name]
     bkg_hist = file[binname+"_bkgOnly_events"]
     sUL = sig_hist_name[sig_hist_name.find("_lambda")+7:sig_hist_name.find(";")]
@@ -69,7 +72,9 @@ for chname, binname in SR_BINS.items():
     plt.text(xtext, ytext-0.2,"$S_{UL} = $"+str(sUL),size=25)
     ch_key = re.match(r"Ch\d*", binname)
     ch_key = ch_key.group(0) if ch_key else ""
-    
+    if ch_key == "":
+        ch_key = binname[:binname.find("SR")+2]   
+ 
     binlabel = REGION_LABELS[ch_key]
     plt.text(xtext, ytext,binlabel,size=25)
     
