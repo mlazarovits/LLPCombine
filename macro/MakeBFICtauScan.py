@@ -169,12 +169,18 @@ for filepath in ctau_yaml_dir.iterdir():
             bfi = "json/"+data["analysis"]["output_json"].removesuffix(".json")
             brlabel = "Z50G50" #default
             if "decayWeights" in data.keys():
-                zlabel = str(float(data["decayWeights"]["targetZrate"])*100)
-                gamlabel = str(float(data["decayWeights"]["targetGrate"])*100)
+                zlabel = str(int(data["decayWeights"]["targetZrate"]*100))
+                gamlabel = str(int(data["decayWeights"]["targetGrate"]*100))
                 brlabel = f"Z{zlabel}G{gamlabel}"
-            bfi += f"_{brlabel}.json"
-        if filepath.name == ref_yaml.split("/")[1]:
-            ref_bfi = bfi 
+            if brlabel not in bfi:
+                bfi += f"_{brlabel}"
+            bfi += ".json"
+        if filepath.name == Path(ref_yaml).name:
+            #add true reference BFI if no data
+            if "data" not in data["samples"].keys() and brlabel != "Z50G50":
+                ref_bfi = bfi[:bfi.find("_"+brlabel)]+"_Z50G50.json" 
+            else:
+                ref_bfi = bfi 
         if bfi not in bfis:
             bfis.append(bfi)
         if Path(bfi).is_file() and not remakebfis:
@@ -190,15 +196,40 @@ for filepath in ctau_yaml_dir.iterdir():
 # Concatenate BFI JSONs into one
 tot_bfi = {}
 print("ref_bfi",ref_bfi)
+#make sure refbfi exists
+if not Path(ref_bfi).is_file():
+    ref_bfi_yaml = "config_master/"+filepath.stem[:filepath.stem.find("AnalysisConfig")+14]+".yaml" 
+    print(f"Making reference BFI {ref_bfi} from {ref_bfi_yaml}")
+    cmd = f"./BFI.x -c {ref_bfi_yaml}"
+    if dryrun:
+        print(cmd)
+    else:
+        result = subprocess.run(cmd.split(" "),capture_output=True,text=True)
+
+#make sure reference with data is in total BFI
+if ref_bfi not in bfis:
+    bfis.append(ref_bfi)
+print("brlabel",brlabel)
 for bfi in bfis:
     if not Path(bfi).is_file():
         print(f"{bfi} does not exist. Skipping.")
         continue
-
+    if bfi == ref_bfi:
+        print("Adding data from bfi",bfi)
+    else:
+        print("Adding bfi",bfi)
     with open(bfi, "r") as f:
         data = json.load(f)
 
     for region, contents in data.items():
+        # Only save "data" if it contains meaningful, nonzero values, ref_bfi could have different brlabel
+        if "data" in contents and bfi == ref_bfi:
+            tot_bfi[region]["data"] = contents["data"]
+    
+        #only save signal yields for BFIs with relevant brlabel
+        if brlabel not in bfi:
+            continue
+
         if region not in tot_bfi:
             tot_bfi[region] = {}
 
@@ -209,9 +240,6 @@ for bfi in bfis:
             if key != "data"
         })
 
-        # Only save "data" if it contains meaningful, nonzero values
-        if "data" in contents and bfi == ref_bfi:
-            tot_bfi[region]["data"] = contents["data"]
 
 tot_bfi = sort_nested_dict(tot_bfi)
 

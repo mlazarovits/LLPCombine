@@ -195,42 +195,26 @@ for filepath in ctau_yaml_dir.iterdir():
             print(cmd)
         else:
             result = subprocess.run(cmd.split(" "),capture_output=True,text=True)
-# Concatenate BFI JSONs into one
-tot_bfi = {}
+
+#write data to all BR scanned BFIs
 #print("ref_bfi",ref_bfi)
+
+# Only save "data" if it contains meaningful, nonzero values
+with open(ref_bfi, "r") as f:
+    ref_data = json.load(f)
+
 for bfi in bfis:
     if not Path(bfi).is_file():
         print(f"{bfi} does not exist. Skipping.")
         continue
     if args.dryRun:
-        print(f"Adding {bfi} to total BFI")
+        print(f"Adding data to BFI {bfi}")
     with open(bfi, "r") as f:
         data = json.load(f)
 
     for region, contents in data.items():
-        if region not in tot_bfi:
-            tot_bfi[region] = {}
-
-        # Save all entries except "data"
-        tot_bfi[region].update({
-            key: value
-            for key, value in contents.items()
-            if key != "data"
-        })
-
-        # Only save "data" if it contains meaningful, nonzero values
-        if "data" in contents and bfi == ref_bfi:
-            tot_bfi[region]["data"] = contents["data"]
-
-tot_bfi = sort_nested_dict(tot_bfi)
+        data[region]["data"] = ref_data[region]["data"]
+    with open(bfi,"w") as f:
+        json.dump(data,f,indent=4)
 
 
-tot_bfi_name = bfis[0]
-for match in re.finditer(r"_Z\d+G\d+", tot_bfi_name):
-    splitidx = match.start()
-    break
-tot_bfi_name = tot_bfi_name[:splitidx]
-tot_bfi_name += "_BRScan.json"
-with open(tot_bfi_name,"w") as outfile:
-    json.dump(tot_bfi, outfile, indent=4)
-print(f"Wrote overall ctau scan BFI to {tot_bfi_name}")
