@@ -511,6 +511,7 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
             x.append(key[3])#ctau on xaxis
             #just do median for now * xsec (gluino_xsec in pb, convert to fb)
             y.append(entry["exp0"] * gluino_xsec[mGo] * 1000)
+            #print(br_key,"ctau:",key[3],"y",entry["exp0"])
             y1sigup.append(entry["exp+1"] * gluino_xsec[mGo] * 1000)
             y2sigup.append(entry["exp+2"] * gluino_xsec[mGo] * 1000)
             y1sigdn.append(entry["exp-1"] * gluino_xsec[mGo] * 1000)
