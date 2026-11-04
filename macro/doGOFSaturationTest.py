@@ -28,7 +28,7 @@ if args.obs is None:
     cmd = f"combine -M GoodnessOfFit {args.datacard} --algo=saturated -n {obs_oname}"
     print("Running observed test statistic")
     subprocess.run(cmd.split(" "))
-    obs_file = f"higgsCombine{obs_name}.GoodnessOfFit.mH120.root"
+    obs_file = f"higgsCombine{obs_oname}.GoodnessOfFit.mH120.root"
 else:
     obs_file = args.obs
 
@@ -39,7 +39,7 @@ if args.toys is None:
     cmd = f"combine -M GoodnessOfFit {args.datacard} --algo=saturated -n {toys_oname} --toys {args.nToys} --seed {args.seed}"
     print("Running toys for test statistic distribution")
     subprocess.run(cmd.split(" "))
-    toys_file = f"higgsCombine{toys_name}.GoodnessOfFit.mH120.{seed}.root"
+    toys_file = f"higgsCombine{toys_oname}.GoodnessOfFit.mH120.{seed}.root"
 else:
     toys_file = args.toys
 
