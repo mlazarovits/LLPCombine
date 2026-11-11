@@ -1137,9 +1137,14 @@ void BuildFit::DoSystematics(const string& split){
 }
 //WriteDatacard
 void BuildFit::WriteDatacard(string datacard_dir, bool verbose){
+	string sigpt = _signalPoint;
+	if(sigpt.find(".") != std::string::npos)
+		sigpt.replace(sigpt.find("."),1,"p");
+	if(datacard_dir.find(".") != std::string::npos)
+		datacard_dir.replace(datacard_dir.find("."),1,"p");
 	if(verbose)
-		cout << "Writing datacard to " << datacard_dir+"/"+_signalPoint+".txt" << endl;
-	cb.WriteDatacard(datacard_dir+"/"+_signalPoint+".txt");
+		cout << "Writing datacard to " << datacard_dir+"/"+sigpt+".txt" << endl;
+	cb.WriteDatacard(datacard_dir+"/"+sigpt+".txt");
 }
 
 

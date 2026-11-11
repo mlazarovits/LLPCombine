@@ -99,6 +99,8 @@ int main(int argc, char* argv[]){
 			if(extra_name.size() > 1)
 				datacard_dir += "_"+extra_name;
 			datacard_dir += "/"+current_signal;
+			if(datacard_dir.find(".") != std::string::npos)
+				datacard_dir.replace(datacard_dir.find("."),1,"p");
 			cout << "Datacard dir " << datacard_dir << endl;
 			std::filesystem::path dir_path = datacard_dir;
 			//recreate datacards
