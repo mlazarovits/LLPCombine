@@ -85,11 +85,20 @@ with open(ref_yaml,"r") as f:
     data = yaml.safe_load(f)
 
 #maybe move to input arguments since different mass points (and full/fastsim) have different simulated lifetimes
-sampleToTargetCtaus = {
+highDmSampleToTargetCtaus = {
                         10:[1,5],
                         50:[20,30],
                         300:[80,100,200] #only for 2300-1300-100, 1800-1750-1700
                     }
+compSampleToTargetCtaus = {
+                        20:[1,5,10],
+                        300:[50,80,100,200] #only for 2300-1300-100, 1800-1750-1700
+                    }
+
+if "LittleGuy" in ref_yaml:
+    sampleToTargetCtaus = compSampleToTargetCtaus
+else:
+    sampleToTargetCtaus = highDmSampleToTargetCtaus
 
 #dont run on config that is already being reweighted
 if "lifetimeWeights" in data.keys():
@@ -100,6 +109,11 @@ yamlname = ref_yaml[ref_yaml.rfind("/")+1:ref_yaml.find(".yaml")]
 ctau_yaml_dir = Path(f"{Path(ref_yaml).parent}/{yamlname}_CtauReweightedConfigs/")
 ctau_yaml_dir.mkdir(parents=True,exist_ok=True)
  
+if remakeyamls:
+    dir_path = Path(ctau_yaml_dir)
+    for file_path in dir_path.iterdir():
+        if file_path.is_file():
+            file_path.unlink()
 
 for sampleLifetime, targetLifetimes in sampleToTargetCtaus.items():
     for targetLifetime in targetLifetimes:
