@@ -1,7 +1,7 @@
 analysis:
   name: "BigGuy_NonCompressed_FullRegions"
   luminosity: 423.71
-  output_json: "BigGuy_NonCompressed_FullRegions_v52.json"
+  output_json: "BigGuy_NonCompressed_FullRegions_v54.json"
 
 samples:
   signals: ["gogoGZ"]
@@ -63,13 +63,13 @@ bHad21: &bHad21
   - "((rjr_Ms[0] >= 3000) && (rjr_Rs[0] >= 0.35))"
 
 DelayedBin00: &DelayedBin00
-  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35))"
+  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.4))"
 DelayedBin10: &DelayedBin10
-  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.35))"
+  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.15) && (rjr_Rs[0] < 0.4))"
 DelayedBin01: &DelayedBin01
-  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.35))"
+  - "((rjr_Ms[0] >= 2000) && (rjr_Ms[0] < 2600) && (rjr_Rs[0] >= 0.4))"
 DelayedBin11: &DelayedBin11
-  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.35))"
+  - "((rjr_Ms[0] >= 2600) && (rjr_Rs[0] >= 0.4))"
     #DelayedBin00: &DelayedBin00
     #  - "(rjr_Ms[0] >= 2000)"
     #  - "(rjr_Rs[0] >= 0.3)"
@@ -116,9 +116,6 @@ Ch5CRgeq1PhoBHEarly: &Ch5CRgeq1PhoBHEarly
 
 Ch6CRgeq1PhoBHLate: &Ch6CRgeq1PhoBHLate
   - "(passNPhoGe1SelectionLateBeamHaloCR == 1)"
-  #- "(nBaseLinePhotons > 0)"
-  ## >= 1 BH photon late
-  #- "(nBaseLinePhotons == 1 && baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || ( nBaseLinePhotons == 2 && ((baseLinePhoton_beamHaloCNNScore[0] >= 0.917252 && baseLinePhoton_WTimeSig[0] >= 2.5) || (baseLinePhoton_beamHaloCNNScore[1] >= 0.917252 && baseLinePhoton_WTimeSig[1] >= 2.5)) )"
 
 # ==0 BH photons
 # >= 1 notBH photons
@@ -146,7 +143,13 @@ CRgeq1PhoMedIsoLate: &Ch16CRgeq1PhoMedIsoLate
   - "(passNPhoGe1SelectionLateMedIsoCR == 1)"
 
 CRgeq1PhoTightIsoEarly: &Ch17CRgeq1PhoTightIsoEarly
-  - "(passNPhoGe1SelectionEarlyTightIsoCR == 1)"
+  #- "(passNPhoGe1SelectionEarlyTightIsoCR == 1)"
+  - "(nblNonpromptPhotons > 0)"
+  - "(nblBHPhotons == 0)"
+  - "(nblNotBHPhotons > 0)"
+  - "((nptightisonotbh_tagged_lead_timesig >= -3) && (nptightisonotbh_tagged_lead_timesig < -2.5))"
+  - "((nptightisonotbh_tagged_lead_phi != -999))"
+  - "(!( ((nptightisonotbh_tagged_lead_phi < 0.1) && (nptightisonotbh_tagged_lead_phi > -0.1)) || ((acos(-1) - 0.1 < nptightisonotbh_tagged_lead_phi)) || (-acos(-1) + 0.1 > nptightisonotbh_tagged_lead_phi)))"
 
 ######################
 ####prompt regions####

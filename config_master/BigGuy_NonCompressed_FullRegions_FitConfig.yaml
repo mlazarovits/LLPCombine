@@ -1,5 +1,5 @@
 #test fit config
-fitname: "BigGuy_NonCompressed_FullRegions_v52"
+fitname: "BigGuy_NonCompressed_FullRegions_v54"
 asimov: True
 datadriven: True
 
@@ -81,7 +81,7 @@ shape_transfer_fit:
     Ch13CRgeq1SVLowDxygeq1PhoNotBHLate:
       - "Ch14SRgeq1SVHighDxygeq1PhoNotBHLate"
     Ch6CRgeq1PhoBHLate:
-      Ch8SRgeq1PhoNotBHLateTightIso: 9.8 #set transfer factor
+      Ch8SRgeq1PhoNotBHLateTightIso: 0.3 #set transfer factor
     
 #main fit
 #ABCD - SR bin (D) maps to [C, A, B]
