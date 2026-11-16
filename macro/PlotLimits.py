@@ -150,7 +150,7 @@ def MakeSdMN2N1plot( significance_dict, sig_label, lumi, ctau=10, brgam = 50, ex
 
     cbar = fig.colorbar(cm.ScalarMappable(norm=norm, cmap=cmap),ax=ax, orientation='vertical')#, shrink=0.7)
     cbar.set_label("Median Expected 95% CL $\\sigma/\\sigma_{th}$",size=20)
-    hep.cms.label("Preliminary", data = True, lumi=lumi,com=13.6)
+    hep.cms.label("Preliminary", data = True, lumi=lumi,com='13 + 13.6')
     brlabel = f"{int(100-br)}Z{br}G"
     if comp_sig_label is not None:
         comp_sig_label = Path(comp_sig_label).name
@@ -448,7 +448,7 @@ def MakeCtauLimit( significance_dict, sig_label, mGo=2000, mN2 = 1500, mN1 = 500
                label="$"+sparticle_label+sparticle_label+"$ production $\\sigma_{th}$")
     ax.axhline(y=xsec_th * 6, color='red', linestyle='--', linewidth=2, zorder=20,
                label="$"+sparticle_label+sparticle_label+"$ GMSB $\\sigma_{th}$")
-    hep.cms.label("Preliminary", data = True, lumi=lumi,com=13.6)
+    hep.cms.label("Preliminary", data = True, lumi=lumi,com='13 + 13.6')
 
     # Style
     plt.legend(loc=1)
@@ -546,7 +546,7 @@ def MakeCtauLimitMultipleBRs( br_dicts, sig_label, mGo=2000, mN2 = 1500, mN1 = 5
                label=r'$\tilde{g}\tilde{g}$ production $\sigma_{th}$')
     ax.axhline(y=xsec_th * 6, color='red', linestyle='--', linewidth=2, zorder=20,
                label=r'$\tilde{g}\tilde{g}$ GMSB $\sigma_{th}$')
-    hep.cms.label("Preliminary", data = True, lumi=lumi,com=13.6)
+    hep.cms.label("Preliminary", data = True, lumi=lumi,com='13 + 13.6')
 
     # Style
     plt.legend(loc=1)
@@ -596,6 +596,9 @@ lumi = args.lumi
 default_mass_pts = [[2300, 1300, 1000], [2500, 1200, 500]]
 mass_pts = args.mass_point if args.mass_point else default_mass_pts
 dobrlimits = True
+if any(["BigGuy" in i for i in args.input]) and any(["LittleGuy" in i for i in args.input]):
+    dobrlimits = False
+
 if len(args.input) > 1 and dobrlimits:
     #only do multiBR ctau limit for now
     br_dict, sig_label = ReadLimitsBRs(args.input)
@@ -624,7 +627,7 @@ n1n2dm = set(n1n2dm)
 smass = set(smass)
 ctaus = set(ctaus)
 #do 1D ctau limits
-if len(ctaus) > 1 and not dobrlimits:
+if len(ctaus) > 1 and len(args.input) == 1:
     required_keys = {"exp0", "exp+1", "exp+2", "exp-1", "exp-2"}
     valid_ctaus = [key[3] for key, entry in significance_dict.items() if required_keys.issubset(entry.keys())]
     ctau_xmin = args.xmin if args.xmin is not None else (min(valid_ctaus) if valid_ctaus else None)
