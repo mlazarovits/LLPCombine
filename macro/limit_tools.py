@@ -59,6 +59,8 @@ def GetMasses( signalString ):
     mn2 = float(splitSignal[1])
     mn1 = float(splitSignal[2])
     ctau = splitSignal[3]
+    if "p" in ctau:
+        ctau = ctau.replace("p",".")
     ctau = float(ctau)
     return [mgo,mn2,mn1,ctau]
 
