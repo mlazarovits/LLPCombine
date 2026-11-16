@@ -94,31 +94,31 @@ void ModelIndLimits(){
 
 
 	map<string,string> reg_labels;
-        reg_labels["Ch1"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{lep}}$";
-        reg_labels["Ch2"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{lep}}$";
-        reg_labels["Ch3"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}$";
-        reg_labels["Ch4"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}$";
-        reg_labels["SVonly_SR"] ="$\mathrm{SV}^{SR, Sxy+}$";
-        reg_labels["Ch5"] ="$\gamma^{CR, BH}_{t-}$";
-        reg_labels["Ch6"] ="$\gamma^{CR, BH}_{t+}$";
-        reg_labels["Ch7"] ="$\gamma^{CR, !BH}_{t-}$";
-        reg_labels["Ch8"] ="$\gamma^{SR, !BH}_{t+}$";
-        reg_labels["DelPho_NotBHLateSR"] ="$\gamma^{SR, !BH}_{t+}$";
-        reg_labels["Ch10"] ="$1 \gamma^{SR, Tight Iso}_{t0}$";
-        reg_labels["Ch12"] ="$2 \gamma^{SR, Tight Iso}_{t0}$";
-        reg_labels["Eq2Pho_TightIsoSR"] ="$2 \gamma^{SR, Tight Iso}_{t0}$";
-        reg_labels["Ch13"] ="$\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
-        reg_labels["Ch14"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
-        reg_labels["MixDel_SR"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t+}^{SR, !BH}$";
-        reg_labels["MixPrompt_SR"] ="$\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \gamma_{t0}^{SR, Tight Iso}$";
-        reg_labels["Ch15"] ="$\gamma^{CR, Med Iso}_{t-}$";
-        reg_labels["Ch16"] ="$\gamma^{CR, Med Iso}_{t+}$";
-        reg_labels["Ch17"] ="$\gamma^{CR, Tight Iso}_{t-}$";
+        reg_labels["Ch1"] ="$\\mathrm{SV}^{CR, Sxy-}_{mathrm{lep}}$";
+        reg_labels["Ch2"] ="$\\mathrm{SV}^{SR, Sxy+}_{mathrm{lep}}$";
+        reg_labels["Ch3"] ="$\\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}$";
+        reg_labels["Ch4"] ="$\\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}$";
+        reg_labels["SVonly_SR"] ="$\\mathrm{SV}^{SR, Sxy+}$";
+        reg_labels["Ch5"] ="$\\gamma^{CR, BH}_{t-}$";
+        reg_labels["Ch6"] ="$\\gamma^{CR, BH}_{t+}$";
+        reg_labels["Ch7"] ="$\\gamma^{CR, !BH}_{t-}$";
+        reg_labels["Ch8"] ="$\\gamma^{SR, !BH}_{t+}$";
+        reg_labels["DelPho_NotBHLateSR"] ="$\\gamma^{SR, !BH}_{t+}$";
+        reg_labels["Ch10"] ="$1 \\gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Ch12"] ="$2 \\gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Eq2Pho_TightIsoSR"] ="$2 \\gamma^{SR, Tight Iso}_{t0}$";
+        reg_labels["Ch13"] ="$\\mathrm{SV}^{CR, Sxy-}_{mathrm{had}}, \\gamma_{t+}^{SR, !BH}$";
+        reg_labels["Ch14"] ="$\\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \\gamma_{t+}^{SR, !BH}$";
+        reg_labels["MixDel_SR"] ="$\\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \\gamma_{t+}^{SR, !BH}$";
+        reg_labels["MixPrompt_SR"] ="$\\mathrm{SV}^{SR, Sxy+}_{mathrm{had}}, \\gamma_{t0}^{SR, Tight Iso}$";
+        reg_labels["Ch15"] ="$\\gamma^{CR, Med Iso}_{t-}$";
+        reg_labels["Ch16"] ="$\\gamma^{CR, Med Iso}_{t+}$";
+        reg_labels["Ch17"] = "$\\gamma^{CR, Tight Iso}_{t-}$";
 
 
 
-	string infilename = "FitDiagnostics/fitDiagnostics_LittleGuy_Compressed_FullRegions_v52.root";
-	//string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_TFBeamHalo.root";
+	//string infilename = "FitDiagnostics/fitDiagnostics_LittleGuy_Compressed_FullRegions_v54.root";
+	string infilename = "FitDiagnostics/fitDiagnostics_BigGuy_NonCompressed_FullRegions_v54.root";
 	cout << "Using FitDiagnostics: " << infilename << endl;
 	TFile* infile = TFile::Open(infilename.c_str(),"READ");
 	string ofilename = "ModelIndHists.root";
