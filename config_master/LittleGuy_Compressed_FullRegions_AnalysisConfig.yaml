@@ -522,14 +522,14 @@ bins:
       - *b10p
       - *noSV
       - *geq1PhoTightIsoEarly
-  DelPho_BHEarlyCR20:
-    cuts:
-      - *baseline_cuts
-      - *Cleaning
-      - *kinDelPho
-      - *b20
-      - *noSV
-      - *geq1PhoBHEarly
+  #DelPho_BHEarlyCR20:
+  #  cuts:
+  #    - *baseline_cuts
+  #    - *Cleaning
+  #    - *kinDelPho
+  #    - *b20
+  #    - *noSV
+  #    - *geq1PhoBHEarly
 
 #  DelPho_BHLateCR20:
 #    cuts:
